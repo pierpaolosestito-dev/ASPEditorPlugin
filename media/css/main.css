@@ -1,0 +1,37 @@
+#container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#container > .container-item {
+    margin: 5px;
+}
+
+#plus-icon, #play-icon {
+    margin-right: 5px;
+}
+
+#run-button {
+    background-color: limegreen;
+}
+
+#options {
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+.option {
+    display: flex;
+    align-items: center;
+}
+
+.fa-trash-can, .fa-trash-can:hover {
+    color: tomato;
+    margin: 5px;
+}
+
+#different-solver {
+    display: flex;
+    align-items: center;
+}

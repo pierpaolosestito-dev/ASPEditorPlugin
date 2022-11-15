@@ -1,0 +1,284 @@
+{
+	"name": "asp-language-support-dlv2",
+	"displayName": "ASP Language Support for DLV2 System",
+	"description": "An extension for Answer Set Programming using the DLV2 System",
+	"version": "0.1.0",
+	"publisher": "VSCode - Plugin - Editor",
+	"engines": {
+		"vscode": "^1.69.0"
+	},
+	"author": {
+		"name": "VSCode - Plugin - Editor"
+	},
+	"categories": [
+		"Programming Languages"
+	],
+	"activationEvents": [
+		"onLanguage:asp",
+		"onView:asp-language-support-dlv2.interface"
+	],
+	"main": "./src/extension.js",
+	"contributes": {
+		"commands": [
+			{
+				"command": "asp-language-support-dlv2.computeSingleAnswerSet",
+				"title": "Compute a single Answer Set",
+				"category": "ASP",
+				"enablement": "resourceLangId == asp"
+			},
+			{
+				"command": "asp-language-support-dlv2.computeAllAnswerSets",
+				"title": "Compute all Answer Sets",
+				"category": "ASP",
+				"enablement": "resourceLangId == asp"
+			},
+			{
+				"command": "asp-language-support-dlv2.computeGroundProgram",
+				"title": "Compute ground program",
+				"category": "ASP",
+				"enablement": "resourceLangId == asp"
+			},
+			{
+				"command": "asp-language-support-dlv2.viewAllPools",
+				"title": "View all pools of linked files",
+				"category": "ASP",
+				"enablement": "resourceLangId == asp"
+			},
+			{
+				"command": "asp-language-support-dlv2.viewCurrentFilePool",
+				"title": "View the current file's pool of linked files",
+				"category": "ASP",
+				"enablement": "resourceLangId == asp"
+			},
+			{
+				"command": "asp-language-support-dlv2.linkFiles",
+				"title": "Link current file to others",
+				"category": "ASP",
+				"enablement": "resourceLangId == asp"
+			},
+			{
+				"command": "asp-language-support-dlv2.unlinkFiles",
+				"title": "Unlink current file from all others",
+				"category": "ASP",
+				"enablement": "resourceLangId == asp"
+			},
+			{
+				"command": "asp-language-support-dlv2.disbandPool",
+				"title": "Disband the current file's pool of linked files",
+				"category": "ASP",
+				"enablement": "resourceLangId == asp"
+			},
+			{
+				"command": "asp-language-support-dlv2.manageCustomExternalAtoms",
+				"title": "Manage custom external atoms",
+				"category": "ASP",
+				"enablement": "resourceLangId == asp"
+			},
+			{
+				"command": "asp-language-support-dlv2.manageConfigFile",
+				"title": "Manage configuration file",
+				"category": "ASP",
+				"enablement": "resourceLangId == asp"
+			}
+		],
+		"keybindings": [
+			{
+				"command": "asp-language-support-dlv2.computeSingleAnswerSet",
+				"key": "ctrl+alt+s",
+				"mac": "cmd+alt+s",
+				"when": "resourceLangId == asp"
+			},
+			{
+				"command": "asp-language-support-dlv2.computeAllAnswerSets",
+				"key": "ctrl+alt+a",
+				"mac": "cmd+alt+a",
+				"when": "resourceLangId == asp"
+			},
+			{
+				"command": "asp-language-support-dlv2.computeGroundProgram",
+				"key": "ctrl+alt+g",
+				"mac": "cmd+alt+g",
+				"when": "resourceLangId == asp"
+			},
+			{
+				"command": "asp-language-support-dlv2.viewAllPools",
+				"key": "ctrl+alt+v",
+				"mac": "cmd+alt+v",
+				"when": "resourceLangId == asp"
+			},
+			{
+				"command": "asp-language-support-dlv2.viewCurrentFilePool",
+				"key": "ctrl+alt+c",
+				"mac": "cmd+alt+c",
+				"when": "resourceLangId == asp"
+			},
+			{
+				"command": "asp-language-support-dlv2.linkFiles",
+				"key": "ctrl+alt+l",
+				"mac": "cmd+alt+l",
+				"when": "resourceLangId == asp"
+			},
+			{
+				"command": "asp-language-support-dlv2.unlinkFiles",
+				"key": "ctrl+alt+u",
+				"mac": "cmd+alt+u",
+				"when": "resourceLangId == asp"
+			},
+			{
+				"command": "asp-language-support-dlv2.disbandPool",
+				"key": "ctrl+alt+k",
+				"mac": "cmd+alt+k",
+				"when": "resourceLangId == asp"
+			},
+			{
+				"command": "asp-language-support-dlv2.manageCustomExternalAtoms",
+				"key": "ctrl+alt+e",
+				"mac": "cmd+alt+e",
+				"when": "resourceLangId == asp"
+			},
+			{
+				"command": "asp-language-support-dlv2.manageConfigFile",
+				"key": "ctrl+alt+o",
+				"mac": "cmd+alt+o",
+				"when": "resourceLangId == asp"
+			}
+		],
+		"menus": {
+			"editor/context": [
+				{
+					"when": "resourceLangId == asp",
+					"submenu": "asp-language-support-dlv2.solvingAndGrounding",
+					"group": "main@1"
+				},
+				{
+					"when": "resourceLangId == asp",
+					"submenu": "asp-language-support-dlv2.linkings",
+					"group": "main@2"
+				},
+				{
+					"when": "resourceLangId == asp",
+					"submenu": "asp-language-support-dlv2.other",
+					"group": "main@3"
+				}
+			],
+			"asp-language-support-dlv2.solvingAndGrounding": [
+				{
+					"command": "asp-language-support-dlv2.computeSingleAnswerSet"
+				},
+				{
+					"command": "asp-language-support-dlv2.computeAllAnswerSets"
+				},
+				{
+					"command": "asp-language-support-dlv2.computeGroundProgram"
+				}
+			],
+			"asp-language-support-dlv2.linkings": [
+				{
+					"command": "asp-language-support-dlv2.viewAllPools",
+					"group": "linkings@1"
+				},
+				{
+					"command": "asp-language-support-dlv2.viewCurrentFilePool",
+					"group": "linkings@2"
+				},
+				{
+					"command": "asp-language-support-dlv2.linkFiles",
+					"group": "linkings@3"
+				},
+				{
+					"command": "asp-language-support-dlv2.unlinkFiles",
+					"group": "linkings@4"
+				},
+				{
+					"command": "asp-language-support-dlv2.disbandPool",
+					"group": "linkings@5"
+				}
+			],
+			"asp-language-support-dlv2.other": [
+				{
+					"command": "asp-language-support-dlv2.manageCustomExternalAtoms"
+				},
+				{
+					"command": "asp-language-support-dlv2.manageConfigFile"
+				}
+			]
+		},
+		"submenus": [
+			{
+				"id": "asp-language-support-dlv2.solvingAndGrounding",
+				"label": "ASP > Solving and grounding"
+			},
+			{
+				"id": "asp-language-support-dlv2.linkings",
+				"label": "ASP > Linking"
+			},
+			{
+				"id": "asp-language-support-dlv2.other",
+				"label": "ASP > Other"
+			}
+		],
+		"views": {
+			"explorer": [
+				{
+					"type": "webview",
+					"id": "asp-language-support-dlv2.interface",
+					"name": "Cookbook (Work in progress)",
+					"when": "resourceLangId == asp"
+				}
+			]
+		},
+		"languages": [
+			{
+				"id": "asp",
+				"aliases": [
+					"asp",
+					"ASP-Core-2",
+					"Answer Set Programming"
+				],
+				"extensions": [
+					".lp",
+					".asp",
+					".dlv"
+				],
+				"configuration": "./language-configuration.json",
+				"icon": {
+					"light": "./images/icon.png",
+					"dark": "./images/icon.png"
+				}
+			}
+		],
+		"grammars": [
+			{
+				"language": "asp",
+				"scopeName": "source.asp",
+				"path": "./syntaxes/asp.tmLanguage.json"
+			}
+		]
+	},
+	"scripts": {
+		
+		"test": "jest"
+	},
+	"devDependencies": {
+		"@types/glob": "^7.2.0",
+		"@types/mocha": "^9.1.1",
+		"@types/node": "16.x",
+		"@types/vscode": "^1.69.0",
+		"@vscode/test-electron": "^2.1.5",
+		"eslint": "^8.18.0",
+		"glob": "^8.0.3",
+		"jest": "^29.3.1",
+		"mocha": "^10.0.0",
+		"typescript": "^4.7.4"
+	},
+	"license": "SEE LICENSE IN LICENSE.txt",
+	"bugs": {
+		"url": "https://github.com/fpacenza/dlv2code/issues"
+	},
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/fpacenza/dlv2code.git"
+	},
+	"homepage": "https://github.com/fpacenza/dlv2code/blob/main/README.md",
+	"icon": "images/icon.png"
+}
