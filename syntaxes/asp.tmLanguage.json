@@ -1,0 +1,148 @@
+{
+	"$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+	"name": "Answer-Set-Programming",
+	"patterns": [
+		{
+			"include": "#comments"
+		},
+		{
+			"include" : "#single_quoted_strings"
+		},
+		{
+			"include" : "#double_quoted_strings"
+		},
+		{
+			"include": "#strong"
+		},
+		{
+			"include": "#weak"
+		},
+		{
+			"include": "#weak_cost"
+		},
+		{
+			"include": "#keywords"
+		},
+		{
+			"include": "#variables"
+		},
+		{
+			"include": "#numbers"
+		},
+		{
+			"include": "#aggregates"
+		},
+		{
+			"include": "#builtins"
+		},
+		{
+			"include": "#external_predicates"
+		},
+		{
+			"include": "#directives"
+		}
+
+	],
+	"repository": {
+		"comments": {
+			"patterns": [
+				{
+					"include": "#in_line_comment"
+				},
+				{
+					"include": "#multi_line_comment"
+				}
+			],
+			"repository": {
+				"in_line_comment": {
+					"patterns": [{
+						"name": "comment.inline.asp",
+						"match": "^%.*"
+					}]
+				},
+				"multi_line_comment": {
+					"patterns": [{
+						"name": "comment.multiline.asp",
+						"begin": "%\\*",
+						"end": "\\*%"
+					}]
+				}
+			}
+		},
+		"variables": {
+			"patterns": [{
+				"name": "variable.asp",
+				"match": "([A-Z][a-zA-Z0-9_]*)"
+			}]
+		},
+		"keywords": {
+			"patterns": [{
+				"name": "keyword.control.asp",
+				"match": "(not|\\||!=|>|<|=|>=|<=|,|\\.)"
+			}]
+		},
+		"strong" : {
+			"patterns" : [{
+				"name": "strong.asp",
+				"match": ":{1}-{1}"
+			}]
+		},
+		"weak" : {
+			"patterns" : [{
+				"name": "weak.asp",
+				"match": "[a-zA-Z0-9]*:{1}~{1}\\s*[a-zA-Z0-9]*" 
+			}]
+		},
+		"weak_cost" : {
+			"patterns" : [{
+				"name": "weak_cost.asp",
+				"match": "\\[\\d+@\\d+\\,\\w+\\,\\w+\\]" 
+			}]
+		},
+		"single_quoted_strings" : {
+			"patterns" : [{
+				"name" : "strings.single.quoted.asp",
+				"begin": "\\'",
+				"end": "\\'"
+			}]
+		},
+		"double_quoted_strings" : {
+			"patterns" : [{
+				"name" : "strings.double.quoted.asp",
+				"begin": "\"",
+				"end": "\""
+			}]
+		},
+		"numbers": {
+			"patterns": [{
+				"name": "numbers.asp",
+				"match": "(0|[1-9][0-9]*)(\\.[0-9]+)?"
+			}]
+		},
+		"aggregates": {
+			"patterns": [{
+				"name": "aggregates.asp",
+				"match": "#(count|sum|min|max)\\b"
+			}]
+		},
+		"external_predicates": {
+			"patterns": [{
+				"name": "extpredicates.asp",
+				"match": "&([a-zA-Z0-9]+)"
+			}]
+		},
+		"builtins":{
+			"patterns": [{
+					"name": "builtins.asp",
+					"match": "&(head|tail|append|delNth|flatten|insLast|insNth|last|length|member|memberNth|subList|reverse|delete|abs|int|mod|rand|sum|append_str|length_str|member_str|reverse_str|sub_str|to_qstr)"
+			}]
+		},
+		"directives": {
+			"patterns": [{
+				"name": "directives.asp",
+				"match": "#(show|external_predicate_conversion|import_sql|export_sql|import_local_sparql|import_remote_sparql)\\b"
+			}]
+		}
+	},
+	"scopeName": "source.asp"
+}
