@@ -12,12 +12,6 @@
             "detail": "(directive) #import_sql(databasename,\"username\",\"password\",\"query\",predname[,typeConv])",
             "documentation": "Reads tuples from a table of a relational database and stores them as facts (EDB)\n\n@param `databasename`: The name of the ODBC DSN (Data Source Name)\n\n@param `username`: The name of the user who connects to the database (the string must be enclosed by \"\")\n\n@param `password`: Provides the password for that user (the string must be enclosed by \"\")\n\n@param `query`: An SQL statement that constructs the table that will be imported (the string must be enclosed by \"\")\n\n@param `predname`: The predicate name of the predicate that will be imported\n\n@param `typeConv` *OPTIONAL*: Specifies the conversion for mapping DBMS data types to I-DLV data type; it provides a conversion for each column imported by the database. It is a string with the following syntax: type: Conv [, Conv], where \"type:\" is a string constant and Conv is one of several conversion types:\n\n* U_INT: the column is converted to an unsigned integer\n\n* UT_INT: the column is truncated to an unsigned integer\n\n* UR_INT: the column is rounded to an unsigned integer\n\n* T_INT: the column is truncated to an integer\n\n* R_INT: the column is rounded to an integer\n\n* CONST: the column is converted to a string without quotes\n\n* Q_CONST: the column is converted to a string with quotes"
         },
-        "#perrimerda": {
-            "label": "perri",
-            "snippet": "perri(${1:databasename},\"${2:username}\",\"${3:password}\",\"${4:query}\",${5:predname})",
-            "detail": "(directive) #perri(databasename,\"username\",\"password\",\"query\",predname[,typeConv])",
-            "documentation": "Perri zocc"
-        },
         "#export_sql": {
             "label": "export_sql",
             "snippet": "export_sql(${1:databasename},\"${2:username}\",\"${3:password}\",${4:predname},${5:predarity},${6:tablename})",

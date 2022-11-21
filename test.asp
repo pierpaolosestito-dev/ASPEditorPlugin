@@ -18,3 +18,5 @@ Prova :- prova(X,Y).
 
 col(X,red)|col(X,green)|col(X,blue):-state(X).
 :-border(X,Y),col(X,C),col(Y,C).
+
+ciao (X, Y) :- ciao(,)

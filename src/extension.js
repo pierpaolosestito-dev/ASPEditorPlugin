@@ -28,7 +28,7 @@ const dynamicdictionary = require("../media/js/dynamic_dictionary.js");
 		if(chiave.endsWith(".asp")||chiave.endsWith('.dlv')||chiave.endsWith('.lp')){
 			
 		let text = document.document.getText();
-		console.log(text);
+		//console.log(text);
 		let splitted_text = text.split("\n");
 		let array_valori = [];
 		for(let i=0;i<splitted_text.length;i++){
@@ -39,7 +39,7 @@ const dynamicdictionary = require("../media/js/dynamic_dictionary.js");
 				let virgole = -1;
 				if(match[1].includes(","))
 					virgole = match[1].match(/,/g).length;
-				console.log("VIRGOLE ", virgole);
+				//console.log("VIRGOLE ", virgole);
 				if(virgole < 0){
 					const matches2 = match[1].matchAll(regexp2);
 					let label = "";
@@ -49,7 +49,7 @@ const dynamicdictionary = require("../media/js/dynamic_dictionary.js");
 					snippet = match2[1]+"(${1},${2})"
 					}
 					let obj = {"label":label,"snippet":snippet,"detail": "(previous written predicates) "+label,"documentation": "**PREVIOUS PREDICATES**\n\n"+label+"\n\n---"};
-					console.log("DOVREI AGGIUNGERE: ",obj);
+					//console.log("DOVREI AGGIUNGERE: ",obj);
 					array_valori.push(obj);
 					continue;
 				}
@@ -71,12 +71,12 @@ const dynamicdictionary = require("../media/js/dynamic_dictionary.js");
 					snippet = match2[1]+snippetTag;
 				}
 				let obj = {"label":label,"snippet":snippet,"detail": "(previous written predicates) "+label,"documentation": "**PREVIOUS PREDICATES**\n\n"+label+"\n\n---"};
-				console.log("DOVREI AGGIUNGERE: ",obj);
+				//console.log("DOVREI AGGIUNGERE: ",obj);
 				array_valori.push(obj);
 			}
 			//Noi dobbiamo aggiungere questi valori trovati, alla chiave, senza sovrascrivere quelli precedenti
 			dynamicdictionary.add_field(chiave,array_valori);
-			console.log(dynamicdictionary.get_dictionary()[chiave]);
+			//console.log(dynamicdictionary.get_dictionary()[chiave]);
 		}                
 
 	}

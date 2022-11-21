@@ -1,4 +1,4 @@
-const vscode = require('vscode');
+	t vscode = require('vscode');
 const fs = require('fs');
 
 //Checks if there is a file .asp .lp or .dlv open in the editor

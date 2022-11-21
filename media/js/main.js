@@ -6,8 +6,6 @@ window.addEventListener('DOMContentLoaded', event => {
     addOptionButton.addEventListener('click', addOption);
     let runButton = document.querySelector("#run-button");
     runButton.addEventListener('click', run);
-    let perriButton = document.querySelector("#run-button2")
-    perriButton.addEventListener('click',perriFunction);
 });
 
 window.addEventListener('message', event => {
