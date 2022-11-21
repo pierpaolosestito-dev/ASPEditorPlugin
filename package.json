@@ -22,7 +22,7 @@
 		"languages": [{
 			"id": "asp",
 			"aliases": ["Answer-Set-Programming", "asp"],
-			"extensions": [".asp", ".dlv"],
+			"extensions": [".asp", ".dlv", ".lp"],
 			"configuration": "./language-configuration.json"
 		  }],
 		  "grammars": [{
