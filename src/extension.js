@@ -25,7 +25,7 @@ const dynamicdictionary = require("../media/js/dynamic_dictionary.js");
 
 	vscode.workspace.onDidChangeTextDocument(document => {
 		let chiave = path.basename(document.document.fileName);
-		if(chiave.endsWith(".asp")){
+		if(chiave.endsWith(".asp")||chiave.endsWith('.dlv')||chiave.endsWith('.lp')){
 			
 		let text = document.document.getText();
 		console.log(text);
@@ -35,13 +35,12 @@ const dynamicdictionary = require("../media/js/dynamic_dictionary.js");
 			
 			const matches = splitted_text[i].matchAll(regexp);
 			for (const match of matches) {
-				console.log("SONO ENTRATO ",match[1]);
+
 				let virgole = -1;
 				if(match[1].includes(","))
 					virgole = match[1].match(/,/g).length;
 				console.log("VIRGOLE ", virgole);
 				if(virgole < 0){
-					console.log("CAZZO ENTRO");
 					const matches2 = match[1].matchAll(regexp2);
 					let label = "";
 					let snippet = "";
