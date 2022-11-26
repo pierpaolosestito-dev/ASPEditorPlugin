@@ -11,48 +11,65 @@
 		"name": "VSCode - Plugin - Editor"
 	},
 	"categories": [
-		"Programming Languages","Themes"
+		"Programming Languages",
+		"Themes"
 	],
 	"activationEvents": [
 		"onLanguage:asp",
 		"onView:asp-language-support-dlv2.interface"
 	],
-	"main": "./src/extension.js",
+	"main": "./out/extension.js",
 	"contributes": {
-		"languages": [{
-			"id": "asp",
-			"aliases": ["Answer-Set-Programming", "asp"],
-			"extensions": [".asp", ".dlv", ".lp"],
-			"configuration": "./language-configuration.json"
-		  }],
-		  "grammars": [{
-			"language": "asp",
-			"scopeName": "source.asp",
-			"path": "./syntaxes/asp.tmLanguage.json"
-		  }],
-		  "themes": [
+		"languages": [
 			{
-			  "label": "DarkASP",
-			  "uiTheme": "vs-dark",
-			  "path": "./themes/DarkASP-color-theme.json"
+				"id": "asp",
+				"aliases": [
+					"Answer-Set-Programming",
+					"asp"
+				],
+				"extensions": [
+					".asp",
+					".dlv",
+					".lp"
+				],
+				"configuration": "./language-configuration.json"
+			}
+		],
+		"grammars": [
+			{
+				"language": "asp",
+				"scopeName": "source.asp",
+				"path": "./syntaxes/asp.tmLanguage.json"
+			}
+		],
+		"themes": [
+			{
+				"label": "DarkASP",
+				"uiTheme": "vs-dark",
+				"path": "./themes/DarkASP-color-theme.json"
 			},
 			{
-			  "label": "LightASP",
-			  "uiTheme": "vs",
-			  "path": "./themes/LightASP-color-theme.json"
+				"label": "LightASP",
+				"uiTheme": "vs",
+				"path": "./themes/LightASP-color-theme.json"
 			}
-		  ]
-		
+		]
 	},
 	"scripts": {
-		
-		"test": "jest"
+		"vscode:prepublish": "npm run compile",
+		"compile": "tsc -p ./",
+		"watch": "tsc -watch -p ./",
+		"pretest": "npm run compile && npm run lint",
+		"lint": "eslint src --ext ts",
+		"test": "node ./out/test/runTest.js"
 	},
 	"devDependencies": {
 		"@types/glob": "^7.2.0",
 		"@types/mocha": "^9.1.1",
 		"@types/node": "16.x",
 		"@types/vscode": "^1.69.0",
+		"@typescript-eslint/eslint-plugin": "^5.42.0",
+		"@typescript-eslint/parser": "^5.42.0",
 		"@vscode/test-electron": "^2.1.5",
 		"eslint": "^8.18.0",
 		"glob": "^8.0.3",
@@ -60,6 +77,5 @@
 		"mocha": "^10.0.0",
 		"typescript": "^4.7.4"
 	},
-	
 	"icon": "images/icon.png"
 }
