@@ -8,6 +8,7 @@ import { getASPIntellisenseProvider,getASPIntellisenseHoverProvider } from './au
 	context.subscriptions.push(vscode.languages.registerCompletionItemProvider('asp', getASPIntellisenseProvider(context), '#', '&',':','-'));
 	context.subscriptions.push(vscode.languages.registerHoverProvider("asp", getASPIntellisenseHoverProvider(context)));
 
+	// eslint-disable-next-line no-useless-escape
 	const regexp = /(\w+\s*\(\s*\w+(?:\s*\,\s*\w+\s*)*\s*\))\s*(?:\:\-|\||\.)/g;
 	const regexp2 = /(\w+)\s*\(/g;
 
@@ -73,6 +74,7 @@ import { getASPIntellisenseProvider,getASPIntellisenseHoverProvider } from './au
 	});
 }
 
+// eslint-disable-next-line @typescript-eslint/no-empty-function
 function deactivate() {}	
 
 module.exports = {

@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
 import * as path from 'path';
-const dictionarizer = require("../media/js/dictionarizer.js");
+import { dictionarizer } from './utils/dictionarizer';
 import { DynamicDictionary } from './utils/dynamic_dictionary';
 
 //Returns a provider that manages intellisense for directives, aggregates, default and custom external atoms
@@ -39,6 +39,7 @@ export function getASPIntellisenseProvider(context: vscode.ExtensionContext): vs
 
             //If the trigger character is found it provides every completion item associated with that character
             if(triggerCharacter) {
+                // eslint-disable-next-line no-inner-declarations
                 function registerAutcompleteEntry(elem:any) {
                     completionItems.push(new vscode.CompletionItem(elem.label, vscode.CompletionItemKind.Method));
                     completionItems[completionItems.length - 1].insertText = new vscode.SnippetString(elem.snippet);
@@ -53,6 +54,7 @@ export function getASPIntellisenseProvider(context: vscode.ExtensionContext): vs
 
             }
             else {
+                // eslint-disable-next-line no-inner-declarations
                 function registerDynamicEntry(elem: any) {
                     completionItems.push(new vscode.CompletionItem(elem.label, vscode.CompletionItemKind.Field));
                     completionItems[completionItems.length - 1].insertText = new vscode.SnippetString(elem.snippet);
@@ -114,14 +116,12 @@ export function getASPIntellisenseHoverProvider(context: vscode.ExtensionContext
 }
 
 
-//My function
-function readDictionariesandMergeIt(context: vscode.ExtensionContext){
+function readDictionariesandMergeIt(context: vscode.ExtensionContext): any{
 
     const languages_constants = dictionarizer(context.asAbsolutePath('constants.json'));
     const builtins = dictionarizer(context.asAbsolutePath('builtins.json'));
     const aggregates = dictionarizer(context.asAbsolutePath('aggregates.json'));
 
-    //FA MERGE DEI DIZIONARI, QUINDI SOSTANZIALMENTE, E' COME CHE ABBIAMO QUELLO DA autocomplete.json
     const completeDictionary = Object.assign(aggregates,builtins,languages_constants);
     return completeDictionary;
 }
