@@ -138,7 +138,7 @@ export class Emojizer implements vscode.CodeActionProvider {
 		const start = range.start;
 		const line = document.lineAt(start.line).text;
 		
-		const aggregateRegex = /(\#\w+)\{/gm;
+		const aggregateRegex = /(#\w+)\{/gm;
 		const matches = line.matchAll(aggregateRegex);
 		if(matches){
 			console.log("Matcha aggregato");
@@ -184,7 +184,7 @@ export class Emojizer implements vscode.CodeActionProvider {
 		const line = document.lineAt(start.line);
 		return line.text[start.character] === "}";
 	}*/
-	private createFix(document: vscode.TextDocument, range: vscode.Range, emoji: string,endstring: number=2): vscode.CodeAction {
+	private createFix(document: vscode.TextDocument, range: vscode.Range, emoji: string,endstring=2): vscode.CodeAction {
 		const fix = new vscode.CodeAction(`Convert to ${emoji}`, vscode.CodeActionKind.QuickFix);
 		fix.edit = new vscode.WorkspaceEdit();
 		fix.edit.replace(document.uri, new vscode.Range(range.start, range.start.translate(0, endstring)), emoji);
