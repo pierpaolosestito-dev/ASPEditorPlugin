@@ -1,0 +1,8 @@
+let n = 1;
+if(n <= 10){
+    console.log(n);
+}else if(n > 10){
+    console.log(n);
+}else{
+    console.log(n);
+}

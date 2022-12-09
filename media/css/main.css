@@ -35,3 +35,89 @@
     display: flex;
     align-items: center;
 }
+
+/* Cookbook */
+
+body {
+    user-select: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+    -moz-user-select: none;
+    -khtml-user-select: none;
+    -webkit-user-drag: none;
+    -khtml-user-drag: none;
+  
+    background: rgb(37, 37, 38);
+    color: white;
+  }
+  
+  textarea:focus,
+  input:focus,
+  input[type]:focus,
+  .uneditable-input:focus {
+    outline: none;
+    box-shadow: none;
+    border: none;
+  }
+  .bootstrap-select .btn:focus,
+  .form-select {
+    outline: none;
+  }
+  
+  .panel{
+    display: none;
+  }
+  
+  .panel-heading{
+    margin: 8px 0 5px 0;
+  }
+  h3{
+    margin: 0;
+    padding: 0;
+    font-size: small;
+  }
+  h6{
+    margin: 0;
+    padding: 0;
+  }
+  
+  .panel-body .btn {
+    position: relative;
+    margin: 0;
+    padding: 0;
+    border: 0;
+  }
+  
+  .panel-body .btn .panel-title{
+    position: absolute;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    left:0;
+    top:50%;
+    left:50%;
+    transform:translate(-50%, -50%);
+    width: 68px;
+    min-width: 68px;
+    max-width: 68px;
+    font-size: 12px;
+    line-height: 100%;
+    text-align: center;
+  }
+  
+  .panel-body .btn{
+    padding-top: 10px;
+    width: 68px;
+    min-width: 68px;
+    max-width: 68px;
+    height: 68px;
+    min-height: 68px;
+    max-height: 68px;
+    line-height: 110%;
+  }
+  
+  #check{
+    color: #FFF;
+  }
+
+/* Cookbook */

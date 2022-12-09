@@ -16,7 +16,9 @@
 	],
 	"activationEvents": [
 		"onLanguage:asp",
-		"onView:asp-language-support-dlv2.interface"
+		"onView:asp-language-support-dlv2.interface",
+		"onCommand:asp-panel.ASPCookbook",
+		"onView:asp-panel.ASPCookbook"
 	],
 	"main": "./out/extension.js",
 	"contributes": {
@@ -53,7 +55,31 @@
 				"uiTheme": "vs",
 				"path": "./themes/LightASP-color-theme.json"
 			}
-		]
+		],
+		"commands": [
+			{
+				"command": "asp-panel.ASPCookbook",
+				"title": "Code Panel"
+			}
+		],
+		"viewsContainers": {
+			"activitybar": [
+				{
+					"id": "ASPCookbook",
+					"title": "ASP Cookbook",
+					"icon": "media/icon/icon.svg"
+				}
+			]
+		},
+		"views": {
+			"ASPCookbook": [
+				{
+					"type": "webview",
+					"id": "asp-panel.ASPCookbook",
+					"name": "Code Panel"
+				}
+			]
+		}
 	},
 	"scripts": {
 		"vscode:prepublish": "npm run compile",
