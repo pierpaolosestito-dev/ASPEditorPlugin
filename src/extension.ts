@@ -230,17 +230,10 @@ export class BuiltinAggregateFixer implements vscode.CodeActionProvider {
 			for(const match of matches){
 				const m1 = match[1];			
 				if(m1){
-					
 					for(const elem of Object.values(dd.get_dictionary().get(chiave))) {
-						console.log(m1);
-						console.log(elem.label);
 						let indexOf = elem.label.indexOf("(");
-						console.log(indexOf);
 						let substringToCompare = elem.label.substring(0,indexOf);
-						console.log(substringToCompare);
-						
 						if(similarity(m1,substringToCompare)>=0.5 && similarity(m1,substringToCompare)<1.00){
-							console.log("Entro qua");
 							const replaceWithRightAggregate = this.createFix(document,range,substringToCompare,substringToCompare.length);
 							const commandAction = this.createCommand();
 							result.push(replaceWithRightAggregate);
