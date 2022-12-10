@@ -59,7 +59,7 @@
 		"commands": [
 			{
 				"command": "asp-panel.ASPCookbook",
-				"title": "Code Panel"
+				"title": "ASP Cookbook"
 			}
 		],
 		"viewsContainers": {
@@ -76,7 +76,7 @@
 				{
 					"type": "webview",
 					"id": "asp-panel.ASPCookbook",
-					"name": "Code Panel"
+					"name": "ASP Cookbook"
 				}
 			]
 		}

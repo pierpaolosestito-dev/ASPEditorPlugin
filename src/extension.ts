@@ -281,23 +281,65 @@ class CodePanelViewProvider implements vscode.WebviewViewProvider {
 
 			switch (data.type) {
 				// DLV
-				case 'jsIF':
-					active.edit(editBuilder => {
-						const code: cpanel.CodeInterface = new cpanel.Code(this._extensionUri);
-						editBuilder.replace(selection, code.js('if'));
-					});
-					break;
-				// Javascript
-				case 'jsIF':
-					active.edit(editBuilder => {
-						const code: cpanel.CodeInterface = new cpanel.Code(this._extensionUri);
-						editBuilder.replace(selection, code.js('if'));
-					});
-					break;
-				// showPanel
-				case 'showPanel':
-					this.showPanel(webviewView.webview);
-					break;
+                case 'ADVANCED_KNAPSACK_PROBLEM':
+                    active.edit(editBuilder => {
+                        const code = new cpanel.Code(this._extensionUri);
+                        editBuilder.replace(selection, code.dlv('ADVANCED_KNAPSACK_PROBLEM'));
+                    });
+                    break;
+                case 'KNAPSACK_PROBLEM':
+                    active.edit(editBuilder => {
+                        const code = new cpanel.Code(this._extensionUri);
+                        editBuilder.replace(selection, code.dlv('KNAPSACK_PROBLEM'));
+                    });
+                    break;
+                case 'N_COLORABILITY':
+                    active.edit(editBuilder => {
+                        const code = new cpanel.Code(this._extensionUri);
+                        editBuilder.replace(selection, code.dlv('N_COLORABILITY'));
+                    });
+                    break;
+                case 'HAMILTON_PATH':
+                    active.edit(editBuilder => {
+                        const code = new cpanel.Code(this._extensionUri);
+                        editBuilder.replace(selection, code.dlv('HAMILTON_PATH'));
+                    });
+                    break;
+                case 'MINIMUM_SPANNING_TREE':
+                    active.edit(editBuilder => {
+                        const code = new cpanel.Code(this._extensionUri);
+                        editBuilder.replace(selection, code.dlv('MINIMUM_SPANNING_TREE'));
+                    });
+                    break;
+                case 'SEATING':
+                    active.edit(editBuilder => {
+                        const code = new cpanel.Code(this._extensionUri);
+                        editBuilder.replace(selection, code.dlv('SEATING'));
+                    });
+                    break;
+                case 'STRATEGIC_COMPANIES':
+                active.edit(editBuilder => {
+                    const code = new cpanel.Code(this._extensionUri);
+                    editBuilder.replace(selection, code.dlv('STRATEGIC_COMPANIES'));
+                });
+                break;
+                case 'VERTEX_COVER':
+                active.edit(editBuilder => {
+                    const code = new cpanel.Code(this._extensionUri);
+                    editBuilder.replace(selection, code.dlv('VERTEX_COVER'));
+                });
+                break;
+                // Javascript
+                case 'jsIF':
+                    active.edit(editBuilder => {
+                        const code = new cpanel.Code(this._extensionUri);
+                        editBuilder.replace(selection, code.js('if'));
+                    });
+                    break;
+                // showPanel
+                case 'showPanel':
+                    this.showPanel(webviewView.webview);
+                    break;
 			}
 		});
 
@@ -308,13 +350,13 @@ class CodePanelViewProvider implements vscode.WebviewViewProvider {
 
 	private _getHtmlForWebview(webview: vscode.Webview) {
 		// Do the same for the stylesheet.
-		const styleBootStrapUri = webview.asWebviewUri(vscode.Uri.joinPath(this._extensionUri, 'media', 'bootstrap.min.css'));
+		const styleBootStrapUri = webview.asWebviewUri(vscode.Uri.joinPath(this._extensionUri, 'media', 'css', 'bootstrap.min.css'));
 		// const styleBootStrapIconUri = webview.asWebviewUri(vscode.Uri.joinPath(this._extensionUri, 'media', 'bootstrap-icon', 'bootstrap-icons.css'));
-		const styleMainUri = webview.asWebviewUri(vscode.Uri.joinPath(this._extensionUri, 'media', 'main.css'));
+		const styleMainUri = webview.asWebviewUri(vscode.Uri.joinPath(this._extensionUri, 'media', 'css', 'main.css'));
 
 		// Get the local path to main script run in the webview, then convert it to a uri we can use in the webview.
-		const scriptBootStrapUri = webview.asWebviewUri(vscode.Uri.joinPath(this._extensionUri, 'media', 'bootstrap.min.js'));
-		const scriptMainUri = webview.asWebviewUri(vscode.Uri.joinPath(this._extensionUri, 'media', 'main.js'));
+		const scriptBootStrapUri = webview.asWebviewUri(vscode.Uri.joinPath(this._extensionUri, 'media', 'js', 'bootstrap.min.js'));
+		const scriptMainUri = webview.asWebviewUri(vscode.Uri.joinPath(this._extensionUri, 'media', 'js', 'main.js'));
 
 
 		// Use a nonce to only allow a specific script to be run.
@@ -365,7 +407,7 @@ function getCodePanelBody() {
 			<select class="form-select form-select-sm bg-secondary text-white border-secondary mb-3 changeCodePanel">
 				<option value="">Code choice</option>
 				<option value="dlv">DLV</option>
-				<option value="js">Javascript</option>
+				<option value="">Clingo</option>
 			</select>
 		</div>
 
@@ -376,12 +418,37 @@ function getCodePanelBody() {
 		-->
         <div class="panel panel-primary panel-dlv">
             <div class="panel-heading">
-                <h3>Usual</h3>
+                <h3>Simple</h3>
             </div>
             <div class="panel-body">
                 <div class="row">
                     <div class="col-12 col-xs-12 col-md-12">
-                        <a href="#" class="btn btn-secondary btn-sm m-1" role="button" data-act="example"><span class="panel-title">DLV Example</span></a>
+                        <a href="#" class="btn btn-secondary btn-sm m-1" role="button" data-act="VERTEX_COVER"><span class="panel-title">Vortex Cover</span></a>
+                        <a href="#" class="btn btn-secondary btn-sm m-1" role="button" data-act="HAMILTON_PATH"><span class="panel-title">Hamilton Path</span></a>
+                        <a href="#" class="btn btn-secondary btn-sm m-1" role="button" data-act="STRATEGIC_COMPANIES"><span class="panel-title">Strategic Companies</span></a>
+                        <a href="#" class="btn btn-secondary btn-sm m-1" role="button" data-act="N_COLORABILITY"><span class="panel-title">N Colorability</span></a>
+                    </div>
+                </div>
+            </div>
+            <div class="panel-heading">
+                <h3>Medium</h3>
+            </div>
+            <div class="panel-body">
+                <div class="row">
+                    <div class="col-12 col-xs-12 col-md-12">
+                        <a href="#" class="btn btn-secondary btn-sm m-1" role="button" data-act="SEATING"><span class="panel-title">Seating</span></a>
+                        <a href="#" class="btn btn-secondary btn-sm m-1" role="button" data-act="MINIMUM_SPANNING_TREE"><span class="panel-title">Minimum Spanning Tree</span></a>
+                        <a href="#" class="btn btn-secondary btn-sm m-1" role="button" data-act="KNAPSACK_PROBLEM"><span class="panel-title">Knapsack Problem</span></a>
+                    </div>
+                </div>
+            </div>
+            <div class="panel-heading">
+                <h3>Hard</h3>
+            </div>
+            <div class="panel-body">
+                <div class="row">
+                    <div class="col-12 col-xs-12 col-md-12">
+                        <a href="#" class="btn btn-secondary btn-sm m-1" role="button" data-act="ADVANCED_KNAPSACK_PROBLEM"><span class="panel-title">[TESI] Advanced Knapsack Problem</span></a>
                     </div>
                 </div>
             </div>

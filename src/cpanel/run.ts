@@ -36,9 +36,9 @@ export class Code implements CodeInterface {
     // Path conditions
     private ListPath: {[key: string]: {[key: string]: boolean}} = {
         // DLV
-        'dlv':{'example': true},
+        'dlv': { 'ADVANCED_KNAPSACK_PROBLEM': true, 'HAMILTON_PATH': true, 'KNAPSACK_PROBLEM': true, 'MINIMUM_SPANNING_TREE': true, 'N_COLORABILITY': true, 'SEATING': true, 'STRATEGIC_COMPANIES': true, 'VERTEX_COVER': true},
         // javascript
-        'js':{'if': true, 'switch': true, 'for': true, 'while': true, 'dowhile': true, 'function': true, 'async_function': true, 'class': true, 'get': true, 'post': true, 'json': true, 'try': true, 'hello': true}
+        'js': { 'if': true}
     };
 
     // DLV

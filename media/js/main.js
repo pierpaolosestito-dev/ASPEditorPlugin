@@ -32,22 +32,17 @@
 
     var FunctionList = {
         // DLV
-        'example': function () { vscode.postMessage({ type: 'example' }); },
+        'ADVANCED_KNAPSACK_PROBLEM': function () { vscode.postMessage({ type: 'ADVANCED_KNAPSACK_PROBLEM' }); },
+        'HAMILTON_PATH': function () { vscode.postMessage({ type: 'HAMILTON_PATH' }); },
+        'KNAPSACK_PROBLEM': function () { vscode.postMessage({ type: 'KNAPSACK_PROBLEM' }); },
+        'MINIMUM_SPANNING_TREE': function () { vscode.postMessage({ type: 'MINIMUM_SPANNING_TREE' }); },
+        'N_COLORABILITY': function () { vscode.postMessage({ type: 'N_COLORABILITY' }); },
+        'SEATING': function () { vscode.postMessage({ type: 'SEATING' }); },
+        'STRATEGIC_COMPANIES': function () { vscode.postMessage({ type: 'STRATEGIC_COMPANIES' }); },
+        'VERTEX_COVER': function () { vscode.postMessage({ type: 'VERTEX_COVER' }); },
 
         // javascript
-        'jsIF': function () { vscode.postMessage({ type: 'jsIF' }); },
-        'jsSwitch': function () { vscode.postMessage({ type: 'jsSwitch' }); },
-        'jsFor': function () { vscode.postMessage({ type: 'jsFor' }); },
-        'jsWhile': function () { vscode.postMessage({ type: 'jsWhile' }); },
-        'jsDoWhile': function () { vscode.postMessage({ type: 'jsDoWhile' }); },
-        'jsFunction': function () { vscode.postMessage({ type: 'jsFunction' }); },
-        'jsAsyncFunction': function () { vscode.postMessage({ type: 'jsAsyncFunction' }); },
-        'jsClass': function () { vscode.postMessage({ type: 'jsClass' }); },
-        'jsGet': function () { vscode.postMessage({ type: 'jsGet' }); },
-        'jsPost': function () { vscode.postMessage({ type: 'jsPost' }); },
-        'jsJson': function () { vscode.postMessage({ type: 'jsJson' }); },
-        'jsTry': function () { vscode.postMessage({ type: 'jsTry' }); },
-        'jsHello': function () { vscode.postMessage({ type: 'jsHello' }); },
+        'jsIF': function () { vscode.postMessage({ type: 'jsIF' }); }
     };
 
     document.querySelector('.changeCodePanel').addEventListener('change', (event) => {

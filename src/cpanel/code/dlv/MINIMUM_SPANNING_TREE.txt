@@ -1,0 +1,18 @@
+MINIMUM SPANNING TREE
+----------------------------------------------------------------------------------------------
+Given a weighted graph by means of edge(Node1,Node2,Cost), and node(N), 
+compute a tree that starts at a root node, spans that graph, and has minimum cost
+
+reached(X) :- root(X).
+reached(X) :- reached(Y), inTree(Y,X)
+
+%Guess the edges that are part of the tree:
+inTree(X,Y) | outTree(X,Y) :- edge(X,Y,C). 
+
+%Check that we are really dealing with a tree!
+:- root(X), inTree(_,X). |
+:- inTree(X,Y), inTree(X1,Y), X <> X1. 
+%and the tree is connected
+:- node(X), not reached(X).
+%Minimize the cost of the tree
+:~ inTree(X,Y), edge(X,Y,C). [C@1, X,Y,C]
