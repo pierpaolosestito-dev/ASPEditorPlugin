@@ -140,7 +140,7 @@ export class BuiltinAggregateFixer implements vscode.CodeActionProvider {
 	}
 	if (this.isAtStartOfBuiltins(document, range)) {
 		const result = [];
-		const builtinsDict = dictionarizer(this.context.asAbsolutePath('builtins.json')); //La dobbiamo leggere da aggregates.json
+		let builtinsDict = dictionarizer(this.context.asAbsolutePath('builtins.json')); //La dobbiamo leggere da aggregates.json
 		const start = range.start;
 		const line = document.lineAt(start.line).text;
 		const builtinRegex = /(\&\w+)\{/gm;
@@ -161,6 +161,18 @@ export class BuiltinAggregateFixer implements vscode.CodeActionProvider {
 
                 }
 				
+				if(result.length == 0){
+					builtinsDict = dictionarizer(this.context.asAbsolutePath('aggregates.json'));
+					for(const elem of Object.values(builtinsDict['#'])) {
+						if(similarity(m1,"&"+elem.label+"{")>=0.5 && similarity(m1,"&"+elem.label+"{")<1.00){
+							const replaceWithRightAggregate = this.createFix(document,range,"#"+elem.label+"{",("#"+elem.label+"{").length);
+							const commandAction = this.createCommand();
+							result.push(replaceWithRightAggregate);
+							result.push(commandAction);
+						}
+	
+					}
+				}
 			}
 		}
 	}
@@ -168,7 +180,7 @@ export class BuiltinAggregateFixer implements vscode.CodeActionProvider {
 	}
 	if (this.isAtStartOfAggregate(document, range)) {
 		const result = [];
-		const aggregatesDict = dictionarizer(this.context.asAbsolutePath('aggregates.json')); //La dobbiamo leggere da aggregates.json
+		let aggregatesDict = dictionarizer(this.context.asAbsolutePath('aggregates.json')); //La dobbiamo leggere da aggregates.json
 		const start = range.start;
 		const line = document.lineAt(start.line).text;
 		const aggregateRegex = /(\#\w+)\{/gm;
@@ -186,7 +198,19 @@ export class BuiltinAggregateFixer implements vscode.CodeActionProvider {
 					}
 
                 }
-				
+				if(result.length == 0){
+					console.log("RESULT EMPTY");
+					aggregatesDict = dictionarizer(this.context.asAbsolutePath('builtins.json'));
+					for(const elem of Object.values(aggregatesDict['&'])) {
+						if(similarity(m1,"#"+elem.label+"{")>=0.5 && similarity(m1,"#"+elem.label+"{")<1.00){
+							const replaceWithRightAggregate = this.createFix(document,range,"&"+elem.label+"{",("&"+elem.label+"{").length);
+							const commandAction = this.createCommand();
+							result.push(replaceWithRightAggregate);
+							result.push(commandAction);
+						}
+	
+					}
+				}
 			}
 		}
 	}
