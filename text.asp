@@ -26,4 +26,3 @@
 #count{ _ , x  ciao( x , y ) }.
 #sum{ X , x : prova X , y ) }.
 #count{ _ , _ : ciao( x , y ) , prova( __ ) }.
-#count{ _ , _ : ciao( x , y ) ,,, prova( _ , _ ) }.
