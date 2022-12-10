@@ -199,7 +199,6 @@ export class BuiltinAggregateFixer implements vscode.CodeActionProvider {
 
                 }
 				if(result.length == 0){
-					console.log("RESULT EMPTY");
 					aggregatesDict = dictionarizer(this.context.asAbsolutePath('builtins.json'));
 					for(const elem of Object.values(aggregatesDict['&'])) {
 						if(similarity(m1,"#"+elem.label+"{")>=0.5 && similarity(m1,"#"+elem.label+"{")<1.00){
@@ -216,6 +215,11 @@ export class BuiltinAggregateFixer implements vscode.CodeActionProvider {
 	}
 	return result;
 	}
+
+	/*if (this.isAtStartOfDynamicPredicates(document, range)) {
+		//Starting point for dynamic predicates correction
+	}*/
+	
 	return;
 	}
 
@@ -236,11 +240,12 @@ export class BuiltinAggregateFixer implements vscode.CodeActionProvider {
 		const line = document.lineAt(start.line);
 		return line.text[start.character] === "&";
 	}
-	/*private isAtEndOfAggregateorBuiltin(document:vscode.TextDocument,range:vscode.Range){
+	private isAtStartOfDynamicPredicates(document:vscode.TextDocument,range:vscode.Range){
 		const start = range.start;
 		const line = document.lineAt(start.line);
-		return line.text[start.character] === "}";
-	}*/
+
+		return line.text[start.character].match(/[a-zA-Z]/i);
+	}
 	private createFix(document: vscode.TextDocument, range: vscode.Range, emoji: string,endstring:number=2): vscode.CodeAction {
 		const fix = new vscode.CodeAction(`Convert to ${emoji}`, vscode.CodeActionKind.QuickFix);
 		fix.edit = new vscode.WorkspaceEdit();
