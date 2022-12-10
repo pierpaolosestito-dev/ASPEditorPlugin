@@ -230,7 +230,7 @@ export class BuiltinAggregateFixer implements vscode.CodeActionProvider {
 			for(const match of matches){
 				const m1 = match[1];			
 				if(m1){
-					for(const elem of Object.values(dd.get_dictionary().get(chiave))) {
+					for(const elem of Object.values(dd.get_field(chiave))) {
 						let indexOf = elem.label.indexOf("(");
 						let substringToCompare = elem.label.substring(0,indexOf);
 						if(similarity(m1,substringToCompare)>=0.5 && similarity(m1,substringToCompare)<1.00){

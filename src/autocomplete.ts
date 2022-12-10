@@ -65,7 +65,7 @@ export function getASPIntellisenseProvider(context: vscode.ExtensionContext): vs
                 autocompleteDict["language-constants"].forEach((elem: string) => {
                     completionItems.push(new vscode.CompletionItem(elem, vscode.CompletionItemKind.Constant));
                 });
-                for(const elem of Object.values(dd.get_dictionary().get(chiave))) {
+                for(const elem of Object.values(dd.get_field(chiave))) {
                     registerDynamicEntry(elem);
                 }
           
