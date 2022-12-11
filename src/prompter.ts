@@ -21,34 +21,13 @@ export class BuiltinAggregateFixer implements vscode.CodeActionProvider {
 
 	public provideCodeActions(document: vscode.TextDocument, range: vscode.Range): vscode.CodeAction[] | undefined {
 		
-		if (this.isAtStartOfSmiley(document, range)) {
-		
-
-		const replaceWithSmileyCatFix = this.createFix(document, range, 'ASP 💣');
-
-		const replaceWithSmileyFix = this.createFix(document, range, 'ASP 😍');
-		// Marking a single fix as `preferred` means that users can apply it with a
-		// single keyboard shortcut using the `Auto Fix` command.
-		replaceWithSmileyFix.isPreferred = true;
-
-		const replaceWithSmileyHankyFix = this.createFix(document, range, 'ASP 👊');
-
-		const commandAction = this.createCommand();
-
-		return [
-			replaceWithSmileyCatFix,
-			replaceWithSmileyFix,
-			replaceWithSmileyHankyFix,
-			commandAction
-		];
-	}
 	const result = [];
 	if (this.isAtStartOfBuiltins(document, range)) {
 		
 		let builtinsDict = dictionarizer(this.context.asAbsolutePath('builtins.json')); //La dobbiamo leggere da aggregates.json
 		const start = range.start;
 		const line = document.lineAt(start.line).text;
-		const builtinRegex = /(\&\w+)\{/gm;
+		const builtinRegex = /(&\w+)\{/gm;
 		const matches = line.matchAll(builtinRegex);
 		if(matches){
 			
@@ -56,7 +35,7 @@ export class BuiltinAggregateFixer implements vscode.CodeActionProvider {
 			const m1 = match[1];			
 			if(m1){
 				
-				for(const elem of Object.values(builtinsDict['&'])) {
+				for(const elem of Object.values<any>(builtinsDict['&'])) {
 					if(similarity(m1,"&"+elem.label+"{")>=0.5 && similarity(m1,"&"+elem.label+"{")<1.00){
 						const replaceWithRightBuiltin = this.createFix(document,range,"&"+elem.label+"{",("&"+elem.label+"{").length);
 						const commandAction = this.createCommand();
@@ -68,7 +47,7 @@ export class BuiltinAggregateFixer implements vscode.CodeActionProvider {
 				
 				if(result.length == 0){
 					builtinsDict = dictionarizer(this.context.asAbsolutePath('aggregates.json'));
-					for(const elem of Object.values(builtinsDict['#'])) {
+					for(const elem of Object.values<any>(builtinsDict['#'])) {
 						if(similarity(m1,"&"+elem.label+"{")>=0.5 && similarity(m1,"&"+elem.label+"{")<1.00){
 							const replaceWithRightAggregate = this.createFix(document,range,"#"+elem.label+"{",("#"+elem.label+"{").length);
 							const commandAction = this.createCommand();
@@ -88,13 +67,13 @@ export class BuiltinAggregateFixer implements vscode.CodeActionProvider {
 		let aggregatesDict = dictionarizer(this.context.asAbsolutePath('aggregates.json')); //La dobbiamo leggere da aggregates.json
 		const start = range.start;
 		const line = document.lineAt(start.line).text;
-		const aggregateRegex = /(\#\w+)\{/gm; //#count{}
+		const aggregateRegex = /(#\w+)\{/gm; //#count{}
 		const matches = line.matchAll(aggregateRegex);
 		if(matches){
 		for(const match of matches){
 			const m1 = match[1];			
 			if(m1){ //#coutn
-				for(const elem of Object.values(aggregatesDict['#'])) {
+				for(const elem of Object.values<any>(aggregatesDict['#'])) {
 					if(similarity(m1,"#"+elem.label+"{")>=0.5 && similarity(m1,"#"+elem.label+"{")<1.00){
 						const replaceWithRightAggregate = this.createFix(document,range,"#"+elem.label+"{",("#"+elem.label+"{").length);
 						const commandAction = this.createCommand();
@@ -106,7 +85,7 @@ export class BuiltinAggregateFixer implements vscode.CodeActionProvider {
 				//&coutn
 				if(result.length == 0){
 					aggregatesDict = dictionarizer(this.context.asAbsolutePath('builtins.json'));
-					for(const elem of Object.values(aggregatesDict['&'])) {
+					for(const elem of Object.values<any>(aggregatesDict['&'])) {
 						if(similarity(m1,"#"+elem.label+"{")>=0.5 && similarity(m1,"#"+elem.label+"{")<1.00){
 							const replaceWithRightAggregate = this.createFix(document,range,"&"+elem.label+"{",("&"+elem.label+"{").length);
 							const commandAction = this.createCommand();
@@ -122,7 +101,7 @@ export class BuiltinAggregateFixer implements vscode.CodeActionProvider {
 	
 	}
 	if(this.isAtStartOfConstants(document,range)){
-		let constantsDict = dictionarizer(this.context.asAbsolutePath('constants.json')); //La dobbiamo leggere da aggregates.json
+		const constantsDict = dictionarizer(this.context.asAbsolutePath('constants.json')); //La dobbiamo leggere da aggregates.json
 		const start = range.start;
 		const line = document.lineAt(start.line).text;
 		const constantsRegex = /([A-Z]+_+)*[A-Z]+/gm; //#count{}
@@ -131,7 +110,7 @@ export class BuiltinAggregateFixer implements vscode.CodeActionProvider {
 			for(const match of matches){
 				const m1 = match[0];			
 				if(m1){
-					for(const elem of Object.values(constantsDict['language-constants'])) {
+					for(const elem of Object.values<any>(constantsDict['language-constants'])) {
 						
 						if(similarity(m1,elem) == 1.00){
 							return;
@@ -162,9 +141,9 @@ export class BuiltinAggregateFixer implements vscode.CodeActionProvider {
 			for(const match of matches){
 				const m1 = match[1];			
 				if(m1){
-					for(const elem of Object.values(dd.get_field(chiave))) {
-						let indexOf = elem.label.indexOf("(");
-						let substringToCompare = elem.label.substring(0,indexOf);
+					for(const elem of Object.values<any>(dd.get_field(chiave))) {
+						const indexOf = elem.label.indexOf("(");
+						const substringToCompare = elem.label.substring(0,indexOf);
 						if(similarity(m1,substringToCompare)>=0.5 && similarity(m1,substringToCompare)<1.00){
 							const replaceWithRightAggregate = this.createFix(document,range,substringToCompare,substringToCompare.length);
 							const commandAction = this.createCommand();
@@ -181,12 +160,6 @@ export class BuiltinAggregateFixer implements vscode.CodeActionProvider {
 	
 	
 	return result;
-	}
-
-	private isAtStartOfSmiley(document: vscode.TextDocument, range: vscode.Range) {
-		const start = range.start;
-		const line = document.lineAt(start.line);
-		return line.text[start.character] === ':' && line.text[start.character + 1] === ')';
 	}
 
 	private isAtStartOfAggregate(document:vscode.TextDocument,range:vscode.Range){
@@ -214,7 +187,7 @@ export class BuiltinAggregateFixer implements vscode.CodeActionProvider {
 	}
 
 
-	private createFix(document: vscode.TextDocument, range: vscode.Range, emoji: string,endstring:number=2): vscode.CodeAction {
+	private createFix(document: vscode.TextDocument, range: vscode.Range, emoji: string, endstring=2): vscode.CodeAction {
 		const fix = new vscode.CodeAction(`Convert to ${emoji}`, vscode.CodeActionKind.QuickFix);
 		fix.edit = new vscode.WorkspaceEdit();
 		fix.edit.replace(document.uri, new vscode.Range(range.start, range.start.translate(0, endstring)), emoji);

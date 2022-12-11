@@ -127,6 +127,7 @@ function readDictionariesandMergeIt(context: vscode.ExtensionContext): any{
 
 export function fillDictionaryWithDynamicPredicates(){
     const dd = DynamicDictionary.getInstance();
+	// eslint-disable-next-line no-useless-escape
 	const regexp = /(\w+\s*\(\s*\w+(?:\s*\,\s*\w+\s*)*\s*\))\s*(?:\:\-|\||\.)/g;
 	const regexp2 = /(\w+)\s*\(/g;
 

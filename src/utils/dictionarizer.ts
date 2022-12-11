@@ -1,6 +1,6 @@
 import * as fs from 'fs';
 
-export function dictionarizer(path: string){
+export function dictionarizer(path: string): any {
 	let dictionarized_json_file = {};
 	try {
         dictionarized_json_file = JSON.parse(fs.readFileSync(path, 'utf-8'));
