@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
 import * as path from 'path';
 import { DynamicDictionary } from './utils/dynamic_dictionary';
-import { getASPIntellisenseProvider,getASPIntellisenseHoverProvider } from './autocomplete';
+import { getASPIntellisenseProvider,getASPIntellisenseHoverProvider,fillDictionaryWithDynamicPredicates} from './autocomplete';
 import { CODE_ERROR, subscribeToDocumentChanges } from './diagnostics';
 import { similarity } from './scripts/similarity';
 import { dictionarizer } from './utils/dictionarizer';
@@ -33,11 +33,13 @@ const COMMAND = 'code-actions-sample.command';
 	);
 	
 	//IntelliSense
-	const dd = DynamicDictionary.getInstance();
+	
 	context.subscriptions.push(vscode.languages.registerCompletionItemProvider('asp', getASPIntellisenseProvider(context), '#', '&',':','-'));
 	context.subscriptions.push(vscode.languages.registerHoverProvider("asp", getASPIntellisenseHoverProvider(context)));
 
+	fillDictionaryWithDynamicPredicates();
 	// eslint-disable-next-line no-useless-escape
+	/*const dd = DynamicDictionary.getInstance();
 	const regexp = /(\w+\s*\(\s*\w+(?:\s*\,\s*\w+\s*)*\s*\))\s*(?:\:\-|\||\.)/g;
 	const regexp2 = /(\w+)\s*\(/g;
 
@@ -101,7 +103,7 @@ const COMMAND = 'code-actions-sample.command';
 		}                
 
 	}
-	});
+	});*/
 }
 
 //TODO traduce azioni in testo
