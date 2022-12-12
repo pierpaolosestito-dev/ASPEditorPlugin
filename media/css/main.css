@@ -64,10 +64,6 @@ body {
     outline: none;
   }
   
-  .panel{
-    display: none;
-  }
-  
   .panel-heading{
     margin: 8px 0 5px 0;
   }

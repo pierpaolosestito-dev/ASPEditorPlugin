@@ -1,17 +1,17 @@
-SEATING
-----------------------------------------------------------------------------------------------
-A gala dinner has to be organized and table composition must satisfy a number of requirements:
+% SEATING
+% ----------------------------------------------------------------------------------------------
+% A gala dinner has to be organized and table composition must satisfy a number of requirements:
 
-- Each table T has a given number of chairs.
-- Each guest must be assigned one and only one table.
-- People liking each other should sit at the same table.
-- People disliking each other should not sit at the same table.
+% - Each table T has a given number of chairs.
+% - Each guest must be assigned one and only one table.
+% - People liking each other should sit at the same table.
+% - People disliking each other should not sit at the same table.
 
 % INPUT facts
-table(T,NC)  the set of available tables with corresponding seats
-guest(P)  the set of guests to be accommodated
-like(P1,P2)  couples of guests who are friends
-dislike(P1,P2)  couples of guests disliking each other
+table(T,NC) % the set of available tables with corresponding seats
+guest(P) % the set of guests to be accommodated
+like(P1,P2) % couples of guests who are friends
+dislike(P1,P2) % couples of guests disliking each other
 
 % OUTPUT predicates
 at(P,T)  guest P is accommodated to table T

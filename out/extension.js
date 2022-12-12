@@ -278,13 +278,6 @@ class CodePanelViewProvider {
                         editBuilder.replace(selection, code.dlv('VERTEX_COVER'));
                     });
                     break;
-                // Javascript
-                case 'jsIF':
-                    active.edit(editBuilder => {
-                        const code = new cpanel.Code(this._extensionUri);
-                        editBuilder.replace(selection, code.js('if'));
-                    });
-                    break;
                 // showPanel
                 case 'showPanel':
                     this.showPanel(webviewView.webview);
@@ -344,23 +337,17 @@ function getNonce() {
 function getCodePanelBody() {
     const htmlBody = `
     <div class="container m-2">
-        <div class="pt-0 ps-1 pe-1 pb-0">
-            <h3 class="m-0 mb-2">Code Select</h3>
-			<select class="form-select form-select-sm bg-secondary text-white border-secondary mb-3 changeCodePanel">
-				<option value="">Code choice</option>
-				<option value="dlv">DLV</option>
-				<option value="">Clingo</option>
-			</select>
-		</div>
+        
 
 		<!--
 			// ///////////////////////////////
 			// DLV Panel
 			// ///////////////////////////////
 		-->
+        <h1>Cookbook</h1>
         <div class="panel panel-primary panel-dlv">
             <div class="panel-heading">
-                <h3>Simple</h3>
+                <h3>With Input</h3>
             </div>
             <div class="panel-body">
                 <div class="row">
@@ -373,7 +360,7 @@ function getCodePanelBody() {
                 </div>
             </div>
             <div class="panel-heading">
-                <h3>Medium</h3>
+                <h3>Without Input</h3>
             </div>
             <div class="panel-body">
                 <div class="row">
@@ -384,69 +371,7 @@ function getCodePanelBody() {
                     </div>
                 </div>
             </div>
-            <div class="panel-heading">
-                <h3>Hard</h3>
-            </div>
-            <div class="panel-body">
-                <div class="row">
-                    <div class="col-12 col-xs-12 col-md-12">
-                        <a href="#" class="btn btn-secondary btn-sm m-1" role="button" data-act="ADVANCED_KNAPSACK_PROBLEM"><span class="panel-title">[TESI] Advanced Knapsack Problem</span></a>
-                    </div>
-                </div>
-            </div>
-		</div>
-
-		<!--
-			// ///////////////////////////////
-			// Javascript Panel
-			// ///////////////////////////////
-		-->
-        <div class="panel panel-primary panel-js">
-            <div class="panel-heading">
-                <h3>Usual</h3>
-            </div>
-            <div class="panel-body">
-                <div class="row">
-                    <div class="col-12 col-xs-12 col-md-12">
-                        <a href="#" class="btn btn-secondary btn-sm m-1" role="button" data-act="jsIF"><span class="panel-title">IF</span></a>
-                        <a href="#" class="btn btn-secondary btn-sm m-1" role="button" data-act="jsSwitch"><span class="panel-title">Switch</span></a>
-                        <a href="#" class="btn btn-secondary btn-sm m-1" role="button" data-act="jsFor"><span class="panel-title">For</span></a>
-                        <a href="#" class="btn btn-secondary btn-sm m-1" role="button" data-act="jsWhile"><span class="panel-title">While</span></a>
-                        <a href="#" class="btn btn-secondary btn-sm m-1" role="button" data-act="jsDoWhile"><span class="panel-title">Do While</span></a>
-                        <a href="#" class="btn btn-secondary btn-sm m-1" role="button" data-act="jsFunction"><span class="panel-title">Function</span></a>
-                        <a href="#" class="btn btn-secondary btn-sm m-1" role="button" data-act="jsAsyncFunction"><span class="panel-title">Async Function</span></a>
-                        <a href="#" class="btn btn-secondary btn-sm m-1" role="button" data-act="jsClass"><span class="panel-title">Class</span></a>
-                        <a href="#" class="btn btn-secondary btn-sm m-1" role="button" data-act="jsTry"><span class="panel-title">Try Catch</span></a>
-                    </div>
-                </div>
-            </div>
-
-            <div class="panel-heading">
-                <h3>Net</h3>
-            </div>
-            <div class="panel-body">
-                <div class="row">
-                    <div class="col-12 col-xs-12 col-md-12">
-                        <a href="#" class="btn btn-secondary btn-sm m-1" role="button" data-act="jsGet"><span class="panel-title">GET</span></a>
-                        <a href="#" class="btn btn-secondary btn-sm m-1" role="button" data-act="jsPost"><span class="panel-title">POST</span></a>
-                        <a href="#" class="btn btn-secondary btn-sm m-1" role="button" data-act="jsJson"><span class="panel-title">JSON</span></a>
-                    </div>
-                </div>
-            </div>
-
-            <div class="panel-heading">
-                <h3>ETC</h3>
-            </div>
-            <div class="panel-body">
-                <div class="row">
-                    <div class="col-12 col-xs-12 col-md-12">
-                        <a href="#" class="btn btn-secondary btn-sm m-1" role="button" data-act="jsHello"><span class="panel-title">Hello</span></a>
-                    </div>
-                </div>
-            </div>
-		</div>
     </div><div id="check"></div>
 	`;
     return htmlBody;
 }
-//# sourceMappingURL=extension.js.map
