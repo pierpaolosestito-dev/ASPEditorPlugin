@@ -57,15 +57,13 @@
 				"in_line_comment": {
 					"patterns": [{
 						"name": "comment.inline.asp",
-						"match": "%.*"
+						"match": "%((?!\\/))([^\\*\\n@].*)?\\n"
 					}]
 				},
 				"multi_line_comment": {
-					"patterns": [{
-						"name": "comment.multiline.asp",
-						"begin": "%\\*",
-						"end": "\\*%"
-					}]
+						"begin": "\\s*+(\\%\\/)",
+						"end": "\\/\\%",
+						"name": "comment.block.asp"
 				}
 			}
 		},
