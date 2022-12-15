@@ -57,7 +57,7 @@
 				"in_line_comment": {
 					"patterns": [{
 						"name": "comment.inline.asp",
-						"match": "^%.*"
+						"match": "%.*"
 					}]
 				},
 				"multi_line_comment": {
