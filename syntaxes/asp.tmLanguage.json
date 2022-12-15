@@ -6,6 +6,9 @@
 			"include": "#comments"
 		},
 		{
+			"include" : "#testing"
+		},
+		{
 			"include" : "#single_quoted_strings"
 		},
 		{
@@ -64,6 +67,22 @@
 						"begin": "\\s*+(\\%\\/)",
 						"end": "\\/\\%",
 						"name": "comment.block.asp"
+				}
+			}
+		},
+		"testing" : {
+			"patterns" : [
+				{
+					"include": "#testing_line"
+				}
+			],
+			"repository" : {
+				"testing_line" : {
+					"patterns" : [{
+						"name" : "testing.block.asp",
+						"begin" :"\\s*+(\\%\\*\\*)",
+						"end" : "\\*\\*\\%"
+					}]
 				}
 			}
 		},

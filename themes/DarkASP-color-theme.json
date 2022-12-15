@@ -82,6 +82,16 @@
 			}
 		},
 		{
+			"name" : "Testing",
+			"scope" : [
+				"testing.block.asp"
+			],
+			"settings": {
+				"fontStyle": "bold",
+				"foreground": "#d7ff60"
+			}
+		},
+		{
 			"name": "Keywords",
 			"scope": [
 				"keyword.control.asp"
