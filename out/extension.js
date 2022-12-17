@@ -242,10 +242,10 @@ class CodePanelViewProvider {
                         editBuilder.replace(selection, code.dlv('KNAPSACK_PROBLEM'));
                     });
                     break;
-                case 'N_COLORABILITY':
+                case '3_COLORABILITY':
                     active.edit(editBuilder => {
                         const code = new cpanel.Code(this._extensionUri);
-                        editBuilder.replace(selection, code.dlv('N_COLORABILITY'));
+                        editBuilder.replace(selection, code.dlv('3_COLORABILITY'));
                     });
                     break;
                 case 'HAMILTON_PATH':
@@ -346,25 +346,13 @@ function getCodePanelBody() {
 		-->
         <h1>Cookbook</h1>
         <div class="panel panel-primary panel-dlv">
-            <div class="panel-heading">
-                <h3>With Input</h3>
-            </div>
             <div class="panel-body">
                 <div class="row">
                     <div class="col-12 col-xs-12 col-md-12">
                         <a href="#" class="btn btn-secondary btn-sm m-1" role="button" data-act="VERTEX_COVER"><span class="panel-title">Vortex Cover</span></a>
                         <a href="#" class="btn btn-secondary btn-sm m-1" role="button" data-act="HAMILTON_PATH"><span class="panel-title">Hamilton Path</span></a>
                         <a href="#" class="btn btn-secondary btn-sm m-1" role="button" data-act="STRATEGIC_COMPANIES"><span class="panel-title">Strategic Companies</span></a>
-                        <a href="#" class="btn btn-secondary btn-sm m-1" role="button" data-act="N_COLORABILITY"><span class="panel-title">N Colorability</span></a>
-                    </div>
-                </div>
-            </div>
-            <div class="panel-heading">
-                <h3>Without Input</h3>
-            </div>
-            <div class="panel-body">
-                <div class="row">
-                    <div class="col-12 col-xs-12 col-md-12">
+                        <a href="#" class="btn btn-secondary btn-sm m-1" role="button" data-act="3_COLORABILITY"><span class="panel-title">3 Colorability</span></a>
                         <a href="#" class="btn btn-secondary btn-sm m-1" role="button" data-act="SEATING"><span class="panel-title">Seating</span></a>
                         <a href="#" class="btn btn-secondary btn-sm m-1" role="button" data-act="MINIMUM_SPANNING_TREE"><span class="panel-title">Minimum Spanning Tree</span></a>
                         <a href="#" class="btn btn-secondary btn-sm m-1" role="button" data-act="KNAPSACK_PROBLEM"><span class="panel-title">Knapsack Problem</span></a>

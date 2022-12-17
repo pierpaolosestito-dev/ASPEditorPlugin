@@ -18,7 +18,7 @@ export class Code implements CodeInterface {
 
     // Path conditions
     private ListPath: {[key: string]: {[key: string]: boolean}} = {
-        'dlv': { 'HAMILTON_PATH': true, 'KNAPSACK_PROBLEM': true, 'MINIMUM_SPANNING_TREE': true, 'N_COLORABILITY': true, 'SEATING': true, 'STRATEGIC_COMPANIES': true, 'VERTEX_COVER': true},
+        'dlv': { 'HAMILTON_PATH': true, 'KNAPSACK_PROBLEM': true, 'MINIMUM_SPANNING_TREE': true, '3_COLORABILITY': true, 'SEATING': true, 'STRATEGIC_COMPANIES': true, 'VERTEX_COVER': true},
     };
 
     dlv(code_type: string) {

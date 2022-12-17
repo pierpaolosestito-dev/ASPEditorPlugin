@@ -16,7 +16,7 @@
         'HAMILTON_PATH': function () { vscode.postMessage({ type: 'HAMILTON_PATH' }); },
         'KNAPSACK_PROBLEM': function () { vscode.postMessage({ type: 'KNAPSACK_PROBLEM' }); },
         'MINIMUM_SPANNING_TREE': function () { vscode.postMessage({ type: 'MINIMUM_SPANNING_TREE' }); },
-        'N_COLORABILITY': function () { vscode.postMessage({ type: 'N_COLORABILITY' }); },
+        '3_COLORABILITY': function () { vscode.postMessage({ type: '3_COLORABILITY' }); },
         'SEATING': function () { vscode.postMessage({ type: 'SEATING' }); },
         'STRATEGIC_COMPANIES': function () { vscode.postMessage({ type: 'STRATEGIC_COMPANIES' }); },
         'VERTEX_COVER': function () { vscode.postMessage({ type: 'VERTEX_COVER' }); },
