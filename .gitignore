@@ -85,7 +85,8 @@ web_modules/
 
 # Next.js build output
 .next
-out
+# Rimozione necessaria per il cookbook
+# out
 
 # Nuxt.js build / generate output
 .nuxt
