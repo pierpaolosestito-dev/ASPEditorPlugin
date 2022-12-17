@@ -1,8 +1,5 @@
 import * as vscode from 'vscode';
-import * as path from 'path';
-import { DynamicDictionary } from './utils/dynamic_dictionary';
-import { CODE_ERROR, subscribeToDocumentChanges } from './diagnostics';
-import { similarity } from './scripts/similarity';
+import { subscribeToDocumentChanges } from './diagnostics';
 import * as cpanel from './cpanel/run';
 import { getASPIntellisenseProvider,getASPIntellisenseHoverProvider,fillDictionaryWithDynamicPredicates} from './autocomplete';
 import { BuiltinAggregateFixer,	BuiltinAggregateInfo } from './prompter';
@@ -53,6 +50,7 @@ const COMMAND = 'code-actions-sample.command';
 	fillDictionaryWithDynamicPredicates();	
 }
 
+// eslint-disable-next-line @typescript-eslint/no-empty-function
 function deactivate() {}	
 
 module.exports = {
