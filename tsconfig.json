@@ -7,7 +7,7 @@
 			"ES2020", "ES2021.String"
 		],
 		"sourceMap": true,
-		"rootDir": "src",
+		"rootDirs": ["src","test"],
 		"strict": true   /* enable all strict type-checking options */
 		/* Additional Checks */
 		// "noImplicitReturns": true, /* Report error when not all code paths in function return a value. */

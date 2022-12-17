@@ -4,7 +4,9 @@ import { DynamicDictionary } from './utils/dynamic_dictionary';
 import { getASPIntellisenseProvider,getASPIntellisenseHoverProvider } from './autocomplete';
 import { CODE_ERROR, subscribeToDocumentChanges } from './diagnostics';
 import { similarity } from './scripts/similarity';
+
 import * as cpanel from './cpanel/run';
+//import { dictionarizer } from './utils/dictionarizer';
 
 const COMMAND = 'code-actions-sample.command';
 
@@ -24,8 +26,8 @@ const COMMAND = 'code-actions-sample.command';
 	context.subscriptions.push(
 		
 		
-		vscode.languages.registerCodeActionsProvider('asp', new Emojizer(), {
-			providedCodeActionKinds: Emojizer.providedCodeActionKinds
+		vscode.languages.registerCodeActionsProvider('asp', new BuiltinAggregateFixer(context), {
+			providedCodeActionKinds: BuiltinAggregateFixer.providedCodeActionKinds
 		}));
 
 	const emojiDiagnostics = vscode.languages.createDiagnosticCollection("emoji");
@@ -34,8 +36,8 @@ const COMMAND = 'code-actions-sample.command';
 	subscribeToDocumentChanges(context, emojiDiagnostics);
 
 	context.subscriptions.push(
-		vscode.languages.registerCodeActionsProvider('asp', new Emojinfo(), {
-			providedCodeActionKinds: Emojinfo.providedCodeActionKinds
+		vscode.languages.registerCodeActionsProvider('asp', new BuiltinAggregateInfo(), {
+			providedCodeActionKinds: BuiltinAggregateInfo.providedCodeActionKinds
 		})
 	);
 
@@ -115,7 +117,13 @@ const COMMAND = 'code-actions-sample.command';
 }
 
 //TODO traduce azioni in testo
-export class Emojizer implements vscode.CodeActionProvider {
+export class BuiltinAggregateFixer implements vscode.CodeActionProvider {
+
+	context : vscode.ExtensionContext;
+
+	constructor(context:vscode.ExtensionContext) {
+		this.context = context;
+	}
 
 	public static readonly providedCodeActionKinds = [
 		vscode.CodeActionKind.QuickFix
@@ -125,14 +133,14 @@ export class Emojizer implements vscode.CodeActionProvider {
 		if (this.isAtStartOfSmiley(document, range)) {
 		
 
-		const replaceWithSmileyCatFix = this.createFix(document, range, 'Prova1');
+		const replaceWithSmileyCatFix = this.createFix(document, range, 'ASP 💣');
 
-		const replaceWithSmileyFix = this.createFix(document, range, 'Prova2');
+		const replaceWithSmileyFix = this.createFix(document, range, 'ASP 😍');
 		// Marking a single fix as `preferred` means that users can apply it with a
 		// single keyboard shortcut using the `Auto Fix` command.
 		replaceWithSmileyFix.isPreferred = true;
 
-		const replaceWithSmileyHankyFix = this.createFix(document, range, 'Prova3');
+		const replaceWithSmileyHankyFix = this.createFix(document, range, 'ASP 👊');
 
 		const commandAction = this.createCommand();
 
@@ -143,33 +151,59 @@ export class Emojizer implements vscode.CodeActionProvider {
 			commandAction
 		];
 	}
-	//Correzione aggregati scritti male dall'utente
-	if (this.isAtStartOfAggregate(document, range)) {
-		//TODO aggiungere la lista completa di aggregati e built-ins
-		const aggregatesList = ['#count', '#min', '#max', '#times', '#sum']; //La dobbiamo leggere da aggregates.json
+	if (this.isAtStartOfBuiltins(document, range)) {
+		const result = [];
+		const builtinsDict = dictionarizer(this.context.asAbsolutePath('builtins.json')); //La dobbiamo leggere da aggregates.json
 		const start = range.start;
 		const line = document.lineAt(start.line).text;
-		
-		const aggregateRegex = /(\#\w+)\{/gm;
-		const matches = line.matchAll(aggregateRegex);
+		const builtinRegex = /(\&\w+)\{/gm;
+		const matches = line.matchAll(builtinRegex);
 		if(matches){
-			console.log("Matcha aggregato");
+			
 		for(const match of matches){
 			const m1 = match[1];			
 			if(m1){
-				for(let i=0;i<aggregatesList.length;i++){
-					if(similarity(m1,aggregatesList[i])>=0.5 && similarity(m1,aggregatesList[i])<1.00){
-						const replaceWithRightAggregate = this.createFix(document, range,aggregatesList[i],(aggregatesList[i].length));
+				
+				for(const elem of Object.values(builtinsDict['&'])) {
+					if(similarity(m1,"&"+elem.label+"{")>=0.5 && similarity(m1,"&"+elem.label+"{")<1.00){
+						const replaceWithRightBuiltin = this.createFix(document,range,"&"+elem.label+"{",("&"+elem.label+"{").length);
 						const commandAction = this.createCommand();
-						return [
-								replaceWithRightAggregate,
-								commandAction
-						];
+						result.push(replaceWithRightBuiltin);
+						result.push(commandAction);
 					}
-				}
+
+                }
+				
 			}
 		}
 	}
+	return result;
+	}
+	if (this.isAtStartOfAggregate(document, range)) {
+		const result = [];
+		const aggregatesDict = dictionarizer(this.context.asAbsolutePath('aggregates.json')); //La dobbiamo leggere da aggregates.json
+		const start = range.start;
+		const line = document.lineAt(start.line).text;
+		const aggregateRegex = /(\#\w+)\{/gm;
+		const matches = line.matchAll(aggregateRegex);
+		if(matches){
+		for(const match of matches){
+			const m1 = match[1];			
+			if(m1){
+				for(const elem of Object.values(aggregatesDict['#'])) {
+					if(similarity(m1,"#"+elem.label+"{")>=0.5 && similarity(m1,"#"+elem.label+"{")<1.00){
+						const replaceWithRightAggregate = this.createFix(document,range,"#"+elem.label+"{",("#"+elem.label+"{").length);
+						const commandAction = this.createCommand();
+						result.push(replaceWithRightAggregate);
+						result.push(commandAction);
+					}
+
+                }
+				
+			}
+		}
+	}
+	return result;
 	}
 	return;
 	}
@@ -191,6 +225,7 @@ export class Emojizer implements vscode.CodeActionProvider {
 		const line = document.lineAt(start.line);
 		return line.text[start.character] === "&";
 	}
+  
 	private createFix(document: vscode.TextDocument, range: vscode.Range, emoji: string,endstring: number=2): vscode.CodeAction {
 		const fix = new vscode.CodeAction(`Convert to ${emoji}`, vscode.CodeActionKind.QuickFix);
 		fix.edit = new vscode.WorkspaceEdit();
@@ -205,10 +240,7 @@ export class Emojizer implements vscode.CodeActionProvider {
 	}
 }
 
-/**
- * Provides code actions corresponding to diagnostic problems.
- */
-export class Emojinfo implements vscode.CodeActionProvider {
+export class BuiltinAggregateInfo implements vscode.CodeActionProvider {
 
 	public static readonly providedCodeActionKinds = [
 		vscode.CodeActionKind.QuickFix
@@ -229,6 +261,7 @@ export class Emojinfo implements vscode.CodeActionProvider {
 		action.isPreferred = true;
 		return action;
 	}
+	
 }
 
 function deactivate() {}	
