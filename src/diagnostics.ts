@@ -24,7 +24,6 @@ const builtInRegex = new RegExp(/^&\w+\s*\(\s*\w+\s*(\s*,\s*\w+\s*)*(\s*;\s*\w+\
  * @param emojiDiagnostics diagnostic collection
  */
 export function refreshDiagnostics(doc: vscode.TextDocument, emojiDiagnostics: vscode.DiagnosticCollection): void {
-	console.log("----------refresh----------");
 	const diagnostics: vscode.Diagnostic[] = [];
 	
 	for (let lineIndex = 0; lineIndex < doc.lineCount; lineIndex++) {
@@ -37,7 +36,7 @@ export function refreshDiagnostics(doc: vscode.TextDocument, emojiDiagnostics: v
 			const parser = new ASPCore2Parser(tokens);
 			const tree = parser.program();
 			const output =tree.toStringTree(parser);
-			console.log(output);
+			console.log("Struttura della regola :\n====================\n" + output + "\n===============\n");
 
 		}
 	}
