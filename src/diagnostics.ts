@@ -3,8 +3,12 @@
  *--------------------------------------------------------*/
 
 /** To demonstrate code actions associated with Diagnostics problems, this file provides a mock diagnostics entries. */
-
+import { CommonTokenStream } from 'antlr4ts';
+import { ANTLRInputStream } from 'antlr4ts/ANTLRInputStream';
 import * as vscode from 'vscode';
+import { ASPCore2Lexer } from './parser/ASPCore2Lexer';
+import { ASPCore2Parser } from './parser/ASPCore2Parser';
+
 
 /** String to detect in the text document. */
 const END_CHARACTER_OF_A_RULE = '.';
@@ -26,48 +30,15 @@ export function refreshDiagnostics(doc: vscode.TextDocument, emojiDiagnostics: v
 	for (let lineIndex = 0; lineIndex < doc.lineCount; lineIndex++) {
 		const lineOfText = doc.lineAt(lineIndex);
 		if (lineOfText.text.endsWith(END_CHARACTER_OF_A_RULE)|| (lineIndex != (doc.lineCount)-1 && doc.lineAt(lineIndex+1).text.length == 0 && !lineOfText.text.endsWith(".") ) ) { 
-		//TODO controllare qui che qualcosa non va -> due righe giuste consecutive, la seconda è considerata sbagliata
-			//Effettuiamo i vari check della sintassi
-			//Controlla se è presente il :-
-			let constructs:string[] = [];
-			if(!lineOfText.text.includes(":-")){
-				constructs = parseTail(lineOfText.text);
-				console.log("constructsT = " + constructs);
-			} else {
-				//Fa il parsing della regola in costrutti
-				constructs = parseRule(lineOfText.text);
-			}
-			
-			//Se la riga è vuota non fare nulla
-			if(constructs==null){
-				console.log("linea nulla -> skip");
-				continue;
-			}
-			//Scorri tutti i costrutti per vedere se c'è qualcosa da sottolineare come errato
-			for(let i=0;i<constructs.length;i++){
-				if(constructs[i]==""){
-					continue;
-				}
-				//console.log("checking " + constructs[i] + " i=" + i);
-				//Controllo aggregati
-				
-				//if(constructs[i].includes("#") && !aggregatesRegex.test(constructs[i])){
-				if(constructs[i].includes("#") && (aggregatesRegex.test(constructs[i]) == aggregatesRegex.test(constructs[i]))){
-					//TODO BUG il .test diventa true all'interno di questo if pur essendo false all'esterno
-					//console.log("1)!aggregatesRegex.test(" + constructs[i] + ") = ", !aggregatesRegex.test(constructs[i]));
-					diagnostics.push(createDiagnostic(doc, lineOfText, lineIndex, "001"));
-					console.log(constructs[i] + " is not a correct aggregate ");
-					//console.log("2)!aggregatesRegex.test(" + constructs[i] + ") = ", !aggregatesRegex.test(constructs[i]));
-					continue;
-				}
-				//Controllo built-ins
-				else if(constructs[i].includes("&") && !builtInRegex.test(constructs[i])){
-					//TODO BUG il .test diventa true all'interno di questo if pur essendo false all'esterno
-					diagnostics.push(createDiagnostic(doc, lineOfText, lineIndex, "010"));
-					console.log(constructs[i] + " is not a correct built-in ");
-					continue;
-				}
-			}
+		
+			const input = new ANTLRInputStream(lineOfText.text);
+			const lexer = new ASPCore2Lexer(input);
+			const tokens = new CommonTokenStream(lexer);
+			const parser = new ASPCore2Parser(tokens);
+			const tree = parser.program();
+			const output =tree.toStringTree(parser);
+			console.log(output);
+
 		}
 	}
 
