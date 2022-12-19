@@ -31,153 +31,17 @@ export function refreshDiagnostics(doc: vscode.TextDocument, emojiDiagnostics: v
 		if (lineOfText.text.endsWith(END_CHARACTER_OF_A_RULE)|| (lineIndex != (doc.lineCount)-1 && doc.lineAt(lineIndex+1).text.length == 0 && !lineOfText.text.endsWith(".") ) ) { 
 		
 			const input = new ANTLRInputStream(lineOfText.text);
-			const lexer = new ASPCore2Lexer(input);
-			const tokens = new CommonTokenStream(lexer);
-			const parser = new ASPCore2Parser(tokens);
-			const tree = parser.program();
-			const output =tree.toStringTree(parser);
-			console.log("Struttura della regola :\n====================\n" + output + "\n===============\n");
+			const aspLexer = new ASPCore2Lexer(input);
+			const tokens = new CommonTokenStream(aspLexer);
+			const aspParser = new ASPCore2Parser(tokens);
+			const tree = aspParser.program();
+			const output =tree.toStringTree(aspParser);
+			console.log('1 ' + aspParser);
 
 		}
 	}
 
 	emojiDiagnostics.set(doc.uri, diagnostics);
-}
-
-function parseRule(lineOfText : string){
-	//console.log("-----parsing rule " + lineOfText + "-----");
-	if(lineOfText==""){ //TODO gestire se ci sono spazi ma è comunque vuota
-		return [];
-	}
-	let constructs: string[] = [];
-	//Divide la testa e la coda che verranno poi parsizzate separatamente siccome usano
-	//separatori diversi (ovvero | per una e , per l'altra
-	//Splitta in due la regola
-	const headAndTail = lineOfText.split(":-");
-
-	//parsing della testa
-	const headConstructs = parseHead(headAndTail[0]);
-	//parsing della coda
-	const tailConstructs = parseTail(headAndTail[1]);
-	//console.log("headConstructs = " + headConstructs);
-	//console.log("tailConstructs = " + tailConstructs);
-
-	//Se la testa è vuota si considera solo la coda
-	//Se la coda è vuota si considera solo la testa
-	//Altrimenti si concatenano le due
-	if(headConstructs[0]==''){
-		constructs = tailConstructs;
-	} else if(tailConstructs[0]==''){
-		constructs = headConstructs;
-	} else {
-	constructs = headConstructs.concat(tailConstructs);
-	}
-
-
-	console.log("constructs = ", constructs);
-	return constructs;
-}
-
-//Funzione di utilità sostituisce all'interno di una string un carattere ad un certo indice
-function setCharAt(str:string,index:number,chr:string) {
-    if(index > str.length-1) return str;
-    return str.substring(0,index) + chr + str.substring(index+1);
-}
-
-//Fa il parsing della coda
-function parseTail(tail:string){
-	let tailCopy = tail;
-	//Gestione caso in cui ci sono spazi dopo il . finale
-	const str:string[] = tailCopy.split(".");
-	if(str[1]!=undefined && !str[1].replace(/\s/g, '').length) { //TODO spazi
-	tailCopy = tailCopy.substring(0, tailCopy.length-1); //Rimuove il punto
-	} else {
-		return [];
-	}
-	//console.log("tail = ", tailCopy);
-	//Sostituiamo tutte le virgole che sono all'interno delle parentesi con il carattere speciale £
-	for(let i=0; i<tailCopy.length;i++){
-		//console.log("tailCopy[" + i + "] = ", tailCopy[i]);
-		if(tailCopy[i]=="(" ){
-			//console.log("( trovata");
-			for(let j=i;j<tailCopy.length;j++){
-				if(tailCopy[j]==")"){
-					//console.log(") trovata");
-					break;
-				}
-				if(tailCopy[j]==","){
-					//console.log(", trovata");
-					tailCopy = setCharAt(tailCopy, j, '£');
-					//console.log("tailCopy[j] = ", tailCopy[j]);
-					continue;
-				}
-			}
-		}
-		if(tailCopy[i]=="{" ){
-			//console.log("( trovata");
-			for(let j=i;j<tailCopy.length;j++){
-				if(tailCopy[j]=="}"){
-					//console.log(") trovata");
-					break;
-				}
-				if(tailCopy[j]==","){
-					//console.log(", trovata");
-					tailCopy = setCharAt(tailCopy, j, '£');
-					//console.log("tailCopy[j] = ", tailCopy[j]);
-					continue;
-				}
-			}
-		}
-	}
-	//console.log("tailCopy = ", tailCopy);
-
-	//Facciamo il parsing per , sapendo che non ci sono più , all'interno delle parentesi
-	const tailParsed = tailCopy.split(",");
-
-	//Adesso sostituiamo il placeholder £ con le virgole in ogni costrutto
-	for(let i=0; i<tailParsed.length;i++){
-		//console.log(tailParsed[i]);
-		tailParsed[i] = tailParsed[i].replaceAll("£", ",");
-		//console.log(tailParsed[i]);
-	}
-	//console.log("tailParsed = ", tailParsed);
-	return tailParsed;
-}
-
-//Fa il parsing della testa
-function parseHead(head:string){
-	let headCopy = head;
-	//console.log("head = ", headCopy);
-	//Sostituiamo tutte le | che sono all'interno delle parentesi con il carattere speciale £
-	for(let i=0; i<headCopy.length;i++){
-		//console.log("headCopy[" + i + "] = ", headCopy[i]);
-		if(headCopy[i]=="["){
-			//console.log("[ trovata");
-			for(let j=i;j<headCopy.length;j++){
-				if(headCopy[j]=="]"){
-					//console.log("] trovata");
-					break;
-				}
-				if(headCopy[j]=="|"){
-					//console.log("| trovata");
-					headCopy = setCharAt(headCopy, j, '£');
-					//console.log("headCopy[j] = ", headCopy[j]);
-					continue;
-				}
-			}
-		}
-	}
-	//console.log("headCopy = ", headCopy);
-	//Facciamo il parsing per | sapendo che non ci sono più , all'interno delle parentesi
-	const headParsed = headCopy.split("|");
-	//Adesso sostituiamo il placeholder £ con le virgole in ogni costrutto
-	for(let i=0; i<headParsed.length;i++){
-		//console.log(headParsed[i]);
-		headParsed[i] = headParsed[i].replaceAll("£", "|");
-		//console.log(headParsed[i]);
-	}
-	//console.log("headParsed = ", headParsed);
-	return headParsed;
 }
 
 //Crea una diagnostica, ovvero un oggetto di vscode che indica che errore c'è stato
