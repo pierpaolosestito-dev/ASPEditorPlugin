@@ -33,10 +33,24 @@ export function refreshDiagnostics(doc: vscode.TextDocument, emojiDiagnostics: v
 			const input = new ANTLRInputStream(lineOfText.text);
 			const aspLexer = new ASPCore2Lexer(input);
 			const tokens = new CommonTokenStream(aspLexer);
+			tokens.fill();
 			const aspParser = new ASPCore2Parser(tokens);
+
 			const tree = aspParser.program();
-			const output =tree.toStringTree(aspParser);
-			console.log('1 ' + aspParser);
+			console.log(tree.toStringTree(aspParser));
+
+			const constructs: [string, number][] = [];
+			for(let i = 0; i < tokens.getTokens().length; i++){
+				constructs.push([tokens.get(i).text as string, tokens.get(i).type]);
+			}
+
+			const constructsFiltered: [string, number][] = [];
+
+			for(let i = 0; i<constructs.length;i++){
+				constructsFiltered.push(constructs[i]);
+			}
+
+			console.log(constructsFiltered.join("  "));
 
 		}
 	}

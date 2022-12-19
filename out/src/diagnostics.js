@@ -29,10 +29,19 @@ function refreshDiagnostics(doc, emojiDiagnostics) {
             const input = new ANTLRInputStream_1.ANTLRInputStream(lineOfText.text);
             const aspLexer = new ASPCore2Lexer_1.ASPCore2Lexer(input);
             const tokens = new antlr4ts_1.CommonTokenStream(aspLexer);
+            tokens.fill();
             const aspParser = new ASPCore2Parser_1.ASPCore2Parser(tokens);
             const tree = aspParser.program();
-            const output = tree.toStringTree(aspParser);
-            console.log('1 ' + aspParser);
+            console.log(tree.toStringTree(aspParser));
+            const constructs = [];
+            for (let i = 0; i < tokens.getTokens().length; i++) {
+                constructs.push([tokens.get(i).text, tokens.get(i).type]);
+            }
+            const constructsFiltered = [];
+            for (let i = 0; i < constructs.length; i++) {
+                constructsFiltered.push(constructs[i]);
+            }
+            console.log(constructsFiltered.join("  "));
         }
     }
     emojiDiagnostics.set(doc.uri, diagnostics);
