@@ -38,7 +38,7 @@ export function refreshDiagnostics(doc: vscode.TextDocument, emojiDiagnostics: v
 
 			const tree = aspParser.program();
 			console.log(tree.toStringTree(aspParser));
-
+			
 			const constructs: [string, number][] = [];
 			for(let i = 0; i < tokens.getTokens().length; i++){
 				constructs.push([tokens.get(i).text as string, tokens.get(i).type]);
@@ -47,6 +47,7 @@ export function refreshDiagnostics(doc: vscode.TextDocument, emojiDiagnostics: v
 			const constructsFiltered: [string, number][] = [];
 
 			for(let i = 0; i<constructs.length;i++){
+				//TODO filtrare i token
 				constructsFiltered.push(constructs[i]);
 			}
 
