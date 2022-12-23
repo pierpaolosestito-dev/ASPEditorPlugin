@@ -27,7 +27,7 @@ const builtInRegex = new RegExp(
  * @param emojiDiagnostics diagnostic collection
  */
 export function refreshDiagnostics(doc: vscode.TextDocument, emojiDiagnostics: vscode.DiagnosticCollection): void {
-	const regex = /\.(asp|lp)$/g;
+	const regex = /\.(asp|lp|dlv)$/g;
 
 	if (regex.test(doc.fileName)) {
 		const diagnostics: vscode.Diagnostic[] = [];

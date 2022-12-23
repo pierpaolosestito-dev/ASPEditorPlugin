@@ -22,7 +22,7 @@ const builtInRegex = new RegExp(/^&\w+\s*\(\s*\w+\s*(\s*,\s*\w+\s*)*(\s*;\s*\w+\
  * @param emojiDiagnostics diagnostic collection
  */
 function refreshDiagnostics(doc, emojiDiagnostics) {
-    const regex = /\.(asp|lp)$/g;
+    const regex = /\.(asp|lp|dlv)$/g;
     if (regex.test(doc.fileName)) {
         const diagnostics = [];
         for (let lineIndex = 0; lineIndex < doc.lineCount; lineIndex++) {
