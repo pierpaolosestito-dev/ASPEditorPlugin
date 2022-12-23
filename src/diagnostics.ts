@@ -3,7 +3,7 @@
  *--------------------------------------------------------*/
 
 /** To demonstrate code actions associated with Diagnostics problems, this file provides a mock diagnostics entries. */
-import { CommonTokenStream } from 'antlr4ts';
+import { CommonTokenStream, Recognizer } from 'antlr4ts';
 import { ANTLRInputStream } from 'antlr4ts/ANTLRInputStream';
 import * as vscode from 'vscode';
 import { ASPCore2Lexer } from './parser/ASPCore2Lexer';
@@ -25,35 +25,41 @@ const builtInRegex = new RegExp(/^&\w+\s*\(\s*\w+\s*(\s*,\s*\w+\s*)*(\s*;\s*\w+\
  */
 export function refreshDiagnostics(doc: vscode.TextDocument, emojiDiagnostics: vscode.DiagnosticCollection): void {
 	const diagnostics: vscode.Diagnostic[] = [];
-	
+
 	for (let lineIndex = 0; lineIndex < doc.lineCount; lineIndex++) {
 		const lineOfText = doc.lineAt(lineIndex);
-		if (lineOfText.text.endsWith(END_CHARACTER_OF_A_RULE)|| (lineIndex != (doc.lineCount)-1 && doc.lineAt(lineIndex+1).text.length == 0 && !lineOfText.text.endsWith(".") ) ) { 
-		
-			const input = new ANTLRInputStream(lineOfText.text);
-			const aspLexer = new ASPCore2Lexer(input);
-			const tokens = new CommonTokenStream(aspLexer);
-			tokens.fill();
-			const aspParser = new ASPCore2Parser(tokens);
 
-			const tree = aspParser.program();
-			console.log(tree.toStringTree(aspParser));
-			
-			const constructs: [string, number][] = [];
-			for(let i = 0; i < tokens.getTokens().length; i++){
-				constructs.push([tokens.get(i).text as string, tokens.get(i).type]);
+		const input = new ANTLRInputStream(lineOfText.text);
+		const aspLexer = new ASPCore2Lexer(input);
+		const tokens = new CommonTokenStream(aspLexer);
+		tokens.fill();
+		const aspParser = new ASPCore2Parser(tokens);
+		aspParser.removeErrorListeners();
+		aspParser.addErrorListener({
+			syntaxError<T>(recognizer: Recognizer<T, any>, offendingSymbol: T, line: number, charPositionInLine: number, msg: string, e: Error | undefined): void {
+				diagnostics.push(createDiagnostic(doc, lineOfText, lineIndex, msg));
+				console.log(msg);
 			}
+		});
+		aspParser.program();
+		//console.log(tree.toStringTree(aspParser));
 
-			const constructsFiltered: [string, number][] = [];
-
-			for(let i = 0; i<constructs.length;i++){
-				//TODO filtrare i token
-				constructsFiltered.push(constructs[i]);
-			}
-
-			console.log(constructsFiltered.join("  "));
-
+		/*const constructs: [string, number][] = [];
+		for(let i = 0; i < tokens.getTokens().length; i++){
+			constructs.push([tokens.get(i).text as string, tokens.get(i).type]);
 		}
+
+		const constructsFiltered: [string, number][] = [];
+
+		for(let i = 0; i<constructs.length;i++){
+			//TODO filtrare i token
+			constructsFiltered.push(constructs[i]);
+		}
+
+		console.log(constructsFiltered.join("  ")); */
+		//Questa riga di codice crea un oggetto diagnostica all'esatta posizione scelta
+		//diagnostics.push(createDiagnostic(doc, lineOfText, lineIndex, "010"));
+
 	}
 
 	emojiDiagnostics.set(doc.uri, diagnostics);
@@ -61,23 +67,23 @@ export function refreshDiagnostics(doc: vscode.TextDocument, emojiDiagnostics: v
 
 //Crea una diagnostica, ovvero un oggetto di vscode che indica che errore c'è stato
 function createDiagnostic(doc: vscode.TextDocument, lineOfText: vscode.TextLine, lineIndex: number, codeError: string): vscode.Diagnostic {
-	
+
 	const index = lineOfText.text.indexOf(END_CHARACTER_OF_A_RULE);
 
 	const range = new vscode.Range(lineIndex, 0, lineIndex, 0 + lineOfText.text.length);
-	const diagnostic = new vscode.Diagnostic(range, "Format incorrect.",
-	vscode.DiagnosticSeverity.Error);
+	const diagnostic = new vscode.Diagnostic(range, codeError,
+		vscode.DiagnosticSeverity.Error);
 	//In questa sezione di codice si inferisce qual'è la causa dell'errore
 	//Modifica il messaggio d'errore in base alla causa dell'errore
-	if(codeError == "001"){ 
+	/*if(codeError == "001"){ 
 		diagnostic.message = "The format of the aggregate is incorrect.";
 		diagnostic.code = "001";
 	}
 	else if(codeError == "010"){
 		diagnostic.message = "The format of the built-in is incorrect";
 		diagnostic.code = "010";
-	}
-	
+	}*/
+
 	return diagnostic;
 }
 
