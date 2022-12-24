@@ -19,12 +19,13 @@ const builtInRegex = new RegExp(/^&\w+\s*\(\s*\w+\s*(\s*,\s*\w+\s*)*(\s*;\s*\w+\
  * Analyzes the text document for problems.
  * This demo diagnostic problem provider finds all mentions of 'emoji'.
  * @param doc text document to analyze
- * @param emojiDiagnostics diagnostic collection
+ * @param errorDiagnostics diagnostic collection
  */
-function refreshDiagnostics(doc, emojiDiagnostics) {
+function refreshDiagnostics(doc, errorDiagnostics) {
     const regex = /\.(asp|lp|dlv)$/g;
+    const atoms = [{ name: "", count: 0 }];
     if (regex.test(doc.fileName)) {
-        const diagnostics = [];
+        let diagnostics = [];
         for (let lineIndex = 0; lineIndex < doc.lineCount; lineIndex++) {
             const lineOfText = doc.lineAt(lineIndex);
             const input = new ANTLRInputStream_1.ANTLRInputStream(lineOfText.text);
@@ -35,61 +36,136 @@ function refreshDiagnostics(doc, emojiDiagnostics) {
             aspParser.removeErrorListeners();
             aspParser.addErrorListener({
                 syntaxError(recognizer, offendingSymbol, line, charPositionInLine, msg, e) {
-                    console.log(regex.test(doc.fileName));
-                    diagnostics.push(createDiagnostic(doc, lineOfText, lineIndex, msg));
+                    diagnostics.push(createDiagnostic(doc, lineOfText, lineIndex, msg, vscode.DiagnosticSeverity.Error));
                     console.log(msg);
                 },
             });
             aspParser.program();
-            //console.log(tree.toStringTree(aspParser));
-            /*const constructs: [string, number][] = [];
-              for(let i = 0; i < tokens.getTokens().length; i++){
-                  constructs.push([tokens.get(i).text as string, tokens.get(i).type]);
-              }
-      
-              const constructsFiltered: [string, number][] = [];
-      
-              for(let i = 0; i<constructs.length;i++){
-                  //TODO filtrare i token
-                  constructsFiltered.push(constructs[i]);
-              }
-      
-              console.log(constructsFiltered.join("  ")); */
-            //Questa riga di codice crea un oggetto diagnostica all'esatta posizione scelta
-            //diagnostics.push(createDiagnostic(doc, lineOfText, lineIndex, "010"));
+            const constructs = [];
+            for (let i = 0; i < tokens.getTokens().length; i++) {
+                constructs.push([tokens.get(i).text, tokens.get(i).type]);
+            }
+            const constructsFiltered = [];
+            const heads = [];
+            const tails = [];
+            let head = true;
+            let negation = false;
+            for (let i = 0; i < constructs.length; i++) {
+                //TODO filtrare i token
+                if (constructs[i][1] === 1 || negation) { // se sono atomi negativi non li inserisco né in coda né in testa
+                    if (constructs[i][1] === ASPCore2Lexer_1.ASPCore2Lexer.CONS) {
+                        negation = false;
+                    }
+                    else {
+                        negation = true;
+                    }
+                    continue;
+                }
+                if (constructs[i][1] === ASPCore2Lexer_1.ASPCore2Lexer.CONS) { // se trovo un simbolo di constraint capisco che sono passata alla coda
+                    head = !head;
+                }
+                if (constructs[i][1] === ASPCore2Lexer_1.ASPCore2Lexer.VARIABLE) {
+                    head ? heads.push(constructs[i][0]) : tails.push(constructs[i][0]);
+                }
+                // constructsFiltered.push(constructs[i]);
+                if (constructs[i][1] === ASPCore2Lexer_1.ASPCore2Lexer.SYMBOLIC_CONSTANT) { // se è una atomo lo salvo
+                    const result = atoms.find(atom => atom.name === constructs[i][0]);
+                    if (!result) {
+                        atoms.push({ name: constructs[i][0], count: 1 });
+                    }
+                    else {
+                        atoms.map(atom => {
+                            atom.name === constructs[i][0] ? atom.count = atom.count + 1 : null;
+                        });
+                    }
+                }
+            }
+            if (!checkSafe(heads, tails) && checkIsRule(constructs)) {
+                diagnostics.push(createDiagnostic(doc, lineOfText, lineIndex, "This rule is no safe", vscode.DiagnosticSeverity.Warning));
+            }
+            diagnostics = addWarningProbablyWrongName(diagnostics, atoms, doc);
         }
-        emojiDiagnostics.set(doc.uri, diagnostics);
+        errorDiagnostics.set(doc.uri, diagnostics);
     }
 }
 exports.refreshDiagnostics = refreshDiagnostics;
+function addWarningProbablyWrongName(diagnostics, atoms, doc) {
+    // atoms.map(el => console.log(el));
+    atoms.map(atom => {
+        if (atom.count === 1) {
+            console.log("OK");
+            const line = findElemInText(doc, atom.name);
+            diagnostics.push(createDiagnostic(doc, doc.lineAt(line), line, `${atom.name} is used only once`, vscode.DiagnosticSeverity.Warning));
+        }
+        else {
+            diagnostics = diagnostics.filter(obj => {
+                console.log(obj.message);
+                return !obj.message.endsWith("once");
+            });
+        }
+    });
+    return diagnostics;
+}
+// return vscode.TextDocument to create after diagnostics
+function findElemInText(doc, token) {
+    for (let lineIndex = 0; lineIndex < doc.lineCount; lineIndex++) {
+        const lineOfText = doc.lineAt(lineIndex);
+        if (lineOfText.text.includes(token) && !lineOfText.text.includes("not")) {
+            return lineIndex;
+        }
+    }
+    return -1;
+}
+function checkIsRule(constructs) {
+    if (constructs[0][1] !== ASPCore2Lexer_1.ASPCore2Lexer.SYMBOLIC_CONSTANT) { // non inizia con un atomo CODE 2
+        return false;
+    }
+    for (let i = 0; i < constructs.length; i++) {
+        if (constructs[i][1] === ASPCore2Lexer_1.ASPCore2Lexer.CONS) { // è presente il :-
+            return true;
+        }
+    }
+    return false;
+}
+function checkSafe(heads, tails) {
+    let safe = true;
+    if (heads.length === 0 || tails.length === 0)
+        return !safe;
+    tails.map((el) => {
+        if (!heads.includes(el)) {
+            safe = false;
+        }
+    });
+    return safe;
+}
 //Crea una diagnostica, ovvero un oggetto di vscode che indica che errore c'è stato
-function createDiagnostic(doc, lineOfText, lineIndex, codeError) {
-    const index = lineOfText.text.indexOf(END_CHARACTER_OF_A_RULE);
+function createDiagnostic(doc, lineOfText, lineIndex, codeError, severity) {
+    // const index = lineOfText.text.indexOf(END_CHARACTER_OF_A_RULE);
     const range = new vscode.Range(lineIndex, 0, lineIndex, 0 + lineOfText.text.length);
-    const diagnostic = new vscode.Diagnostic(range, codeError, vscode.DiagnosticSeverity.Error);
+    const diagnostic = new vscode.Diagnostic(range, codeError, severity);
     //In questa sezione di codice si inferisce qual'è la causa dell'errore
     //Modifica il messaggio d'errore in base alla causa dell'errore
     /*if(codeError == "001"){
-          diagnostic.message = "The format of the aggregate is incorrect.";
-          diagnostic.code = "001";
-      }
-      else if(codeError == "010"){
-          diagnostic.message = "The format of the built-in is incorrect";
-          diagnostic.code = "010";
-      }*/
+                diagnostic.message = "The format of the aggregate is incorrect.";
+                diagnostic.code = "001";
+            }
+            else if(codeError == "010"){
+                diagnostic.message = "The format of the built-in is incorrect";
+                diagnostic.code = "010";
+            }*/
     return diagnostic;
 }
-function subscribeToDocumentChanges(context, emojiDiagnostics) {
+function subscribeToDocumentChanges(context, errorDiagnostics) {
     if (vscode.window.activeTextEditor) {
-        refreshDiagnostics(vscode.window.activeTextEditor.document, emojiDiagnostics);
+        refreshDiagnostics(vscode.window.activeTextEditor.document, errorDiagnostics);
     }
     context.subscriptions.push(vscode.window.onDidChangeActiveTextEditor((editor) => {
         if (editor) {
-            refreshDiagnostics(editor.document, emojiDiagnostics);
+            refreshDiagnostics(editor.document, errorDiagnostics);
         }
     }));
-    context.subscriptions.push(vscode.workspace.onDidChangeTextDocument((e) => refreshDiagnostics(e.document, emojiDiagnostics)));
-    context.subscriptions.push(vscode.workspace.onDidCloseTextDocument((doc) => emojiDiagnostics.delete(doc.uri)));
+    context.subscriptions.push(vscode.workspace.onDidChangeTextDocument((e) => refreshDiagnostics(e.document, errorDiagnostics)));
+    context.subscriptions.push(vscode.workspace.onDidCloseTextDocument((doc) => errorDiagnostics.delete(doc.uri)));
 }
 exports.subscribeToDocumentChanges = subscribeToDocumentChanges;
 //# sourceMappingURL=diagnostics.js.map
