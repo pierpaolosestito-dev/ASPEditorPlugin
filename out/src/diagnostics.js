@@ -116,43 +116,27 @@ function addWarningProbablyWrongName(diagnostics, atoms, doc) {
 function findElemInText(doc, token) {
     const multilineTestSameLine = new RegExp('\\%\\*\\*\\n*(?:.+\\n*)*\\*\\*\\%');
     const multilineCommentSameLine = new RegExp('\\%\\/\\n*(?:.+\\n*)*\\/\\%');
-    let openTests = false;
-    let closeTests = true; //Non ci sono test aperti
-    let openComments = false;
-    let closeComments = true;
+    let tests = false;
+    let comments = false;
     for (let lineIndex = 0; lineIndex < doc.lineCount; lineIndex++) {
         //I test sono esenti dai Warning, vanno quindi rimossi.
         const lineOfText = doc.lineAt(lineIndex).text;
-        //Controllo se lineOfText si trova in un test
-        if (!openTests) {
-            openTests = checkRegex(lineOfText, multilineTestSameLine, '%**');
-            if (openTests) {
-                closeTests = false;
-            }
+        if (!tests && checkRegex(lineOfText, multilineTestSameLine, '%**')) {
+            tests = true;
         }
-        if (!closeTests) {
-            closeTests = checkRegex(lineOfText, multilineTestSameLine, '**%');
-            if (closeTests) {
-                openTests = false;
-            }
+        if (tests && checkRegex(lineOfText, multilineTestSameLine, '**%')) {
+            tests = false;
         }
-        //Controllo se lineOfText si trova in un commento
-        if (!openComments) {
-            openComments = checkRegex(lineOfText, multilineCommentSameLine, '%/');
-            if (openComments) {
-                closeComments = false;
-            }
+        if (!comments && checkRegex(lineOfText, multilineCommentSameLine, '%/')) {
+            comments = true;
         }
-        if (!closeComments) {
-            closeComments = checkRegex(lineOfText, multilineCommentSameLine, '/%');
-            if (closeComments) {
-                openComments = false;
-            }
+        if (comments && checkRegex(lineOfText, multilineCommentSameLine, '/%')) {
+            comments = false;
         }
         //Se tests=true, siamo ancora in un test
         //Se tests=false non siamo più in un test
         //Stesso per i commenti
-        if (lineOfText.includes(token) && !lineOfText.includes("not") && closeTests && closeComments) {
+        if (lineOfText.includes(token) && !lineOfText.includes("not") && !tests && !comments) {
             return lineIndex;
         }
     }

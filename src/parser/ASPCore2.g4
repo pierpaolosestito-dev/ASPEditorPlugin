@@ -492,5 +492,5 @@ ANNOTATION_GLOBAL_WASP_HEURISTIC_ELEMENTS: '@elements';
 
 EMPTY_COMMENT: '%' '\n' -> skip;
 COMMENT: '%' ~('@' | '\n') (.)*? '\n' -> skip;
-MULTILINE_COMMENT: '%/' .*? '/%' -> skip;
+MULTILINE_COMMENT: '%/' .*? '/%' -> channel(HIDDEN);
 TESTS: '%**' .*? '**%' -> skip;
