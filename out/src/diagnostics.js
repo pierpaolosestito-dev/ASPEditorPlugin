@@ -44,7 +44,7 @@ function refreshDiagnostics(doc, errorDiagnostics) {
             for (let i = 0; i < tokens.getTokens().length; i++) {
                 constructs.push([tokens.get(i).text, tokens.get(i).type]);
             }
-            //constructs.map(l => console.log(l, '\n'));
+            constructs.map(l => console.log(l, '\n'));
             const constructsFiltered = [];
             const heads = [];
             const tails = [];
@@ -96,6 +96,7 @@ function addWarningProbablyWrongName(diagnostics, atoms, doc) {
     atoms.map(atom => {
         if (atom.count === 1) {
             const line = findElemInText(doc, atom.name);
+            console.log('line = ', line);
             if (line !== -1) {
                 const msg = `${atom.name} is used only once`;
                 diagnostics.push(createDiagnostic(doc, doc.lineAt(line), line, msg, vscode.DiagnosticSeverity.Warning));
@@ -116,55 +117,54 @@ function findElemInText(doc, token) {
     const multilineTestSameLine = new RegExp('\\%\\*\\*\\n*(?:.+\\n*)*\\*\\*\\%');
     const multilineCommentSameLine = new RegExp('\\%\\/\\n*(?:.+\\n*)*\\/\\%');
     let openTests = false;
-    let closeTests = false;
+    let closeTests = true; //Non ci sono test aperti
     let openComments = false;
-    let closeComments = false;
+    let closeComments = true;
     for (let lineIndex = 0; lineIndex < doc.lineCount; lineIndex++) {
-        const index = lineIndex;
         //I test sono esenti dai Warning, vanno quindi rimossi.
         const lineOfText = doc.lineAt(lineIndex).text;
         //Controllo se lineOfText si trova in un test
         if (!openTests) {
             openTests = checkRegex(lineOfText, multilineTestSameLine, '%**');
+            if (openTests) {
+                closeTests = false;
+            }
         }
         if (!closeTests) {
             closeTests = checkRegex(lineOfText, multilineTestSameLine, '**%');
+            if (closeTests) {
+                openTests = false;
+            }
         }
         //Controllo se lineOfText si trova in un commento
         if (!openComments) {
             openComments = checkRegex(lineOfText, multilineCommentSameLine, '%/');
+            if (openComments) {
+                closeComments = false;
+            }
         }
         if (!closeComments) {
             closeComments = checkRegex(lineOfText, multilineCommentSameLine, '/%');
+            if (closeComments) {
+                openComments = false;
+            }
         }
         //Se tests=true, siamo ancora in un test
         //Se tests=false non siamo più in un test
         //Stesso per i commenti
-        if (lineOfText.includes(token) && !lineOfText.includes("not") && !closeTests && !closeComments) {
+        if (lineOfText.includes(token) && !lineOfText.includes("not") && closeTests && closeComments) {
             return lineIndex;
         }
     }
+    //Se non trova nulla restituisce -1
     return -1;
 }
 function checkRegex(lineOfText, regex, splitter) {
-    let result = false;
     const sameLine = regex.test(lineOfText);
     if (sameLine) {
         lineOfText = lineOfText.replace(regex, "");
     }
-    if (splitter === '%**' || splitter === '%/') {
-        const open = lineOfText.split(splitter).length > 1;
-        if (open) {
-            result = true;
-        }
-    }
-    if (splitter === '**%' || splitter === '/%') {
-        const close = lineOfText.split(splitter).length > 1;
-        if (close) {
-            result = false;
-        }
-    }
-    return result;
+    return lineOfText.split(splitter).length > 1;
 }
 function checkIsRule(constructs) {
     if (constructs[0][1] !== ASPCore2Lexer_1.ASPCore2Lexer.SYMBOLIC_CONSTANT) { // non inizia con un atomo CODE 2

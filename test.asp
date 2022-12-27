@@ -15,3 +15,4 @@ assert = {
 @isAnswerSet (set = "b(1). c(1). b(2). c(3). a(1). a(3).")
 }
 **%
+
