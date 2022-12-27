@@ -74,7 +74,7 @@ export function refreshDiagnostics(
 			for (let i = 0; i < constructs.length; i++) {
 				//TODO filtrare i token
 
-				if (constructs[i][1] === 1 || negation) { // se sono atomi negativi non li inserisco né in coda né in testa
+				if (constructs[i][1] === ASPCore2Lexer.NAF || negation) { // se sono atomi negativi non li inserisco né in coda né in testa
 					if (constructs[i][1] === ASPCore2Lexer.CONS) {
 						negation = false;
 					} else {
