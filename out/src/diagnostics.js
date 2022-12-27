@@ -13,8 +13,6 @@ const ASPCore2Parser_1 = require("./parser/ASPCore2Parser");
 /** String to detect in the text document. */
 const END_CHARACTER_OF_A_RULE = ".";
 exports.CODE_ERROR = "Errore 104";
-const aggregatesRegex = new RegExp(/^#(?:count|sum|times|min|max){\s*(?:\w+|_)\s*(,\s*(?:\w+|_))*\s*:\s*\w+\(\s*(?:\w+|_)(\s*(?:,\s*(?:\w+|_)*\s*|\s*\))*\s*)\s*(?:,\s*\w+\(\s*(?:\w+|_)(\s*,\s*(?:\w+|_)*\s*)*\)\s*)*\s*}$/g);
-const builtInRegex = new RegExp(/^&\w+\s*\(\s*\w+\s*(\s*,\s*\w+\s*)*(\s*;\s*\w+\s*)\)$/g);
 /**
  * Analyzes the text document for problems.
  * This demo diagnostic problem provider finds all mentions of 'emoji'.
@@ -37,7 +35,8 @@ function refreshDiagnostics(doc, errorDiagnostics) {
             aspParser.addErrorListener({
                 syntaxError(recognizer, offendingSymbol, line, charPositionInLine, msg, e) {
                     diagnostics.push(createDiagnostic(doc, lineOfText, lineIndex, msg, vscode.DiagnosticSeverity.Error));
-                    console.log(msg);
+                    //console.log('lineOfText = ', lineOfText.text, '\nlineIndex = ', lineIndex, 'msg = ', msg);
+                    //console.log(msg);
                 },
             });
             aspParser.program();
@@ -45,6 +44,7 @@ function refreshDiagnostics(doc, errorDiagnostics) {
             for (let i = 0; i < tokens.getTokens().length; i++) {
                 constructs.push([tokens.get(i).text, tokens.get(i).type]);
             }
+            //constructs.map(l => console.log(l, '\n'));
             const constructsFiltered = [];
             const heads = [];
             const tails = [];
@@ -52,7 +52,7 @@ function refreshDiagnostics(doc, errorDiagnostics) {
             let negation = false;
             for (let i = 0; i < constructs.length; i++) {
                 //TODO filtrare i token
-                if (constructs[i][1] === 1 || negation) { // se sono atomi negativi non li inserisco né in coda né in testa
+                if (constructs[i][1] === ASPCore2Lexer_1.ASPCore2Lexer.NAF || negation) { // se sono atomi negativi non li inserisco né in coda né in testa
                     if (constructs[i][1] === ASPCore2Lexer_1.ASPCore2Lexer.CONS) {
                         negation = false;
                     }
@@ -81,7 +81,9 @@ function refreshDiagnostics(doc, errorDiagnostics) {
                 }
             }
             if (!checkSafe(heads, tails) && checkIsRule(constructs)) {
-                diagnostics.push(createDiagnostic(doc, lineOfText, lineIndex, "This rule is no safe", vscode.DiagnosticSeverity.Warning));
+                const msg = "This rule is not safe";
+                diagnostics.push(createDiagnostic(doc, lineOfText, lineIndex, msg, vscode.DiagnosticSeverity.Warning));
+                //console.log('lineOfText = ', lineOfText.text, '\nlineIndex = ', lineIndex, 'msg = ', msg);
             }
             diagnostics = addWarningProbablyWrongName(diagnostics, atoms, doc);
         }
@@ -93,13 +95,16 @@ function addWarningProbablyWrongName(diagnostics, atoms, doc) {
     // atoms.map(el => console.log(el));
     atoms.map(atom => {
         if (atom.count === 1) {
-            console.log("OK");
             const line = findElemInText(doc, atom.name);
-            diagnostics.push(createDiagnostic(doc, doc.lineAt(line), line, `${atom.name} is used only once`, vscode.DiagnosticSeverity.Warning));
+            if (line !== -1) {
+                const msg = `${atom.name} is used only once`;
+                diagnostics.push(createDiagnostic(doc, doc.lineAt(line), line, msg, vscode.DiagnosticSeverity.Warning));
+                //console.log('lineOfText = ', doc.lineAt(line), '\nlineIndex = ', line, 'msg = ', msg);
+            }
         }
         else {
             diagnostics = diagnostics.filter(obj => {
-                console.log(obj.message);
+                //console.log(obj.message);
                 return !obj.message.endsWith("once");
             });
         }
@@ -108,13 +113,58 @@ function addWarningProbablyWrongName(diagnostics, atoms, doc) {
 }
 // return vscode.TextDocument to create after diagnostics
 function findElemInText(doc, token) {
+    const multilineTestSameLine = new RegExp('\\%\\*\\*\\n*(?:.+\\n*)*\\*\\*\\%');
+    const multilineCommentSameLine = new RegExp('\\%\\/\\n*(?:.+\\n*)*\\/\\%');
+    let openTests = false;
+    let closeTests = false;
+    let openComments = false;
+    let closeComments = false;
     for (let lineIndex = 0; lineIndex < doc.lineCount; lineIndex++) {
-        const lineOfText = doc.lineAt(lineIndex);
-        if (lineOfText.text.includes(token) && !lineOfText.text.includes("not")) {
+        const index = lineIndex;
+        //I test sono esenti dai Warning, vanno quindi rimossi.
+        const lineOfText = doc.lineAt(lineIndex).text;
+        //Controllo se lineOfText si trova in un test
+        if (!openTests) {
+            openTests = checkRegex(lineOfText, multilineTestSameLine, '%**');
+        }
+        if (!closeTests) {
+            closeTests = checkRegex(lineOfText, multilineTestSameLine, '**%');
+        }
+        //Controllo se lineOfText si trova in un commento
+        if (!openComments) {
+            openComments = checkRegex(lineOfText, multilineCommentSameLine, '%/');
+        }
+        if (!closeComments) {
+            closeComments = checkRegex(lineOfText, multilineCommentSameLine, '/%');
+        }
+        //Se tests=true, siamo ancora in un test
+        //Se tests=false non siamo più in un test
+        //Stesso per i commenti
+        if (lineOfText.includes(token) && !lineOfText.includes("not") && !closeTests && !closeComments) {
             return lineIndex;
         }
     }
     return -1;
+}
+function checkRegex(lineOfText, regex, splitter) {
+    let result = false;
+    const sameLine = regex.test(lineOfText);
+    if (sameLine) {
+        lineOfText = lineOfText.replace(regex, "");
+    }
+    if (splitter === '%**' || splitter === '%/') {
+        const open = lineOfText.split(splitter).length > 1;
+        if (open) {
+            result = true;
+        }
+    }
+    if (splitter === '**%' || splitter === '/%') {
+        const close = lineOfText.split(splitter).length > 1;
+        if (close) {
+            result = false;
+        }
+    }
+    return result;
 }
 function checkIsRule(constructs) {
     if (constructs[0][1] !== ASPCore2Lexer_1.ASPCore2Lexer.SYMBOLIC_CONSTANT) { // non inizia con un atomo CODE 2

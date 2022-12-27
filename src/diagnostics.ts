@@ -5,19 +5,14 @@
 /** To demonstrate code actions associated with Diagnostics problems, this file provides a mock diagnostics entries. */
 import { CommonTokenStream, Recognizer } from "antlr4ts";
 import { ANTLRInputStream } from "antlr4ts/ANTLRInputStream";
+import { removeAllListeners } from "process";
+import { text } from "stream/consumers";
 import * as vscode from "vscode";
 import { ASPCore2Lexer } from "./parser/ASPCore2Lexer";
 import { ASPCore2Parser } from "./parser/ASPCore2Parser";
 /** String to detect in the text document. */
 const END_CHARACTER_OF_A_RULE = ".";
 export const CODE_ERROR = "Errore 104";
-
-const aggregatesRegex = new RegExp(
-	/^#(?:count|sum|times|min|max){\s*(?:\w+|_)\s*(,\s*(?:\w+|_))*\s*:\s*\w+\(\s*(?:\w+|_)(\s*(?:,\s*(?:\w+|_)*\s*|\s*\))*\s*)\s*(?:,\s*\w+\(\s*(?:\w+|_)(\s*,\s*(?:\w+|_)*\s*)*\)\s*)*\s*}$/g
-);
-const builtInRegex = new RegExp(
-	/^&\w+\s*\(\s*\w+\s*(\s*,\s*\w+\s*)*(\s*;\s*\w+\s*)\)$/g
-);
 
 /**
  * Analyzes the text document for problems.
@@ -54,7 +49,8 @@ export function refreshDiagnostics(
 					e: Error | undefined
 				): void {
 					diagnostics.push(createDiagnostic(doc, lineOfText, lineIndex, msg, vscode.DiagnosticSeverity.Error));
-					console.log(msg);
+					//console.log('lineOfText = ', lineOfText.text, '\nlineIndex = ', lineIndex, 'msg = ', msg);
+					//console.log(msg);
 				},
 			});
 			aspParser.program();
@@ -63,6 +59,8 @@ export function refreshDiagnostics(
 			for (let i = 0; i < tokens.getTokens().length; i++) {
 				constructs.push([tokens.get(i).text as string, tokens.get(i).type]);
 			}
+
+			//constructs.map(l => console.log(l, '\n'));
 
 			const constructsFiltered: [string, number][] = [];
 			const heads = [];
@@ -102,8 +100,9 @@ export function refreshDiagnostics(
 				}
 			}
 			if (!checkSafe(heads, tails) && checkIsRule(constructs)) {
-				diagnostics.push(createDiagnostic(doc, lineOfText, lineIndex, "This rule is no safe", vscode.DiagnosticSeverity.Warning));
-
+				const msg = "This rule is not safe";
+				diagnostics.push(createDiagnostic(doc, lineOfText, lineIndex, msg, vscode.DiagnosticSeverity.Warning));
+				//console.log('lineOfText = ', lineOfText.text, '\nlineIndex = ', lineIndex, 'msg = ', msg);
 			}
 			diagnostics = addWarningProbablyWrongName(diagnostics, atoms, doc);
 
@@ -117,13 +116,16 @@ function addWarningProbablyWrongName(diagnostics: vscode.Diagnostic[], atoms: [{
 
 	atoms.map(atom => {
 		if (atom.count === 1) {
-			console.log("OK");
 			const line = findElemInText(doc, atom.name);
-			diagnostics.push(createDiagnostic(doc, doc.lineAt(line), line, `${atom.name} is used only once`, vscode.DiagnosticSeverity.Warning));
+			if (line !== -1) {
+				const msg = `${atom.name} is used only once`;
+				diagnostics.push(createDiagnostic(doc, doc.lineAt(line), line, msg, vscode.DiagnosticSeverity.Warning));
+				//console.log('lineOfText = ', doc.lineAt(line), '\nlineIndex = ', line, 'msg = ', msg);
+			}
 
 		} else {
 			diagnostics = diagnostics.filter(obj => {
-				console.log(obj.message);
+				//console.log(obj.message);
 				return !obj.message.endsWith("once");
 			}
 			);
@@ -136,14 +138,61 @@ function addWarningProbablyWrongName(diagnostics: vscode.Diagnostic[], atoms: [{
 }
 // return vscode.TextDocument to create after diagnostics
 function findElemInText(doc: vscode.TextDocument, token: string) {
+	const multilineTestSameLine = new RegExp('\\%\\*\\*\\n*(?:.+\\n*)*\\*\\*\\%');
+	const multilineCommentSameLine = new RegExp('\\%\\/\\n*(?:.+\\n*)*\\/\\%');
+	let openTests = false;
+	let closeTests = false;
+	let openComments = false;
+	let closeComments = false;
 	for (let lineIndex = 0; lineIndex < doc.lineCount; lineIndex++) {
-		const lineOfText = doc.lineAt(lineIndex);
-		if (lineOfText.text.includes(token) && !lineOfText.text.includes("not")) {
+		const index = lineIndex;
+		//I test sono esenti dai Warning, vanno quindi rimossi.
+		const lineOfText = doc.lineAt(lineIndex).text;
+
+		//Controllo se lineOfText si trova in un test
+		if (!openTests) {
+			openTests = checkRegex(lineOfText, multilineTestSameLine, '%**');
+		}
+		if (!closeTests) {
+			closeTests = checkRegex(lineOfText, multilineTestSameLine, '**%');
+		}
+		//Controllo se lineOfText si trova in un commento
+		if (!openComments) {
+			openComments = checkRegex(lineOfText, multilineCommentSameLine, '%/');
+		}
+		if (!closeComments) {
+			closeComments = checkRegex(lineOfText, multilineCommentSameLine, '/%');
+		}
+
+		//Se tests=true, siamo ancora in un test
+		//Se tests=false non siamo più in un test
+		//Stesso per i commenti
+		if (lineOfText.includes(token) && !lineOfText.includes("not") && !closeTests && !closeComments) {
 			return lineIndex;
 		}
+
 	}
 	return -1;
 }
+
+function checkRegex(lineOfText: string, regex: RegExp, splitter: string) {
+	let result = false;
+	const sameLine = regex.test(lineOfText);
+	if (sameLine) {
+		lineOfText = lineOfText.replace(regex, "");
+	}
+
+	if (splitter === '%**' || splitter === '%/') {
+		const open = lineOfText.split(splitter).length > 1;
+		if (open) { result = true; }
+	}
+	if (splitter === '**%' || splitter === '/%') {
+		const close = lineOfText.split(splitter).length > 1;
+		if (close) { result = false; }
+	}
+	return result;
+}
+
 function checkIsRule(constructs: [string, number][]) {
 	if (constructs[0][1] !== ASPCore2Lexer.SYMBOLIC_CONSTANT) { // non inizia con un atomo CODE 2
 		return false;

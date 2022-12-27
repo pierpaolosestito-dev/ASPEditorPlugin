@@ -1,4 +1,4 @@
-// Generated from src/parser/ASPCore2.g4 by ANTLR 4.9.0-SNAPSHOT
+// Generated from ./src/parser/ASPCore2.g4 by ANTLR 4.9.0-SNAPSHOT
 
 
 import { ATN } from "antlr4ts/atn/ATN";
@@ -13,7 +13,7 @@ import { ParserATNSimulator } from "antlr4ts/atn/ParserATNSimulator";
 import { ParseTreeListener } from "antlr4ts/tree/ParseTreeListener";
 import { ParseTreeVisitor } from "antlr4ts/tree/ParseTreeVisitor";
 import { RecognitionException } from "antlr4ts/RecognitionException";
-// import { RuleContext } from "antlr4ts/RuleContext";
+//import { RuleContext } from "antlr4ts/RuleContext";
 //import { RuleVersion } from "antlr4ts/RuleVersion";
 import { TerminalNode } from "antlr4ts/tree/TerminalNode";
 import { Token } from "antlr4ts/Token";
@@ -103,6 +103,8 @@ export class ASPCore2Parser extends Parser {
 	public static readonly ANNOTATION_GLOBAL_WASP_HEURISTIC_ELEMENTS = 73;
 	public static readonly EMPTY_COMMENT = 74;
 	public static readonly COMMENT = 75;
+	public static readonly MULTILINE_COMMENT = 76;
+	public static readonly TESTS = 77;
 	public static readonly RULE_program = 0;
 	public static readonly RULE_rule = 1;
 	public static readonly RULE_simple_rule = 2;
@@ -275,7 +277,7 @@ export class ASPCore2Parser extends Parser {
 		"ANNOTATION_GLOBAL_ATOM_INDEXED", "ANNOTATION_GLOBAL_PARTIAL_ORDER", "ANNOTATION_GLOBAL_EXTATOM_CONVERSION", 
 		"ANNOTATION_RULE_TO_DECOMPOSE", "ANNOTATION_RULE_TO_NOT_DECOMPOSE", "ANNOTATION_GLOBAL_WASP_HEURISTIC", 
 		"ANNOTATION_GLOBAL_WASP_HEURISTIC_FILE", "ANNOTATION_GLOBAL_WASP_HEURISTIC_ELEMENTS", 
-		"EMPTY_COMMENT", "COMMENT",
+		"EMPTY_COMMENT", "COMMENT", "MULTILINE_COMMENT", "TESTS",
 	];
 	public static readonly VOCABULARY: Vocabulary = new VocabularyImpl(ASPCore2Parser._LITERAL_NAMES, ASPCore2Parser._SYMBOLIC_NAMES, []);
 
@@ -5141,7 +5143,7 @@ export class ASPCore2Parser extends Parser {
 
 	private static readonly _serializedATNSegments: number = 2;
 	private static readonly _serializedATNSegment0: string =
-		"\x03\uC91D\uCABA\u058D\uAFBA\u4F53\u0607\uEA8B\uC241\x03M\u03FC\x04\x02" +
+		"\x03\uC91D\uCABA\u058D\uAFBA\u4F53\u0607\uEA8B\uC241\x03O\u03FC\x04\x02" +
 		"\t\x02\x04\x03\t\x03\x04\x04\t\x04\x04\x05\t\x05\x04\x06\t\x06\x04\x07" +
 		"\t\x07\x04\b\t\b\x04\t\t\t\x04\n\t\n\x04\v\t\v\x04\f\t\f\x04\r\t\r\x04" +
 		"\x0E\t\x0E\x04\x0F\t\x0F\x04\x10\t\x10\x04\x11\t\x11\x04\x12\t\x12\x04" +

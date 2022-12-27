@@ -1,5 +1,5 @@
 "use strict";
-// Generated from src/parser/ASPCore2.g4 by ANTLR 4.9.0-SNAPSHOT
+// Generated from ./src/parser/ASPCore2.g4 by ANTLR 4.9.0-SNAPSHOT
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Leftward_left_aggregateContext = exports.Lower_guard_leftward_left_aggregateContext = exports.Compare_aggregateContext = exports.Upper_guard_compare_aggregateContext = exports.Lower_guard_compare_aggregateContext = exports.QueryContext = exports.DirectiveContext = exports.IdentifierContext = exports.VarsContext = exports.Functional_termContext = exports.Variable_termContext = exports.Ground_termContext = exports.Basic_termContext = exports.FactorContext = exports.ExprContext = exports.TermContext = exports.Term__Context = exports.Term_Context = exports.Arithop2Context = exports.Arithop1Context = exports.BinopContext = exports.CompareopContext = exports.Builtin_atomContext = exports.Basic_termsContext = exports.TermsContext = exports.ExtSemicolContext = exports.ExtAtomContext = exports.AtomContext = exports.Classic_literalContext = exports.Existential_atomContext = exports.Naf_literal_aggregateContext = exports.Naf_literalContext = exports.Naf_literalsContext = exports.Choice_elements_literalsContext = exports.Choice_element_atomContext = exports.Choice_elementContext = exports.Choice_elementsContext = exports.Upper_guardContext = exports.Lower_guardContext = exports.Choice_atomContext = exports.ConjunctionContext = exports.DisjunctionContext = exports.Levels_and_termsContext = exports.Weight_at_levelsContext = exports.BodyContext = exports.HeadContext = exports.Simple_ruleContext = exports.RuleContext = exports.ProgramContext = exports.ASPCore2Parser = void 0;
 exports.Annotation_global_wasp_propagatorContext = exports.Annotation_rule_look_aheadContext = exports.Annotation_rule_align_substitutionsContext = exports.Annotation_rule_rewriting_arithContext = exports.Annotation_rule_projection_valueContext = exports.Annotation_rule_projectionContext = exports.Annotation_global_partial_orderContext = exports.Annotation_rule_partial_orderContext = exports.Annotation_global_partial_order_beginContext = exports.Annotation_rule_partial_order_beginContext = exports.Global_atoms_annotation_afterContext = exports.Rule_atoms_annotation_afterContext = exports.Global_atoms_annotation_beforeContext = exports.Rule_atoms_annotation_beforeContext = exports.Global_atom_annotation_afterContext = exports.Rule_atom_annotation_afterContext = exports.Global_atom_annotation_beforeContext = exports.Rule_atom_annotation_beforeContext = exports.Global_naf_literal_annotationContext = exports.Global_indexing_argumentsContext = exports.Rule_naf_literal_annotationContext = exports.Rule_indexing_argumentsContext = exports.Annotation_global_atom_indexedContext = exports.Annotation_rule_atom_indexedContext = exports.Global_ordering_typeContext = exports.Rule_ordering_typeContext = exports.Extatom_conv_typeContext = exports.Extatom_conv_typesContext = exports.Annotation_extpredicateContext = exports.Annotation_global_extatom_conversionContext = exports.Annotation_global_orderingContext = exports.Annotation_rule_orderingContext = exports.Annotation_rule_to_not_decomposeContext = exports.Annotation_rule_to_decomposeContext = exports.Annotation_ruleContext = exports.Annotations_ruleContext = exports.Annotation_globalContext = exports.Aggregate_functionContext = exports.Aggregate_elementContext = exports.Aggregate_elementsContext = exports.AggregateContext = exports.RightwardopContext = exports.LeftwardopContext = exports.Aggregate_atomContext = exports.Right_aggregateContext = exports.Upper_guard_rightward_right_aggregateContext = exports.Upper_guard_leftward_right_aggregateContext = exports.Rightward_left_aggregateContext = exports.Lower_guard_rightward_left_aggregateContext = exports.Left_aggregateContext = void 0;
@@ -4961,6 +4961,8 @@ ASPCore2Parser.ANNOTATION_GLOBAL_WASP_HEURISTIC_FILE = 72;
 ASPCore2Parser.ANNOTATION_GLOBAL_WASP_HEURISTIC_ELEMENTS = 73;
 ASPCore2Parser.EMPTY_COMMENT = 74;
 ASPCore2Parser.COMMENT = 75;
+ASPCore2Parser.MULTILINE_COMMENT = 76;
+ASPCore2Parser.TESTS = 77;
 ASPCore2Parser.RULE_program = 0;
 ASPCore2Parser.RULE_rule = 1;
 ASPCore2Parser.RULE_simple_rule = 2;
@@ -5132,11 +5134,11 @@ ASPCore2Parser._SYMBOLIC_NAMES = [
     "ANNOTATION_GLOBAL_ATOM_INDEXED", "ANNOTATION_GLOBAL_PARTIAL_ORDER", "ANNOTATION_GLOBAL_EXTATOM_CONVERSION",
     "ANNOTATION_RULE_TO_DECOMPOSE", "ANNOTATION_RULE_TO_NOT_DECOMPOSE", "ANNOTATION_GLOBAL_WASP_HEURISTIC",
     "ANNOTATION_GLOBAL_WASP_HEURISTIC_FILE", "ANNOTATION_GLOBAL_WASP_HEURISTIC_ELEMENTS",
-    "EMPTY_COMMENT", "COMMENT",
+    "EMPTY_COMMENT", "COMMENT", "MULTILINE_COMMENT", "TESTS",
 ];
 ASPCore2Parser.VOCABULARY = new VocabularyImpl_1.VocabularyImpl(ASPCore2Parser._LITERAL_NAMES, ASPCore2Parser._SYMBOLIC_NAMES, []);
 ASPCore2Parser._serializedATNSegments = 2;
-ASPCore2Parser._serializedATNSegment0 = "\x03\uC91D\uCABA\u058D\uAFBA\u4F53\u0607\uEA8B\uC241\x03M\u03FC\x04\x02" +
+ASPCore2Parser._serializedATNSegment0 = "\x03\uC91D\uCABA\u058D\uAFBA\u4F53\u0607\uEA8B\uC241\x03O\u03FC\x04\x02" +
     "\t\x02\x04\x03\t\x03\x04\x04\t\x04\x04\x05\t\x05\x04\x06\t\x06\x04\x07" +
     "\t\x07\x04\b\t\b\x04\t\t\t\x04\n\t\n\x04\v\t\v\x04\f\t\f\x04\r\t\r\x04" +
     "\x0E\t\x0E\x04\x0F\t\x0F\x04\x10\t\x10\x04\x11\t\x11\x04\x12\t\x12\x04" +
