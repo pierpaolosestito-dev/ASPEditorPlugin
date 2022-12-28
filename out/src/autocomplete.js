@@ -88,14 +88,13 @@ function getASPIntellisenseProvider(context) {
                     console.log(dic2);
                     for (const suggest of dic2) {
                         console.log(suggest);
-                        if (!line.text.includes(suggest))
-                            completionItems.push(new vscode.CompletionItem(suggest, vscode.CompletionItemKind.Constant));
+                        //if(!line.text.includes(suggest))
+                        completionItems.push(new vscode.CompletionItem(suggest, vscode.CompletionItemKind.Constant));
                     }
                 }
             }
             else if (parenthesis) {
-                console.log("parenthesisPosition", parenthesisPosition); //pino(C,B),
-                //, ) } #count{}<3, pino(X,Y)
+                console.log("parenthesisPosition", parenthesisPosition);
                 let predicato = "";
                 parenthesisPosition = parenthesisPosition - 1;
                 while (parenthesisPosition >= 0 && line.text[parenthesisPosition] !== "," && line.text[parenthesisPosition] !== " ") { //Condizione da rafforzare
