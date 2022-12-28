@@ -4,7 +4,7 @@ exports.BuiltinAggregateInfo = exports.BuiltinAggregateFixer = void 0;
 const diagnostics_1 = require("./diagnostics");
 const similarity_1 = require("./utils/similarity");
 const dictionarizer_1 = require("./utils/dictionarizer");
-const dynamic_dictionary_1 = require("./utils/dynamic_dictionary");
+const dynamic_predicate_dictionary_1 = require("./utils/dynamic_predicate_dictionary");
 const path = require("path");
 const vscode = require("vscode");
 const COMMAND = 'code-actions-sample.command';
@@ -109,7 +109,7 @@ class BuiltinAggregateFixer {
         if (this.isAtStartOfDynamicPredicates(document, range)) {
             //Starting point for dynamic predicates correction
             const chiave = path.basename(document.fileName);
-            const dd = dynamic_dictionary_1.DynamicDictionary.getInstance();
+            const dd = dynamic_predicate_dictionary_1.DynamicPredicateDictionary.getInstance();
             const start = range.start;
             const line = document.lineAt(start.line).text;
             const aggregateRegex = /(\w+)\(/gm;

@@ -1,9 +1,9 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const dynamic_dictionary_1 = require("../../src/utils/dynamic_dictionary");
+const dynamic_predicate_dictionary_1 = require("../utils/dynamic_predicate_dictionary");
 const assert = require("assert");
 describe('Dynamic Dictionary Test Suite', () => {
-    const dynamicdictionary = new dynamic_dictionary_1.DynamicDictionary();
+    const dynamicdictionary = new dynamic_predicate_dictionary_1.DynamicPredicateDictionary();
     beforeEach(() => {
         dynamicdictionary.add_field('1', [{ label: "Test" }]);
         dynamicdictionary.add_field('2', [{ label: "Test" }, { label: "Test" }]);

@@ -1,18 +1,18 @@
-export class DynamicDictionary {
+export class DynamicPredicateDictionary {
 
 	dictionary: Map<string, any>;
-	private static _instance: DynamicDictionary;
+	private static _instance: DynamicPredicateDictionary;
 
 	constructor() {
 		this.dictionary = new Map<string, any>();
 	}
 
-	static getInstance(): DynamicDictionary {
-		if (!DynamicDictionary._instance) {
-			DynamicDictionary._instance = new DynamicDictionary();
+	static getInstance(): DynamicPredicateDictionary {
+		if (!DynamicPredicateDictionary._instance) {
+			DynamicPredicateDictionary._instance = new DynamicPredicateDictionary();
 		}
 
-		return DynamicDictionary._instance;
+		return DynamicPredicateDictionary._instance;
 	}
 
 	add_field(key: string, values: any) {

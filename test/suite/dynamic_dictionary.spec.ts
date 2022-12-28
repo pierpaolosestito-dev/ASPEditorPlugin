@@ -1,10 +1,10 @@
-import { DynamicDictionary } from '../../src/utils/dynamic_dictionary';
+import { DynamicPredicateDictionary } from '../utils/dynamic_predicate_dictionary';
 import { dictionarizer } from '../../src/utils/dictionarizer';
 import * as assert from 'assert';
 
 describe('Dynamic Dictionary Test Suite', () => {
 
-	const dynamicdictionary= new DynamicDictionary();
+	const dynamicdictionary= new DynamicPredicateDictionary();
 
 	beforeEach(() => {
 			dynamicdictionary.add_field('1',[{label:"Test"}]);

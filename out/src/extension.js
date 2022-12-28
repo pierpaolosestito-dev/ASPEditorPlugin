@@ -26,7 +26,7 @@ function activate(context) {
     }));
     context.subscriptions.push(vscode.commands.registerCommand(COMMAND, () => vscode.env.openExternal(vscode.Uri.parse('https://www.dlvsystem.it/dlvsite/it/home_it/'))));
     //IntelliSense
-    context.subscriptions.push(vscode.languages.registerCompletionItemProvider('asp', (0, autocomplete_1.getASPIntellisenseProvider)(context), '#', '&', ':', '-'));
+    context.subscriptions.push(vscode.languages.registerCompletionItemProvider('asp', (0, autocomplete_1.getASPIntellisenseProvider)(context), '#', '&', ':', '-', '(', ','));
     context.subscriptions.push(vscode.languages.registerHoverProvider("asp", (0, autocomplete_1.getASPIntellisenseHoverProvider)(context)));
     (0, autocomplete_1.fillDictionaryWithDynamicPredicates)();
     (0, autocomplete_1.fillDictionaryWithDynamicTerms)();
