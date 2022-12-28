@@ -24,7 +24,7 @@ function refreshDiagnostics(doc, errorDiagnostics) {
     const atoms = [{ name: "", count: 0 }];
     if (regex.test(doc.fileName)) {
         let diagnostics = [];
-        const global_constructs = [];
+        let global_constructs = [];
         for (let lineIndex = 0; lineIndex < doc.lineCount; lineIndex++) {
             const lineOfText = doc.lineAt(lineIndex);
             const input = new ANTLRInputStream_1.ANTLRInputStream(lineOfText.text);
@@ -47,6 +47,10 @@ function refreshDiagnostics(doc, errorDiagnostics) {
                 constructs.push([text, type, index]);
                 global_constructs.push([text, type, index]);
             }
+            console.log('global_constructs prima = ', global_constructs.join('\n'));
+            //global_constructs = remove_tc(global_constructs, '%/', '/%');
+            global_constructs = remove_tc(global_constructs, '%**', '**%');
+            console.log('global_constructs dopo = ', global_constructs.join('\n'));
             //constructs.map(l => console.log(l, '\n'));
             const heads = [];
             const tails = [];
@@ -94,6 +98,23 @@ function refreshDiagnostics(doc, errorDiagnostics) {
     }
 }
 exports.refreshDiagnostics = refreshDiagnostics;
+//Rimuove test e commenti
+function remove_tc(global_constructs, open, close) {
+    let opened = false;
+    const result = [];
+    for (let i = 0; i < global_constructs.length; i++) {
+        if (global_constructs[i][0] === open) {
+            opened = true;
+        }
+        if (global_constructs[i][0] === close && opened) {
+            opened = false;
+        }
+        if (!opened) {
+            result.push(global_constructs[i]);
+        }
+    }
+    return result;
+}
 function addWarningProbablyWrongName(diagnostics, atoms, constructs, doc) {
     // atoms.map(el => console.log(el));
     atoms.map(atom => {
@@ -120,7 +141,21 @@ function addWarningProbablyWrongName(diagnostics, atoms, constructs, doc) {
     });
     return diagnostics;
 }
+/*
+
+function findElemInText(doc: vscode.TextDocument, token: string) {
+    for (let lineIndex = 0; lineIndex < doc.lineCount; lineIndex++) {
+        const lineOfText = doc.lineAt(lineIndex);
+        if (lineOfText.text.includes(token) && !lineOfText.text.includes("not")) {
+            return lineIndex;
+        }
+    }
+    return -1;
+}
+
+*/
 function findElemInText(constructs, token) {
+    //TODO lavorare sul documento, non sui costrutti
     for (let i = 0; i < constructs.length; i++) {
         //I test sono esenti dai Warning, vanno quindi rimossi.
         const c = constructs[i][0];

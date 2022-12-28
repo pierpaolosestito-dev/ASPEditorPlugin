@@ -491,8 +491,3 @@ ANNOTATION_RULE_TO_NOT_DECOMPOSE: '%@rule_to_not_decompose';
 ANNOTATION_GLOBAL_WASP_HEURISTIC: '%@global_heuristic';
 ANNOTATION_GLOBAL_WASP_HEURISTIC_FILE: '@file';
 ANNOTATION_GLOBAL_WASP_HEURISTIC_ELEMENTS: '@elements';
-
-EMPTY_COMMENT: '%' '\n' -> skip;
-COMMENT: '%' ~('@' | '\n') (.)*? '\n' -> skip;
-MULTILINE_COMMENT: '%/' .*? '/%' -> channel(HIDDEN);
-TESTS: '%**' .*? '**%' -> skip;

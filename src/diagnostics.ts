@@ -31,7 +31,7 @@ export function refreshDiagnostics(
 	if (regex.test(doc.fileName)) {
 		let diagnostics: vscode.Diagnostic[] = [];
 
-		const global_constructs: [string, number, number][] = [];
+		let global_constructs: [string, number, number][] = [];
 
 		for (let lineIndex = 0; lineIndex < doc.lineCount; lineIndex++) {
 			const lineOfText = doc.lineAt(lineIndex);
@@ -64,6 +64,13 @@ export function refreshDiagnostics(
 				constructs.push([text, type, index]);
 				global_constructs.push([text, type, index]);
 			}
+
+			console.log('global_constructs prima = ', global_constructs.join('\n'));
+
+			//global_constructs = remove_tc(global_constructs, '%/', '/%');
+			global_constructs = remove_tc(global_constructs, '%**', '**%');
+
+			console.log('global_constructs dopo = ', global_constructs.join('\n'));
 
 			//constructs.map(l => console.log(l, '\n'));
 
@@ -114,7 +121,28 @@ export function refreshDiagnostics(
 		errorDiagnostics.set(doc.uri, diagnostics);
 	}
 }
-function addWarningProbablyWrongName(diagnostics: vscode.Diagnostic[], atoms: [{ name: string, count: number }], constructs: [string, number, number][], doc : vscode.TextDocument) {
+
+//Rimuove test e commenti
+function remove_tc(global_constructs: [string, number, number][], open: string, close: string) {
+	let opened = false;
+	const result: [string, number, number][] = [];
+	for (let i = 0; i < global_constructs.length; i++) {
+		
+		if(global_constructs[i][0]===open){
+			opened = true;
+		}
+		if(global_constructs[i][0]===close && opened){
+			opened = false;
+		}
+		if(!opened){
+			result.push(global_constructs[i]);
+		}
+
+	}
+	return result;
+}
+
+function addWarningProbablyWrongName(diagnostics: vscode.Diagnostic[], atoms: [{ name: string, count: number }], constructs: [string, number, number][], doc: vscode.TextDocument) {
 	// atoms.map(el => console.log(el));
 	atoms.map(atom => {
 		//console.log('count ', atom.count, 'for ', atom.name);
@@ -142,11 +170,25 @@ function addWarningProbablyWrongName(diagnostics: vscode.Diagnostic[], atoms: [{
 	return diagnostics;
 }
 
+/*
+
+function findElemInText(doc: vscode.TextDocument, token: string) {
+	for (let lineIndex = 0; lineIndex < doc.lineCount; lineIndex++) {
+		const lineOfText = doc.lineAt(lineIndex);
+		if (lineOfText.text.includes(token) && !lineOfText.text.includes("not")) {
+			return lineIndex;
+		}
+	}
+	return -1;
+}
+
+*/
+
 function findElemInText(constructs: [string, number, number][], token: string) {
-	
+	//TODO lavorare sul documento, non sui costrutti
 	for (let i = 0; i < constructs.length; i++) {
 		//I test sono esenti dai Warning, vanno quindi rimossi.
-	
+
 		const c = constructs[i][0];
 		const t = token;
 		const cond1 = constructs[i][0].includes(token);
@@ -154,7 +196,7 @@ function findElemInText(constructs: [string, number, number][], token: string) {
 		//console.log(constructs.toString(), '\nt = ', t, '\ncond1 = ', cond1);
 		if (cond1 && cond2) {
 			const index = constructs[i][2];
-			return constructs[i][2]-1;
+			return constructs[i][2] - 1;
 		}
 
 	}

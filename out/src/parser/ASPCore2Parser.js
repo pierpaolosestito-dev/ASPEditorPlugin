@@ -11,7 +11,6 @@ const Parser_1 = require("antlr4ts/Parser");
 const ParserRuleContext_1 = require("antlr4ts/ParserRuleContext");
 const ParserATNSimulator_1 = require("antlr4ts/atn/ParserATNSimulator");
 const RecognitionException_1 = require("antlr4ts/RecognitionException");
-const RuleContext_1 = require("antlr4ts/RuleContext");
 const Token_1 = require("antlr4ts/Token");
 const VocabularyImpl_1 = require("antlr4ts/VocabularyImpl");
 const Utils = require("antlr4ts/misc/Utils");
@@ -76,7 +75,7 @@ class ASPCore2Parser extends Parser_1.Parser {
     }
     // @RuleVersion(0)
     rule() {
-        let _localctx = new RuleContext_1.RuleContext(this._ctx, this.state);
+        let _localctx = new RuleContext(this._ctx, this.state);
         this.enterRule(_localctx, 2, ASPCore2Parser.RULE_rule);
         try {
             this.state = 222;
@@ -4962,10 +4961,6 @@ ASPCore2Parser.ANNOTATION_RULE_TO_NOT_DECOMPOSE = 72;
 ASPCore2Parser.ANNOTATION_GLOBAL_WASP_HEURISTIC = 73;
 ASPCore2Parser.ANNOTATION_GLOBAL_WASP_HEURISTIC_FILE = 74;
 ASPCore2Parser.ANNOTATION_GLOBAL_WASP_HEURISTIC_ELEMENTS = 75;
-ASPCore2Parser.EMPTY_COMMENT = 76;
-ASPCore2Parser.COMMENT = 77;
-ASPCore2Parser.MULTILINE_COMMENT = 78;
-ASPCore2Parser.TESTS = 79;
 ASPCore2Parser.RULE_program = 0;
 ASPCore2Parser.RULE_rule = 1;
 ASPCore2Parser.RULE_simple_rule = 2;
@@ -5137,11 +5132,10 @@ ASPCore2Parser._SYMBOLIC_NAMES = [
     "ANNOTATION_GLOBAL_ATOM_INDEXED", "ANNOTATION_GLOBAL_PARTIAL_ORDER", "ANNOTATION_GLOBAL_EXTATOM_CONVERSION",
     "ANNOTATION_RULE_TO_DECOMPOSE", "ANNOTATION_RULE_TO_NOT_DECOMPOSE", "ANNOTATION_GLOBAL_WASP_HEURISTIC",
     "ANNOTATION_GLOBAL_WASP_HEURISTIC_FILE", "ANNOTATION_GLOBAL_WASP_HEURISTIC_ELEMENTS",
-    "EMPTY_COMMENT", "COMMENT", "MULTILINE_COMMENT", "TESTS",
 ];
 ASPCore2Parser.VOCABULARY = new VocabularyImpl_1.VocabularyImpl(ASPCore2Parser._LITERAL_NAMES, ASPCore2Parser._SYMBOLIC_NAMES, []);
 ASPCore2Parser._serializedATNSegments = 2;
-ASPCore2Parser._serializedATNSegment0 = "\x03\uC91D\uCABA\u058D\uAFBA\u4F53\u0607\uEA8B\uC241\x03Q\u03FC\x04\x02" +
+ASPCore2Parser._serializedATNSegment0 = "\x03\uC91D\uCABA\u058D\uAFBA\u4F53\u0607\uEA8B\uC241\x03M\u03FC\x04\x02" +
     "\t\x02\x04\x03\t\x03\x04\x04\t\x04\x04\x05\t\x05\x04\x06\t\x06\x04\x07" +
     "\t\x07\x04\b\t\b\x04\t\t\t\x04\n\t\n\x04\v\t\v\x04\f\t\f\x04\r\t\r\x04" +
     "\x0E\t\x0E\x04\x0F\t\x0F\x04\x10\t\x10\x04\x11\t\x11\x04\x12\t\x12\x04" +
@@ -5629,10 +5623,10 @@ ASPCore2Parser._serializedATN = Utils.join([
 class ProgramContext extends ParserRuleContext_1.ParserRuleContext {
     rule(i) {
         if (i === undefined) {
-            return this.getRuleContexts(RuleContext_1.RuleContext);
+            return this.getRuleContexts(RuleContext);
         }
         else {
-            return this.getRuleContext(i, RuleContext_1.RuleContext);
+            return this.getRuleContext(i, RuleContext);
         }
     }
     constructor(parent, invokingState) {
