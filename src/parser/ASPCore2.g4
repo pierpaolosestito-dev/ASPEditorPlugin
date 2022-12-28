@@ -442,6 +442,8 @@ LESS_OR_EQ: '<=';
 GREATER_OR_EQ: '>=';
 AMPERSAND: '&';
 EXISTS: '\\E';
+TESTS_OPEN: '%**';
+TESTS_CLOSE: '**%';
 
 AGGR_COUNT: '#count';
 AGGR_MAX: '#max';

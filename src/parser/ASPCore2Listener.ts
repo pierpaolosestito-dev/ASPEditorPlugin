@@ -47,6 +47,7 @@ import { VarsContext } from "./ASPCore2Parser";
 import { IdentifierContext } from "./ASPCore2Parser";
 import { DirectiveContext } from "./ASPCore2Parser";
 import { QueryContext } from "./ASPCore2Parser";
+import { TestsContext } from "./ASPCore2Parser";
 import { Lower_guard_compare_aggregateContext } from "./ASPCore2Parser";
 import { Upper_guard_compare_aggregateContext } from "./ASPCore2Parser";
 import { Compare_aggregateContext } from "./ASPCore2Parser";
@@ -598,6 +599,17 @@ export interface ASPCore2Listener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	exitQuery?: (ctx: QueryContext) => void;
+
+	/**
+	 * Enter a parse tree produced by `ASPCore2Parser.tests`.
+	 * @param ctx the parse tree
+	 */
+	enterTests?: (ctx: TestsContext) => void;
+	/**
+	 * Exit a parse tree produced by `ASPCore2Parser.tests`.
+	 * @param ctx the parse tree
+	 */
+	exitTests?: (ctx: TestsContext) => void;
 
 	/**
 	 * Enter a parse tree produced by `ASPCore2Parser.lower_guard_compare_aggregate`.

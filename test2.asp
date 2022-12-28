@@ -1,2 +1,2 @@
 ciao(X):-prova(X).
-ciao(X,Y
+ciao(X,Y).

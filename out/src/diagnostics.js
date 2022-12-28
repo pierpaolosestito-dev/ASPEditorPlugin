@@ -24,6 +24,7 @@ function refreshDiagnostics(doc, errorDiagnostics) {
     const atoms = [{ name: "", count: 0 }];
     if (regex.test(doc.fileName)) {
         let diagnostics = [];
+        const global_constructs = [];
         for (let lineIndex = 0; lineIndex < doc.lineCount; lineIndex++) {
             const lineOfText = doc.lineAt(lineIndex);
             const input = new ANTLRInputStream_1.ANTLRInputStream(lineOfText.text);
@@ -35,17 +36,18 @@ function refreshDiagnostics(doc, errorDiagnostics) {
             aspParser.addErrorListener({
                 syntaxError(recognizer, offendingSymbol, line, charPositionInLine, msg, e) {
                     diagnostics.push(createDiagnostic(doc, lineOfText, lineIndex, msg, vscode.DiagnosticSeverity.Error));
-                    //console.log('lineOfText = ', lineOfText.text, '\nlineIndex = ', lineIndex, 'msg = ', msg);
-                    //console.log(msg);
                 },
             });
             aspParser.program();
             const constructs = [];
             for (let i = 0; i < tokens.getTokens().length; i++) {
-                constructs.push([tokens.get(i).text, tokens.get(i).type]);
+                const text = tokens.get(i).text;
+                const type = tokens.get(i).type;
+                const index = tokens.get(i).line;
+                constructs.push([text, type, index]);
+                global_constructs.push([text, type, index]);
             }
-            constructs.map(l => console.log(l, '\n'));
-            const constructsFiltered = [];
+            //constructs.map(l => console.log(l, '\n'));
             const heads = [];
             const tails = [];
             let head = true;
@@ -85,18 +87,20 @@ function refreshDiagnostics(doc, errorDiagnostics) {
                 diagnostics.push(createDiagnostic(doc, lineOfText, lineIndex, msg, vscode.DiagnosticSeverity.Warning));
                 //console.log('lineOfText = ', lineOfText.text, '\nlineIndex = ', lineIndex, 'msg = ', msg);
             }
-            diagnostics = addWarningProbablyWrongName(diagnostics, atoms, doc);
+            diagnostics = addWarningProbablyWrongName(diagnostics, atoms, global_constructs, doc);
         }
+        //atoms.map(el=>console.log(el));
         errorDiagnostics.set(doc.uri, diagnostics);
     }
 }
 exports.refreshDiagnostics = refreshDiagnostics;
-function addWarningProbablyWrongName(diagnostics, atoms, doc) {
+function addWarningProbablyWrongName(diagnostics, atoms, constructs, doc) {
     // atoms.map(el => console.log(el));
     atoms.map(atom => {
+        //console.log('count ', atom.count, 'for ', atom.name);
         if (atom.count === 1) {
-            const line = findElemInText(doc, atom.name);
-            console.log('line = ', line);
+            const line = findElemInText(constructs, atom.name);
+            //console.log('line ', line, 'for ', atom.name, 'with count ', atom.count);
             if (line !== -1) {
                 const msg = `${atom.name} is used only once`;
                 diagnostics.push(createDiagnostic(doc, doc.lineAt(line), line, msg, vscode.DiagnosticSeverity.Warning));
@@ -104,40 +108,29 @@ function addWarningProbablyWrongName(diagnostics, atoms, doc) {
             }
         }
         else {
+            //console.log('prima');
+            //diagnostics.map(el => console.log(el));
             diagnostics = diagnostics.filter(obj => {
-                //console.log(obj.message);
-                return !obj.message.endsWith("once");
+                //console.log(obj.message, ' includes with ', `${atom.name}`, '=', obj.message.includes(`${atom.name}`));
+                return !obj.message.includes(`${atom.name} is used only once`);
             });
+            //console.log('dopo');
+            diagnostics.map(el => console.log(el));
         }
     });
     return diagnostics;
 }
-// return vscode.TextDocument to create after diagnostics
-function findElemInText(doc, token) {
-    const multilineTestSameLine = new RegExp('\\%\\*\\*\\n*(?:.+\\n*)*\\*\\*\\%');
-    const multilineCommentSameLine = new RegExp('\\%\\/\\n*(?:.+\\n*)*\\/\\%');
-    let tests = false;
-    let comments = false;
-    for (let lineIndex = 0; lineIndex < doc.lineCount; lineIndex++) {
+function findElemInText(constructs, token) {
+    for (let i = 0; i < constructs.length; i++) {
         //I test sono esenti dai Warning, vanno quindi rimossi.
-        const lineOfText = doc.lineAt(lineIndex).text;
-        if (!tests && checkRegex(lineOfText, multilineTestSameLine, '%**')) {
-            tests = true;
-        }
-        if (tests && checkRegex(lineOfText, multilineTestSameLine, '**%')) {
-            tests = false;
-        }
-        if (!comments && checkRegex(lineOfText, multilineCommentSameLine, '%/')) {
-            comments = true;
-        }
-        if (comments && checkRegex(lineOfText, multilineCommentSameLine, '/%')) {
-            comments = false;
-        }
-        //Se tests=true, siamo ancora in un test
-        //Se tests=false non siamo più in un test
-        //Stesso per i commenti
-        if (lineOfText.includes(token) && !lineOfText.includes("not") && !tests && !comments) {
-            return lineIndex;
+        const c = constructs[i][0];
+        const t = token;
+        const cond1 = constructs[i][0].includes(token);
+        const cond2 = !constructs[i][0].includes("not");
+        //console.log(constructs.toString(), '\nt = ', t, '\ncond1 = ', cond1);
+        if (cond1 && cond2) {
+            const index = constructs[i][2];
+            return constructs[i][2] - 1;
         }
     }
     //Se non trova nulla restituisce -1
@@ -145,10 +138,10 @@ function findElemInText(doc, token) {
 }
 function checkRegex(lineOfText, regex, splitter) {
     const sameLine = regex.test(lineOfText);
-    if (sameLine) {
+    /*if (sameLine) {
         lineOfText = lineOfText.replace(regex, "");
     }
-    return lineOfText.split(splitter).length > 1;
+    */ return lineOfText.split(splitter).length > 1;
 }
 function checkIsRule(constructs) {
     if (constructs[0][1] !== ASPCore2Lexer_1.ASPCore2Lexer.SYMBOLIC_CONSTANT) { // non inizia con un atomo CODE 2

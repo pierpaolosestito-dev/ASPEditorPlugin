@@ -47,6 +47,7 @@ import { VarsContext } from "./ASPCore2Parser";
 import { IdentifierContext } from "./ASPCore2Parser";
 import { DirectiveContext } from "./ASPCore2Parser";
 import { QueryContext } from "./ASPCore2Parser";
+import { TestsContext } from "./ASPCore2Parser";
 import { Lower_guard_compare_aggregateContext } from "./ASPCore2Parser";
 import { Upper_guard_compare_aggregateContext } from "./ASPCore2Parser";
 import { Compare_aggregateContext } from "./ASPCore2Parser";
@@ -425,6 +426,13 @@ export interface ASPCore2Visitor<Result> extends ParseTreeVisitor<Result> {
 	 * @return the visitor result
 	 */
 	visitQuery?: (ctx: QueryContext) => Result;
+
+	/**
+	 * Visit a parse tree produced by `ASPCore2Parser.tests`.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	visitTests?: (ctx: TestsContext) => Result;
 
 	/**
 	 * Visit a parse tree produced by `ASPCore2Parser.lower_guard_compare_aggregate`.
