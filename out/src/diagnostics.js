@@ -39,6 +39,7 @@ function refreshDiagnostics(doc, emojiDiagnostics) {
             }
             const constructsFiltered = [];
             for (let i = 0; i < constructs.length; i++) {
+                //TODO filtrare i token
                 constructsFiltered.push(constructs[i]);
             }
             console.log(constructsFiltered.join("  "));

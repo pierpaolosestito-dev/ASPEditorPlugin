@@ -2,6 +2,7 @@ import * as vscode from 'vscode';
 import * as path from 'path';
 import { dictionarizer } from './utils/dictionarizer';
 import { DynamicDictionary } from './utils/dynamic_dictionary';
+import { match } from 'assert';
 
 //Returns a provider that manages intellisense for directives, aggregates, default and custom external atoms
 export function getASPIntellisenseProvider(context: vscode.ExtensionContext): vscode.CompletionItemProvider<vscode.CompletionItem> {
@@ -24,12 +25,21 @@ export function getASPIntellisenseProvider(context: vscode.ExtensionContext): vs
          
             //Checks if the text being inserted is after a trigger character (# or &)
             let triggerCharacter;
+            let parenthesis;
+            let parenthesisPosition = position.character-1;
             //Con questa funzione possiamo prendere la linea scritta.
+            
             const line = document.lineAt(position);
             let character = position.character - 1;
-            const validCharacters = /[a-zA-Z0-9_#&:-]/;
+            const validCharacters = /[(a-zA-Z0-9_#&:-]/;
          
             while(character >= 0 && validCharacters.test(line.text[character])) {
+                if(line.text[character] === "("){
+                    console.log("Founded (");
+                    parenthesis = line.text[character];
+                    parenthesisPosition = character;
+                    break;
+                }
                 if(line.text[character] === '#' || line.text[character] === '&' ) {
                     triggerCharacter = line.text[character];
                     break;
@@ -54,8 +64,13 @@ export function getASPIntellisenseProvider(context: vscode.ExtensionContext): vs
 
             }
             else {
+                if(parenthesis){
+                    console.log("parenthesisPosition",parenthesisPosition);
+                    console.log(line.text[parenthesisPosition-1]);
+                    console.log("Ciao");
+                }
                 // eslint-disable-next-line no-inner-declarations
-                function registerDynamicEntry(elem: any) {
+                function registerDynamicPredicateEntry(elem: any) {
                     completionItems.push(new vscode.CompletionItem(elem.label, vscode.CompletionItemKind.Field));
                     completionItems[completionItems.length - 1].insertText = new vscode.SnippetString(elem.snippet);
                     completionItems[completionItems.length - 1].detail = elem.detail;
@@ -65,8 +80,9 @@ export function getASPIntellisenseProvider(context: vscode.ExtensionContext): vs
                 autocompleteDict["language-constants"].forEach((elem: string) => {
                     completionItems.push(new vscode.CompletionItem(elem, vscode.CompletionItemKind.Constant));
                 });
+                
                 for(const elem of Object.values(dd.get_field(chiave))) {
-                    registerDynamicEntry(elem);
+                    registerDynamicPredicateEntry(elem);
                 }
           
             }
@@ -160,7 +176,7 @@ export function fillDictionaryWithDynamicPredicates(){
 					let snippet = "";
 					for(const match2 of matches2){
 					label = match2[1]+"(_)";
-					snippet = match2[1]+"(${1},${2})";
+					snippet = match2[1]+"(${1})";
 					}
 					const obj = {"label":label,"snippet":snippet,"detail": "(previous written predicates) "+label,"documentation": "**PREVIOUS PREDICATES**\n\n"+label+"\n\n---"};
 					array_valori.push(obj);
@@ -192,4 +208,50 @@ export function fillDictionaryWithDynamicPredicates(){
 
 	}
 	});
+}
+
+
+function sanitizeTerms(terms:string){
+    if(terms.endsWith(")."))
+     return terms.replace(/\w+\(/,"").replace(").","");
+
+    if(terms.endsWith(")|"))
+     return terms.replace(/\w+\(/,"").replace(")|","");
+
+    if(terms.endsWith("):-"))
+     return terms.replace(/\w+\(/,"").replace("):-","");
+}
+
+export function fillDictionaryWithDynamicTerms(){
+    const terms_regex = /\w+\s*\(\s*\w+(?:\s*,\s*\w+\s*)*\s*\)\s*(?::-|\||\.)/g;
+    
+    vscode.workspace.onDidChangeTextDocument(document => {
+        const text = document.document.getText();
+        const splitted_text = text.split("\n");
+        const sanitized_terms = [];
+        for(let i=0;i<splitted_text.length;i++){
+            const matches = splitted_text[i].match(terms_regex);
+
+            if(matches){
+                for(let i=0;i<matches.length;i++){
+                    const matches_predicate = matches[i].match(/\w+/);
+                    if(matches_predicate){
+                     const obj = {'membership_predicate':matches_predicate[0],"terms":sanitizeTerms(matches[i])?.split(",")};
+                     console.log("Base object",obj);
+                     /*La struttura dati potrebbe essere formata così:
+                        IDEA 1:
+                            struttura_dati[nome_file] = obj, dove obj ha la forma di sopra.
+                        IDEA 2:
+                            struttura_dati[nome_predicato] = {"nomefile":nomefile,"terms":termini}
+                     */
+                    }
+                    sanitized_terms.push(sanitizeTerms(matches[i]));
+                }
+            } 
+        }
+
+        
+    });
+    
+
 }

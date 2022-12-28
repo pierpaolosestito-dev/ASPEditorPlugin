@@ -29,6 +29,7 @@ function activate(context) {
     context.subscriptions.push(vscode.languages.registerCompletionItemProvider('asp', (0, autocomplete_1.getASPIntellisenseProvider)(context), '#', '&', ':', '-'));
     context.subscriptions.push(vscode.languages.registerHoverProvider("asp", (0, autocomplete_1.getASPIntellisenseHoverProvider)(context)));
     (0, autocomplete_1.fillDictionaryWithDynamicPredicates)();
+    (0, autocomplete_1.fillDictionaryWithDynamicTerms)();
 }
 exports.activate = activate;
 // eslint-disable-next-line @typescript-eslint/no-empty-function

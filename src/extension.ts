@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
 import { subscribeToDocumentChanges } from './diagnostics';
 import * as cpanel from './cpanel/run';
-import { getASPIntellisenseProvider,getASPIntellisenseHoverProvider,fillDictionaryWithDynamicPredicates} from './autocomplete';
+import { getASPIntellisenseProvider,getASPIntellisenseHoverProvider,fillDictionaryWithDynamicPredicates,fillDictionaryWithDynamicTerms} from './autocomplete';
 import { BuiltinAggregateFixer,	BuiltinAggregateInfo } from './prompter';
 
 
@@ -48,6 +48,7 @@ const COMMAND = 'code-actions-sample.command';
 	context.subscriptions.push(vscode.languages.registerHoverProvider("asp", getASPIntellisenseHoverProvider(context)));
 
 	fillDictionaryWithDynamicPredicates();	
+	fillDictionaryWithDynamicTerms();
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-function
