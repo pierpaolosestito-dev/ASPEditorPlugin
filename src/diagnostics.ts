@@ -65,12 +65,12 @@ export function refreshDiagnostics(
 				global_constructs.push([text, type, index]);
 			}
 
-			console.log('global_constructs prima = ', global_constructs.join('\n'));
+			// console.log('global_constructs prima = ', global_constructs.join('\n'));
 
 			//global_constructs = remove_tc(global_constructs, '%/', '/%');
 			global_constructs = remove_tc(global_constructs, '%**', '**%');
 
-			console.log('global_constructs dopo = ', global_constructs.join('\n'));
+			// console.log('global_constructs dopo = ', global_constructs.join('\n'));
 
 			//constructs.map(l => console.log(l, '\n'));
 
@@ -82,7 +82,6 @@ export function refreshDiagnostics(
 
 			for (let i = 0; i < constructs.length; i++) {
 				//TODO filtrare i token
-
 				if (constructs[i][1] === ASPCore2Lexer.NAF || negation) { // se sono atomi negativi non li inserisco né in coda né in testa
 					if (constructs[i][1] === ASPCore2Lexer.CONS) {
 						negation = false;
@@ -127,14 +126,14 @@ function remove_tc(global_constructs: [string, number, number][], open: string, 
 	let opened = false;
 	const result: [string, number, number][] = [];
 	for (let i = 0; i < global_constructs.length; i++) {
-		
-		if(global_constructs[i][0]===open){
+
+		if (global_constructs[i][0] === open) {
 			opened = true;
 		}
-		if(global_constructs[i][0]===close && opened){
+		if (global_constructs[i][0] === close && opened) {
 			opened = false;
 		}
-		if(!opened){
+		if (!opened) {
 			result.push(global_constructs[i]);
 		}
 
@@ -147,7 +146,7 @@ function addWarningProbablyWrongName(diagnostics: vscode.Diagnostic[], atoms: [{
 	atoms.map(atom => {
 		//console.log('count ', atom.count, 'for ', atom.name);
 		if (atom.count === 1) {
-			const line = findElemInText(constructs, atom.name);
+			const line = findElemInText(doc, atom.name);
 			//console.log('line ', line, 'for ', atom.name, 'with count ', atom.count);
 			if (line !== -1) {
 				const msg = `${atom.name} is used only once`;
@@ -170,39 +169,88 @@ function addWarningProbablyWrongName(diagnostics: vscode.Diagnostic[], atoms: [{
 	return diagnostics;
 }
 
-/*
 
 function findElemInText(doc: vscode.TextDocument, token: string) {
+	let skip = false;
+	const startComment = '%/';
+	const endComment = '/%';
+
+	const startTest = '%**';
+	const endTest = '**%';
+
 	for (let lineIndex = 0; lineIndex < doc.lineCount; lineIndex++) {
 		const lineOfText = doc.lineAt(lineIndex);
-		if (lineOfText.text.includes(token) && !lineOfText.text.includes("not")) {
+		// console.log(lineOfText.text);
+		const comment_in_line = (lineOfText.text.includes(startComment) && lineOfText.text.includes(endComment));
+		const ts_in_line = (lineOfText.text.includes(startTest) && lineOfText.text.includes(endTest));
+		console.log(comment_in_line);
+		console.log(ts_in_line);
+
+		if ((comment_in_line || ts_in_line)){
+			skip = false;
+			continue;
+		}
+		if (lineOfText.text.includes(token) && ((lineOfText.text.includes(startComment) || lineOfText.text.includes(startTest)))) {
+			if (lineOfText.text.indexOf(token) < lineOfText.text.indexOf(startComment) || (lineOfText.text.indexOf(token) < lineOfText.text.indexOf(startTest))) {
+				skip = false;
+				return lineIndex;
+			} else {
+				skip = true;
+				continue;
+
+			}
+
+		}
+		if ((lineOfText.text.includes(endComment) || lineOfText.text.includes(endTest)) && lineOfText.text.includes(token)) {
+			if (
+				(lineOfText.text.indexOf(token) > lineOfText.text.indexOf(endComment) && lineOfText.text.indexOf(endComment) !== -1)
+				|| (lineOfText.text.indexOf(token) > lineOfText.text.indexOf(endTest) && lineOfText.text.indexOf(endTest) !== -1)) {
+				skip = false;
+
+				return lineIndex;
+			} else {
+				skip = false;
+				continue;
+			}
+		}
+		if (skip && (lineOfText.text.includes(endComment) || lineOfText.text.includes(endTest))) {
+			skip = false;
+
+		}
+		if (!skip && (lineOfText.text.includes(startComment) || lineOfText.text.includes(startTest))) {
+			skip = true;
+
+		}
+		if (lineOfText.text.includes(token) && !lineOfText.text.includes("not") && !skip) {
+			skip = false;
 			return lineIndex;
 		}
 	}
+
 	return -1;
 }
 
-*/
 
-function findElemInText(constructs: [string, number, number][], token: string) {
-	//TODO lavorare sul documento, non sui costrutti
-	for (let i = 0; i < constructs.length; i++) {
-		//I test sono esenti dai Warning, vanno quindi rimossi.
 
-		const c = constructs[i][0];
-		const t = token;
-		const cond1 = constructs[i][0].includes(token);
-		const cond2 = !constructs[i][0].includes("not");
-		//console.log(constructs.toString(), '\nt = ', t, '\ncond1 = ', cond1);
-		if (cond1 && cond2) {
-			const index = constructs[i][2];
-			return constructs[i][2] - 1;
-		}
+// function findElemInText(constructs: [string, number, number][], token: string) {
+// 	//TODO lavorare sul documento, non sui costrutti
+// 	for (let i = 0; i < constructs.length; i++) {
+// 		//I test sono esenti dai Warning, vanno quindi rimossi.
 
-	}
-	//Se non trova nulla restituisce -1
-	return -1;
-}
+// 		const c = constructs[i][0];
+// 		const t = token;
+// 		const cond1 = constructs[i][0].includes(token);
+// 		const cond2 = !constructs[i][0].includes("not");
+// 		//console.log(constructs.toString(), '\nt = ', t, '\ncond1 = ', cond1);
+// 		if (cond1 && cond2) {
+// 			const index = constructs[i][2];
+// 			return constructs[i][2] - 1;
+// 		}
+
+// 	}
+// 	//Se non trova nulla restituisce -1
+// 	return -1;
+// }
 
 
 function checkRegex(lineOfText: string, regex: RegExp, splitter: string) {
@@ -258,7 +306,7 @@ function createDiagnostic(
 	);
 	//In questa sezione di codice si inferisce qual'è la causa dell'errore
 	//Modifica il messaggio d'errore in base alla causa dell'errore
-	/*if(codeError == "001"){ 
+	/*if(codeError == "001"){
 				diagnostic.message = "The format of the aggregate is incorrect.";
 				diagnostic.code = "001";
 			}

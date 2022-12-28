@@ -442,8 +442,6 @@ LESS_OR_EQ: '<=';
 GREATER_OR_EQ: '>=';
 AMPERSAND: '&';
 EXISTS: '\\E';
-TESTS_OPEN: '%**';
-TESTS_CLOSE: '**%';
 
 AGGR_COUNT: '#count';
 AGGR_MAX: '#max';
@@ -491,3 +489,7 @@ ANNOTATION_RULE_TO_NOT_DECOMPOSE: '%@rule_to_not_decompose';
 ANNOTATION_GLOBAL_WASP_HEURISTIC: '%@global_heuristic';
 ANNOTATION_GLOBAL_WASP_HEURISTIC_FILE: '@file';
 ANNOTATION_GLOBAL_WASP_HEURISTIC_ELEMENTS: '@elements';
+
+ML_COMMENT:  '%/' .* '/%';
+EMPTY_COMMENT: '%' '\n' -> skip;
+COMMENT: '%' ~('@' | '\n') (.)*? '\n' -> skip;
