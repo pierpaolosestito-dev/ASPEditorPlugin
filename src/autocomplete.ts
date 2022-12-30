@@ -238,6 +238,10 @@ function sanitizeTerms(terms:string){
      return terms;
 }
 
+function onlyUnique(value:any, index:any, self:any) {
+    return self.indexOf(value) === index;
+  }
+
 export function fillDictionaryWithDynamicTerms(){
     const terms_regex = /\w+\s*\(\s*\w+(?:\s*,\s*\w+\s*)*\s*\)\s*(?::-|\||\.)/g;
     const dd = DynamicTermsDictionary.getInstance();
@@ -265,10 +269,10 @@ export function fillDictionaryWithDynamicTerms(){
                             if(previousTerms !== undefined){
                                 terms = terms.concat(previousTerms);
                             }
-                            predicatesMap.set(matches_predicate[0], terms);
+                            predicatesMap.set(matches_predicate[0], terms.filter(onlyUnique));
                         }
                         else{
-                            predicatesMap.set(matches_predicate[0],sanitized.split(","));
+                            predicatesMap.set(matches_predicate[0],sanitized.split(",").filter(onlyUnique));
                         }
                     }
                     
