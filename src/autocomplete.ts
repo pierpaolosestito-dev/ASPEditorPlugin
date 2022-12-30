@@ -238,7 +238,7 @@ function sanitizeTerms(terms:string){
      return terms;
 }
 
-function onlyUnique(value:any, index:any, self:any) {
+function onlyUnique(value:string, index:number, self:string[]) {
     return self.indexOf(value) === index;
   }
 
