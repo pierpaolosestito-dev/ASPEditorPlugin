@@ -135,7 +135,7 @@ export function refreshDiagnostics(
 				}
 			}
 
-			const msg = `The rule at line ${lineIndex} is not safe`;
+			const msg = `The rule at line ${lineIndex+1} is not safe`;
 			if (!checkSafe(heads, tails,tails_negative,tails_in_symbols) && checkIsRule(constructs)) {
 				diagnostics.push(createDiagnostic(doc, lineOfText, lineIndex, msg, vscode.DiagnosticSeverity.Warning));
 			}else{

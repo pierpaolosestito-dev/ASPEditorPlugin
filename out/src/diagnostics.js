@@ -114,7 +114,7 @@ function refreshDiagnostics(doc, errorDiagnostics) {
                     }
                 }
             }
-            const msg = `The rule at line ${lineIndex} is not safe`;
+            const msg = `The rule at line ${lineIndex + 1} is not safe`;
             if (!checkSafe(heads, tails, tails_negative, tails_in_symbols) && checkIsRule(constructs)) {
                 diagnostics.push(createDiagnostic(doc, lineOfText, lineIndex, msg, vscode.DiagnosticSeverity.Warning));
             }
@@ -209,7 +209,8 @@ function findElemInText(doc, token) {
         if (!skip && (text_line.includes(startComment) || text_line.includes(startTest))) {
             skip = true;
         }
-        if (text_line.includes(token) && !text_line.includes("not") && !skip) {
+        const reg = `${token}\\W`;
+        if (text_line.includes(token) && text_line.match(reg) != null && !text_line.includes("not") && !skip) {
             skip = false;
             return lineIndex;
         }
