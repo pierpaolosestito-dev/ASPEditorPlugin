@@ -197,7 +197,7 @@ function findElemInText(doc: vscode.TextDocument, token: string) {
 	const single_comment = '%';
 	const startTest = '%**';
 	const endTest = '**%';
-
+	
 	for (let lineIndex = 0; lineIndex < doc.lineCount; lineIndex++) {
 		const lineOfText = doc.lineAt(lineIndex);
 		const comment_in_line = lineOfText.text.includes(single_comment);
@@ -243,7 +243,8 @@ function findElemInText(doc: vscode.TextDocument, token: string) {
 			skip = true;
 
 		}
-		if (text_line.includes(token) && !text_line.includes("not") && !skip) {
+		const reg = `${token}\\W`;
+		if (text_line.includes(token) && text_line.match(reg)!=null && !text_line.includes("not") && !skip) {
 			skip = false;
 			return lineIndex;
 		}
