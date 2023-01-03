@@ -65,42 +65,67 @@ export function refreshDiagnostics(
 				global_constructs.push([text, type, index]);
 			}
 
-			// console.log('global_constructs prima = ', global_constructs.join('\n'));
-
-			//global_constructs = remove_tc(global_constructs, '%/', '/%');
 			global_constructs = remove_tc(global_constructs, '%**', '**%');
-
-			// console.log('global_constructs dopo = ', global_constructs.join('\n'));
-
-			//constructs.map(l => console.log(l, '\n'));
-
 			const heads = [];
 			const tails = [];
+			const tails_negative = [];
+			const tails_in_symbols = [];
 
 			let head = true;
 			let negation = false;
-
+			
 			for (let i = 0; i < constructs.length; i++) {
 				//TODO filtrare i token
+				const s = constructs[i][0];
+				if (constructs[i][1] === ASPCore2Lexer.CONS) { // se trovo un simbolo di constraint capisco che sono passata alla coda
+					head = !head;
+					continue;
+				}
+				if((negation && constructs[i][1] === ASPCore2Lexer.PARAM_CLOSE)){
+					negation = false;
+					continue;
+				}
+
 				if (constructs[i][1] === ASPCore2Lexer.NAF || negation) { // se sono atomi negativi non li inserisco né in coda né in testa
 					if (constructs[i][1] === ASPCore2Lexer.CONS) {
 						negation = false;
 					} else {
 						negation = true;
 					}
+				}
+				if (constructs[i][1] >= 29 && constructs[i][1] <=34) {
+					if(constructs[i-1][1] === ASPCore2Lexer.VARIABLE){
+						tails_in_symbols.push(constructs[i-1][0]);
+						continue;
+
+					}
+					if(constructs[i+1][1] === ASPCore2Lexer.VARIABLE){
+						tails_in_symbols.push(constructs[i-1][0]);
+						continue;
+					}
+
+				}
+				if(negation && !head && constructs[i][1]==ASPCore2Lexer.VARIABLE){
+					tails_negative.push(constructs[i][0]);
 					continue;
 				}
-				if (constructs[i][1] === ASPCore2Lexer.CONS) { // se trovo un simbolo di constraint capisco che sono passata alla coda
-					head = !head;
-				}
 				if (constructs[i][1] === ASPCore2Lexer.VARIABLE) {
-					head ? heads.push(constructs[i][0]) : tails.push(constructs[i][0]);
+					if (head){
+						heads.push(constructs[i][0]);
+					}else if(!negation && !(constructs[i-1][1] > 29 && constructs[i-1][1]<34) &&  
+					!(constructs[i+1][1] > 29 && constructs[i+1][1]<34)){
+						tails.push(constructs[i][0]);
+					}else if(negation){
+						tails_negative.push(constructs[i][0]);
+					}
+					continue;
 				}
 				// constructsFiltered.push(constructs[i]);
 				if (constructs[i][1] === ASPCore2Lexer.SYMBOLIC_CONSTANT) { // se è una atomo lo salvo
 					const result = atoms.find(atom => atom.name === constructs[i][0]);
 					if (!result) {
 						atoms.push({ name: constructs[i][0], count: 1 });
+						continue;
 					}
 					else {
 						atoms.map(atom => {
@@ -109,14 +134,18 @@ export function refreshDiagnostics(
 					}
 				}
 			}
-			if (!checkSafe(heads, tails) && checkIsRule(constructs)) {
-				const msg = "This rule is not safe";
+
+			const msg = `The rule at line ${lineIndex} is not safe`;
+			if (!checkSafe(heads, tails,tails_negative,tails_in_symbols) && checkIsRule(constructs)) {
 				diagnostics.push(createDiagnostic(doc, lineOfText, lineIndex, msg, vscode.DiagnosticSeverity.Warning));
-				//console.log('lineOfText = ', lineOfText.text, '\nlineIndex = ', lineIndex, 'msg = ', msg);
+			}else{
+				diagnostics = diagnostics.filter(obj => {
+					return !obj.message.includes(msg);
+				}
+				);
 			}
 			diagnostics = addWarningProbablyWrongName(diagnostics, atoms, global_constructs, doc);
 		}
-		//atoms.map(el=>console.log(el));
 		errorDiagnostics.set(doc.uri, diagnostics);
 	}
 }
@@ -142,27 +171,18 @@ function remove_tc(global_constructs: [string, number, number][], open: string, 
 }
 
 function addWarningProbablyWrongName(diagnostics: vscode.Diagnostic[], atoms: [{ name: string, count: number }], constructs: [string, number, number][], doc: vscode.TextDocument) {
-	// atoms.map(el => console.log(el));
 	atoms.map(atom => {
-		//console.log('count ', atom.count, 'for ', atom.name);
 		if (atom.count === 1) {
 			const line = findElemInText(doc, atom.name);
-			//console.log('line ', line, 'for ', atom.name, 'with count ', atom.count);
 			if (line !== -1) {
 				const msg = `${atom.name} is used only once`;
 				diagnostics.push(createDiagnostic(doc, doc.lineAt(line), line, msg, vscode.DiagnosticSeverity.Warning));
-				//console.log('lineOfText = ', doc.lineAt(line), '\nlineIndex = ', line, 'msg = ', msg);
 			}
 		} else {
-			//console.log('prima');
-			//diagnostics.map(el => console.log(el));
 			diagnostics = diagnostics.filter(obj => {
-				//console.log(obj.message, ' includes with ', `${atom.name}`, '=', obj.message.includes(`${atom.name}`));
 				return !obj.message.includes(`${atom.name} is used only once`);
 			}
 			);
-			//console.log('dopo');
-			diagnostics.map(el => console.log(el));
 		}
 
 	});
@@ -174,24 +194,26 @@ function findElemInText(doc: vscode.TextDocument, token: string) {
 	let skip = false;
 	const startComment = '%/';
 	const endComment = '/%';
-
+	const single_comment = '%';
 	const startTest = '%**';
 	const endTest = '**%';
 
 	for (let lineIndex = 0; lineIndex < doc.lineCount; lineIndex++) {
 		const lineOfText = doc.lineAt(lineIndex);
-		// console.log(lineOfText.text);
-		const comment_in_line = (lineOfText.text.includes(startComment) && lineOfText.text.includes(endComment));
+		const comment_in_line = lineOfText.text.includes(single_comment);
 		const ts_in_line = (lineOfText.text.includes(startTest) && lineOfText.text.includes(endTest));
-		console.log(comment_in_line);
-		console.log(ts_in_line);
+		let text_line = lineOfText.text;
 
-		if ((comment_in_line || ts_in_line)){
+
+		if ((comment_in_line || ts_in_line) || (comment_in_line && !ts_in_line && !comment_in_line) ){
+			const reg_multi = /%.*%/;
+			const reg_single_comment = /%.*/;
+			text_line = text_line.replace(reg_multi,"");
+			text_line = text_line.replace(reg_single_comment,"");
 			skip = false;
-			continue;
 		}
-		if (lineOfText.text.includes(token) && ((lineOfText.text.includes(startComment) || lineOfText.text.includes(startTest)))) {
-			if (lineOfText.text.indexOf(token) < lineOfText.text.indexOf(startComment) || (lineOfText.text.indexOf(token) < lineOfText.text.indexOf(startTest))) {
+		if (text_line.includes(token) && ((text_line.includes(startComment) || text_line.includes(startTest)))) {
+			if (text_line.indexOf(token) < text_line.indexOf(startComment) || (text_line.indexOf(token) < text_line.indexOf(startTest))) {
 				skip = false;
 				return lineIndex;
 			} else {
@@ -201,10 +223,10 @@ function findElemInText(doc: vscode.TextDocument, token: string) {
 			}
 
 		}
-		if ((lineOfText.text.includes(endComment) || lineOfText.text.includes(endTest)) && lineOfText.text.includes(token)) {
+		if ((text_line.includes(endComment) || text_line.includes(endTest)) && text_line.includes(token)) {
 			if (
-				(lineOfText.text.indexOf(token) > lineOfText.text.indexOf(endComment) && lineOfText.text.indexOf(endComment) !== -1)
-				|| (lineOfText.text.indexOf(token) > lineOfText.text.indexOf(endTest) && lineOfText.text.indexOf(endTest) !== -1)) {
+				(text_line.indexOf(token) > text_line.indexOf(endComment) && text_line.indexOf(endComment) !== -1)
+				|| (text_line.indexOf(token) > text_line.indexOf(endTest) && text_line.indexOf(endTest) !== -1)) {
 				skip = false;
 
 				return lineIndex;
@@ -213,15 +235,15 @@ function findElemInText(doc: vscode.TextDocument, token: string) {
 				continue;
 			}
 		}
-		if (skip && (lineOfText.text.includes(endComment) || lineOfText.text.includes(endTest))) {
+		if (skip && (text_line.includes(endComment) || text_line.includes(endTest))) {
 			skip = false;
 
 		}
-		if (!skip && (lineOfText.text.includes(startComment) || lineOfText.text.includes(startTest))) {
+		if (!skip && (text_line.includes(startComment) || text_line.includes(startTest))) {
 			skip = true;
 
 		}
-		if (lineOfText.text.includes(token) && !lineOfText.text.includes("not") && !skip) {
+		if (text_line.includes(token) && !text_line.includes("not") && !skip) {
 			skip = false;
 			return lineIndex;
 		}
@@ -230,36 +252,6 @@ function findElemInText(doc: vscode.TextDocument, token: string) {
 	return -1;
 }
 
-
-
-// function findElemInText(constructs: [string, number, number][], token: string) {
-// 	//TODO lavorare sul documento, non sui costrutti
-// 	for (let i = 0; i < constructs.length; i++) {
-// 		//I test sono esenti dai Warning, vanno quindi rimossi.
-
-// 		const c = constructs[i][0];
-// 		const t = token;
-// 		const cond1 = constructs[i][0].includes(token);
-// 		const cond2 = !constructs[i][0].includes("not");
-// 		//console.log(constructs.toString(), '\nt = ', t, '\ncond1 = ', cond1);
-// 		if (cond1 && cond2) {
-// 			const index = constructs[i][2];
-// 			return constructs[i][2] - 1;
-// 		}
-
-// 	}
-// 	//Se non trova nulla restituisce -1
-// 	return -1;
-// }
-
-
-function checkRegex(lineOfText: string, regex: RegExp, splitter: string) {
-	const sameLine = regex.test(lineOfText);
-	/*if (sameLine) {
-		lineOfText = lineOfText.replace(regex, "");
-	}
-	*/return lineOfText.split(splitter).length > 1;
-}
 
 function checkIsRule(constructs: [string, number, number][]) {
 	if (constructs[0][1] !== ASPCore2Lexer.SYMBOLIC_CONSTANT) { // non inizia con un atomo CODE 2
@@ -272,12 +264,28 @@ function checkIsRule(constructs: [string, number, number][]) {
 	}
 	return false;
 }
-function checkSafe(heads: string[], tails: string[]) {
+function checkSafe(heads: string[], tails: string[],tails_negative:string[],tails_in_symbols:string[]) {
 	let safe = true;
+	
 	if (heads.length === 0 || tails.length === 0)
 		return !safe;
-	tails.map((el) => {
-		if (!heads.includes(el)) {
+	//  variabili negative nel corpo devono apparire in atomi positivi nel corpo
+	tails_negative.map((el) => {
+		if (!tails.includes(el)) {
+			safe = false;
+		}
+	});
+	// tutto ciò che è in testa deve apparire positivamente nel corpo
+	heads.map((el) => {
+		if (!tails.includes(el)) {
+			safe = false;
+
+		}
+	});
+
+	//tutto ciò che è in <>!= deve apparire positivamente nel corpo
+	tails_in_symbols.map((el) => {
+		if (!tails.includes(el)) {
 			safe = false;
 		}
 	});
@@ -304,17 +312,6 @@ function createDiagnostic(
 		codeError,
 		severity
 	);
-	//In questa sezione di codice si inferisce qual'è la causa dell'errore
-	//Modifica il messaggio d'errore in base alla causa dell'errore
-	/*if(codeError == "001"){
-				diagnostic.message = "The format of the aggregate is incorrect.";
-				diagnostic.code = "001";
-			}
-			else if(codeError == "010"){
-				diagnostic.message = "The format of the built-in is incorrect";
-				diagnostic.code = "010";
-			}*/
-
 	return diagnostic;
 }
 
