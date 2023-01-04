@@ -1,7 +1,5 @@
-% HAMILTON PATH
-% ------------------------------------------------------------------------------------
-% A directed graph represented by node(_) and arc(_,_),and a starting node start(_).
-% Find a path beginning at the starting node which contains all nodes of the graph. 
+ciao(1,2).
+%/ ciao(1,2) /%
 
 start(0).
 node(1). node(2). node(3). node(4).

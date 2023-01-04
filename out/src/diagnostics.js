@@ -19,6 +19,7 @@ exports.CODE_ERROR = "Errore 104";
  * @param doc text document to analyze
  * @param errorDiagnostics diagnostic collection
  */
+let opened = false;
 function refreshDiagnostics(doc, errorDiagnostics) {
     const regex = /\.(asp|lp|dlv)$/g;
     const atoms = [{ name: "", count: 0 }];
@@ -33,11 +34,19 @@ function refreshDiagnostics(doc, errorDiagnostics) {
             tokens.fill();
             const aspParser = new ASPCore2Parser_1.ASPCore2Parser(tokens);
             aspParser.removeErrorListeners();
-            aspParser.addErrorListener({
-                syntaxError(recognizer, offendingSymbol, line, charPositionInLine, msg, e) {
-                    diagnostics.push(createDiagnostic(doc, lineOfText, lineIndex, msg, vscode.DiagnosticSeverity.Error));
-                },
-            });
+            if (lineOfText.text.includes("%/") || lineOfText.text.includes("%**")) {
+                opened = true;
+            }
+            if (lineOfText.text.includes("/%") || lineOfText.text.includes("**%")) {
+                opened = false;
+            }
+            if (!opened) {
+                aspParser.addErrorListener({
+                    syntaxError(recognizer, offendingSymbol, line, charPositionInLine, msg, e) {
+                        diagnostics.push(createDiagnostic(doc, lineOfText, lineIndex, msg, vscode.DiagnosticSeverity.Error));
+                    },
+                });
+            }
             aspParser.program();
             const constructs = [];
             for (let i = 0; i < tokens.getTokens().length; i++) {
@@ -123,7 +132,10 @@ function refreshDiagnostics(doc, errorDiagnostics) {
                     return !obj.message.includes(msg);
                 });
             }
-            diagnostics = addWarningProbablyWrongName(diagnostics, atoms, global_constructs, doc);
+            if (!opened) {
+                console.log(lineOfText.text);
+                diagnostics = addWarningProbablyWrongName(diagnostics, atoms, global_constructs, doc);
+            }
         }
         errorDiagnostics.set(doc.uri, diagnostics);
     }
@@ -172,15 +184,17 @@ function findElemInText(doc, token) {
     const endTest = '**%';
     for (let lineIndex = 0; lineIndex < doc.lineCount; lineIndex++) {
         const lineOfText = doc.lineAt(lineIndex);
-        const comment_in_line = lineOfText.text.includes(single_comment);
+        const comment_in_line = lineOfText.text.includes(single_comment) && !lineOfText.text.includes(startComment);
         const ts_in_line = (lineOfText.text.includes(startTest) && lineOfText.text.includes(endTest));
         let text_line = lineOfText.text;
+        console.log("PRIMA", text_line);
         if ((comment_in_line || ts_in_line) || (comment_in_line && !ts_in_line && !comment_in_line)) {
-            const reg_multi = /%.*%/;
+            const reg_multi = /%\/.*\/%/;
             const reg_single_comment = /%.*/;
             text_line = text_line.replace(reg_multi, "");
             text_line = text_line.replace(reg_single_comment, "");
             skip = false;
+            console.log("DOPO", text_line);
         }
         if (text_line.includes(token) && ((text_line.includes(startComment) || text_line.includes(startTest)))) {
             if (text_line.indexOf(token) < text_line.indexOf(startComment) || (text_line.indexOf(token) < text_line.indexOf(startTest))) {

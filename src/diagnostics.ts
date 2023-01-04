@@ -21,6 +21,7 @@ export const CODE_ERROR = "Errore 104";
  * @param doc text document to analyze
  * @param errorDiagnostics diagnostic collection
  */
+let opened = false;
 export function refreshDiagnostics(
 	doc: vscode.TextDocument,
 	errorDiagnostics: vscode.DiagnosticCollection
@@ -32,6 +33,7 @@ export function refreshDiagnostics(
 		let diagnostics: vscode.Diagnostic[] = [];
 
 		let global_constructs: [string, number, number][] = [];
+		
 
 		for (let lineIndex = 0; lineIndex < doc.lineCount; lineIndex++) {
 			const lineOfText = doc.lineAt(lineIndex);
@@ -42,18 +44,26 @@ export function refreshDiagnostics(
 			tokens.fill();
 			const aspParser = new ASPCore2Parser(tokens);
 			aspParser.removeErrorListeners();
-			aspParser.addErrorListener({
-				syntaxError<T>(
-					recognizer: Recognizer<T, any>,
-					offendingSymbol: T,
-					line: number,
-					charPositionInLine: number,
-					msg: string,
-					e: Error | undefined
-				): void {
-					diagnostics.push(createDiagnostic(doc, lineOfText, lineIndex, msg, vscode.DiagnosticSeverity.Error));
-				},
-			});
+			if(lineOfText.text.includes("%/") || lineOfText.text.includes("%**")) {
+				opened = true;
+			}
+			if(lineOfText.text.includes("/%") || lineOfText.text.includes("**%")) {
+				opened = false;
+			}
+			if(!opened) {
+				aspParser.addErrorListener({
+					syntaxError<T>(
+						recognizer: Recognizer<T, any>,
+						offendingSymbol: T,
+						line: number,
+						charPositionInLine: number,
+						msg: string,
+						e: Error | undefined
+					): void {
+						diagnostics.push(createDiagnostic(doc, lineOfText, lineIndex, msg, vscode.DiagnosticSeverity.Error));
+					},
+				});
+			}
 			aspParser.program();
 
 			const constructs: [string, number, number][] = [];
@@ -144,7 +154,10 @@ export function refreshDiagnostics(
 				}
 				);
 			}
-			diagnostics = addWarningProbablyWrongName(diagnostics, atoms, global_constructs, doc);
+			if(!opened) {
+				console.log(lineOfText.text);
+				diagnostics = addWarningProbablyWrongName(diagnostics, atoms, global_constructs, doc);
+			}
 		}
 		errorDiagnostics.set(doc.uri, diagnostics);
 	}
@@ -200,17 +213,18 @@ function findElemInText(doc: vscode.TextDocument, token: string) {
 	
 	for (let lineIndex = 0; lineIndex < doc.lineCount; lineIndex++) {
 		const lineOfText = doc.lineAt(lineIndex);
-		const comment_in_line = lineOfText.text.includes(single_comment);
+		const comment_in_line = lineOfText.text.includes(single_comment) && !lineOfText.text.includes(startComment);
 		const ts_in_line = (lineOfText.text.includes(startTest) && lineOfText.text.includes(endTest));
 		let text_line = lineOfText.text;
-
+		console.log("PRIMA", text_line);
 
 		if ((comment_in_line || ts_in_line) || (comment_in_line && !ts_in_line && !comment_in_line) ){
-			const reg_multi = /%.*%/;
+			const reg_multi = /%\/.*\/%/;
 			const reg_single_comment = /%.*/;
 			text_line = text_line.replace(reg_multi,"");
 			text_line = text_line.replace(reg_single_comment,"");
 			skip = false;
+			console.log("DOPO", text_line);
 		}
 		if (text_line.includes(token) && ((text_line.includes(startComment) || text_line.includes(startTest)))) {
 			if (text_line.indexOf(token) < text_line.indexOf(startComment) || (text_line.indexOf(token) < text_line.indexOf(startTest))) {
