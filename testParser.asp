@@ -1,5 +1,14 @@
+
 ciao(1,2).
-%/ ciao(1,2) /%
+
+%/ 
+    commento 
+/%
+
+%**
+    TEST
+**%
+
 
 start(0).
 node(1). node(2). node(3). node(4).

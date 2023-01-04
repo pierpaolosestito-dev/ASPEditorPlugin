@@ -27,12 +27,12 @@ export function refreshDiagnostics(
 	errorDiagnostics: vscode.DiagnosticCollection
 ): void {
 	const regex = /\.(asp|lp|dlv)$/g;
-	const atoms: [{ name: string, count: number }] = [{ name: "", count: 0 }];
-
+	let atoms:[string] = [];
+	
 	if (regex.test(doc.fileName)) {
 		let diagnostics: vscode.Diagnostic[] = [];
 
-		let global_constructs: [string, number, number][] = [];
+		const global_constructs: [string, number, number][] = [];
 		
 
 		for (let lineIndex = 0; lineIndex < doc.lineCount; lineIndex++) {
@@ -49,6 +49,7 @@ export function refreshDiagnostics(
 			}
 			if(lineOfText.text.includes("/%") || lineOfText.text.includes("**%")) {
 				opened = false;
+				continue;
 			}
 			if(!opened) {
 				aspParser.addErrorListener({
@@ -73,9 +74,13 @@ export function refreshDiagnostics(
 				const index = tokens.get(i).line;
 				constructs.push([text, type, index]);
 				global_constructs.push([text, type, index]);
+				console.log("t",text);
 			}
 
-			global_constructs = remove_tc(global_constructs, '%**', '**%');
+			// global_constructs = remove_tc(global_constructs, '%**', '**%');
+			// global_constructs = remove_tc(global_constructs, '%/', '/%');
+
+
 			const heads = [];
 			const tails = [];
 			const tails_negative = [];
@@ -132,15 +137,9 @@ export function refreshDiagnostics(
 				}
 				// constructsFiltered.push(constructs[i]);
 				if (constructs[i][1] === ASPCore2Lexer.SYMBOLIC_CONSTANT) { // se è una atomo lo salvo
-					const result = atoms.find(atom => atom.name === constructs[i][0]);
+					const result = atoms.find(atom => atom === constructs[i][0]);
 					if (!result) {
-						atoms.push({ name: constructs[i][0], count: 1 });
-						continue;
-					}
-					else {
-						atoms.map(atom => {
-							atom.name === constructs[i][0] ? atom.count = atom.count + 1 : null;
-						});
+						atoms.push(constructs[i][0]);
 					}
 				}
 			}
@@ -154,46 +153,48 @@ export function refreshDiagnostics(
 				}
 				);
 			}
-			if(!opened) {
-				console.log(lineOfText.text);
-				diagnostics = addWarningProbablyWrongName(diagnostics, atoms, global_constructs, doc);
-			}
+				diagnostics = addWarningProbablyWrongName(diagnostics, atoms, doc);
 		}
 		errorDiagnostics.set(doc.uri, diagnostics);
 	}
 }
 
-//Rimuove test e commenti
-function remove_tc(global_constructs: [string, number, number][], open: string, close: string) {
-	let opened = false;
-	const result: [string, number, number][] = [];
-	for (let i = 0; i < global_constructs.length; i++) {
+// // Rimuove test e commenti
+// function remove_tc(global_constructs: [string, number, number][], open: string, close: string) {
+// 	let opened = false;
+// 	const result: [string, number, number][] = [];
+// 	global_constructs.map(el=>console.log("r",el));
+// 	for (let i = 0; i < global_constructs.length; i++) {
 
-		if (global_constructs[i][0] === open) {
-			opened = true;
-		}
-		if (global_constructs[i][0] === close && opened) {
-			opened = false;
-		}
-		if (!opened) {
-			result.push(global_constructs[i]);
-		}
+// 		if (global_constructs[i][0] === open) {
+// 			opened = true;
+// 		}
+// 		if (global_constructs[i][0] === close && opened) {
+// 			opened = false;
+// 		}
+// 		if (!opened) {
+// 			result.push(global_constructs[i]);
+// 		}
 
-	}
-	return result;
-}
+// 	}
+// 	result.map(el=>console.log("r2",el));
 
-function addWarningProbablyWrongName(diagnostics: vscode.Diagnostic[], atoms: [{ name: string, count: number }], constructs: [string, number, number][], doc: vscode.TextDocument) {
+// 	return result;
+// }
+
+function addWarningProbablyWrongName(diagnostics: vscode.Diagnostic[], atoms: [string], doc: vscode.TextDocument) {
+	
 	atoms.map(atom => {
-		if (atom.count === 1) {
-			const line = findElemInText(doc, atom.name);
-			if (line !== -1) {
-				const msg = `${atom.name} is used only once`;
-				diagnostics.push(createDiagnostic(doc, doc.lineAt(line), line, msg, vscode.DiagnosticSeverity.Warning));
+		const elem = countElem(doc,atom);
+		
+		if (elem.count === 1) {
+			if (elem.line !== -1) {
+				const msg = `${elem.token} is used only once`;
+				diagnostics.push(createDiagnostic(doc, doc.lineAt(elem.line), elem.line, msg, vscode.DiagnosticSeverity.Warning));
 			}
 		} else {
 			diagnostics = diagnostics.filter(obj => {
-				return !obj.message.includes(`${atom.name} is used only once`);
+				return !obj.message.includes(`${elem.token} is used only once`);
 			}
 			);
 		}
@@ -202,38 +203,39 @@ function addWarningProbablyWrongName(diagnostics: vscode.Diagnostic[], atoms: [{
 	return diagnostics;
 }
 
-
-function findElemInText(doc: vscode.TextDocument, token: string) {
+// Restituisce il token, la linea e la frequenza
+function countElem(doc: vscode.TextDocument, token: string) {
 	let skip = false;
 	const startComment = '%/';
 	const endComment = '/%';
 	const single_comment = '%';
 	const startTest = '%**';
 	const endTest = '**%';
-	
+	let count = 0;
+	let found_at_line = -1;
+
 	for (let lineIndex = 0; lineIndex < doc.lineCount; lineIndex++) {
 		const lineOfText = doc.lineAt(lineIndex);
-		const comment_in_line = lineOfText.text.includes(single_comment) && !lineOfText.text.includes(startComment);
+		const comment_in_line = lineOfText.text.includes(single_comment) && !lineOfText.text.includes(startComment) && !lineOfText.text.includes(startTest);
 		const ts_in_line = (lineOfText.text.includes(startTest) && lineOfText.text.includes(endTest));
 		let text_line = lineOfText.text;
-		console.log("PRIMA", text_line);
 
-		if ((comment_in_line || ts_in_line) || (comment_in_line && !ts_in_line && !comment_in_line) ){
+		if ((comment_in_line || ts_in_line)){
 			const reg_multi = /%\/.*\/%/;
 			const reg_single_comment = /%.*/;
 			text_line = text_line.replace(reg_multi,"");
 			text_line = text_line.replace(reg_single_comment,"");
 			skip = false;
-			console.log("DOPO", text_line);
 		}
 		if (text_line.includes(token) && ((text_line.includes(startComment) || text_line.includes(startTest)))) {
 			if (text_line.indexOf(token) < text_line.indexOf(startComment) || (text_line.indexOf(token) < text_line.indexOf(startTest))) {
 				skip = false;
-				return lineIndex;
+				count+=1;
+				if(found_at_line < lineIndex)
+					found_at_line = lineIndex;
 			} else {
 				skip = true;
 				continue;
-
 			}
 
 		}
@@ -243,7 +245,10 @@ function findElemInText(doc: vscode.TextDocument, token: string) {
 				|| (text_line.indexOf(token) > text_line.indexOf(endTest) && text_line.indexOf(endTest) !== -1)) {
 				skip = false;
 
-				return lineIndex;
+				if(found_at_line < lineIndex)
+					found_at_line = lineIndex;
+			count+=1;
+
 			} else {
 				skip = false;
 				continue;
@@ -260,14 +265,15 @@ function findElemInText(doc: vscode.TextDocument, token: string) {
 		const reg = `${token}\\W`;
 		if (text_line.includes(token) && text_line.match(reg)!=null && !text_line.includes("not") && !skip) {
 			skip = false;
-			return lineIndex;
+			if(found_at_line  < lineIndex)
+				found_at_line = lineIndex;
+			count+=1;
 		}
 	}
+	console.log(token,found_at_line,count);
+	return {'token':token,'line':found_at_line,'count':count};
 
-	return -1;
 }
-
-
 function checkIsRule(constructs: [string, number, number][]) {
 	if (constructs[0][1] !== ASPCore2Lexer.SYMBOLIC_CONSTANT) { // non inizia con un atomo CODE 2
 		return false;
