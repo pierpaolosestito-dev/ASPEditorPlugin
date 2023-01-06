@@ -4959,9 +4959,11 @@ ASPCore2Parser.ANNOTATION_RULE_TO_NOT_DECOMPOSE = 70;
 ASPCore2Parser.ANNOTATION_GLOBAL_WASP_HEURISTIC = 71;
 ASPCore2Parser.ANNOTATION_GLOBAL_WASP_HEURISTIC_FILE = 72;
 ASPCore2Parser.ANNOTATION_GLOBAL_WASP_HEURISTIC_ELEMENTS = 73;
-ASPCore2Parser.ML_COMMENT = 74;
-ASPCore2Parser.EMPTY_COMMENT = 75;
-ASPCore2Parser.COMMENT = 76;
+ASPCore2Parser.START_TEST = 74;
+ASPCore2Parser.END_TEST = 75;
+ASPCore2Parser.START_COMMENT = 76;
+ASPCore2Parser.END_COMMENT = 77;
+ASPCore2Parser.COMMENT = 78;
 ASPCore2Parser.RULE_program = 0;
 ASPCore2Parser.RULE_rule = 1;
 ASPCore2Parser.RULE_simple_rule = 2;
@@ -5112,7 +5114,7 @@ ASPCore2Parser._LITERAL_NAMES = [
     "'@UT_INT'", "'@R_INT'", "'@T_INT'", "'%@global_ordering'", "'%@global_atom_indexed'",
     "'%@global_partial_order'", "'%@global_external_predicate_conversion'",
     "'%@rule_to_decompose'", "'%@rule_to_not_decompose'", "'%@global_heuristic'",
-    "'@file'", "'@elements'",
+    "'@file'", "'@elements'", "'%**'", "'**%'", "'%/'", "'/%'", "'%'",
 ];
 ASPCore2Parser._SYMBOLIC_NAMES = [
     undefined, "NAF", "SYMBOLIC_CONSTANT", "VARIABLE", "STRING", "NUMBER",
@@ -5133,11 +5135,11 @@ ASPCore2Parser._SYMBOLIC_NAMES = [
     "ANNOTATION_GLOBAL_ATOM_INDEXED", "ANNOTATION_GLOBAL_PARTIAL_ORDER", "ANNOTATION_GLOBAL_EXTATOM_CONVERSION",
     "ANNOTATION_RULE_TO_DECOMPOSE", "ANNOTATION_RULE_TO_NOT_DECOMPOSE", "ANNOTATION_GLOBAL_WASP_HEURISTIC",
     "ANNOTATION_GLOBAL_WASP_HEURISTIC_FILE", "ANNOTATION_GLOBAL_WASP_HEURISTIC_ELEMENTS",
-    "ML_COMMENT", "EMPTY_COMMENT", "COMMENT",
+    "START_TEST", "END_TEST", "START_COMMENT", "END_COMMENT", "COMMENT",
 ];
 ASPCore2Parser.VOCABULARY = new VocabularyImpl_1.VocabularyImpl(ASPCore2Parser._LITERAL_NAMES, ASPCore2Parser._SYMBOLIC_NAMES, []);
 ASPCore2Parser._serializedATNSegments = 2;
-ASPCore2Parser._serializedATNSegment0 = "\x03\uC91D\uCABA\u058D\uAFBA\u4F53\u0607\uEA8B\uC241\x03N\u03FC\x04\x02" +
+ASPCore2Parser._serializedATNSegment0 = "\x03\uC91D\uCABA\u058D\uAFBA\u4F53\u0607\uEA8B\uC241\x03P\u03FC\x04\x02" +
     "\t\x02\x04\x03\t\x03\x04\x04\t\x04\x04\x05\t\x05\x04\x06\t\x06\x04\x07" +
     "\t\x07\x04\b\t\b\x04\t\t\t\x04\n\t\n\x04\v\t\v\x04\f\t\f\x04\r\t\r\x04" +
     "\x0E\t\x0E\x04\x0F\t\x0F\x04\x10\t\x10\x04\x11\t\x11\x04\x12\t\x12\x04" +

@@ -1,12 +1,12 @@
 
-ciao(1,2).
+% c:-.
 
 %/ 
-    commento 
+    commento:-
 /%
 
 %**
-    TEST
+    TEST:-
 **%
 
 

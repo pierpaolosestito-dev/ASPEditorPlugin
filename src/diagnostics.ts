@@ -32,8 +32,6 @@ export function refreshDiagnostics(
 	if (regex.test(doc.fileName)) {
 		let diagnostics: vscode.Diagnostic[] = [];
 
-		const global_constructs: [string, number, number][] = [];
-		
 
 		for (let lineIndex = 0; lineIndex < doc.lineCount; lineIndex++) {
 			const lineOfText = doc.lineAt(lineIndex);
@@ -73,12 +71,7 @@ export function refreshDiagnostics(
 				const type = tokens.get(i).type;
 				const index = tokens.get(i).line;
 				constructs.push([text, type, index]);
-				global_constructs.push([text, type, index]);
-				console.log("t",text);
 			}
-
-			// global_constructs = remove_tc(global_constructs, '%**', '**%');
-			// global_constructs = remove_tc(global_constructs, '%/', '/%');
 
 
 			const heads = [];
@@ -143,9 +136,8 @@ export function refreshDiagnostics(
 					}
 				}
 			}
-
 			const msg = `The rule at line ${lineIndex+1} is not safe`;
-			if (!checkSafe(heads, tails,tails_negative,tails_in_symbols) && checkIsRule(constructs)) {
+			if (!checkSafe(heads, tails,tails_negative,tails_in_symbols) && checkIsRule(constructs)&& !check_comment_or_test(doc,lineIndex)) {
 				diagnostics.push(createDiagnostic(doc, lineOfText, lineIndex, msg, vscode.DiagnosticSeverity.Warning));
 			}else{
 				diagnostics = diagnostics.filter(obj => {
@@ -158,29 +150,6 @@ export function refreshDiagnostics(
 		errorDiagnostics.set(doc.uri, diagnostics);
 	}
 }
-
-// // Rimuove test e commenti
-// function remove_tc(global_constructs: [string, number, number][], open: string, close: string) {
-// 	let opened = false;
-// 	const result: [string, number, number][] = [];
-// 	global_constructs.map(el=>console.log("r",el));
-// 	for (let i = 0; i < global_constructs.length; i++) {
-
-// 		if (global_constructs[i][0] === open) {
-// 			opened = true;
-// 		}
-// 		if (global_constructs[i][0] === close && opened) {
-// 			opened = false;
-// 		}
-// 		if (!opened) {
-// 			result.push(global_constructs[i]);
-// 		}
-
-// 	}
-// 	result.map(el=>console.log("r2",el));
-
-// 	return result;
-// }
 
 function addWarningProbablyWrongName(diagnostics: vscode.Diagnostic[], atoms: [string], doc: vscode.TextDocument) {
 	
@@ -202,7 +171,33 @@ function addWarningProbablyWrongName(diagnostics: vscode.Diagnostic[], atoms: [s
 	});
 	return diagnostics;
 }
+function check_comment_or_test(doc:vscode.TextDocument,line: number){
+	
+	let check = false;
 
+	for (let lineIndex = 0; lineIndex < doc.lineCount; lineIndex++) {
+		const startComment = '%/';
+		const endComment = '/%';
+		const startTest = '%**';
+		const endTest = '**%';
+		const lineOfText = doc.lineAt(lineIndex);
+		if(lineOfText.text.includes(startComment)){
+			check = true;
+		}
+		if(lineOfText.text.includes(endComment)){
+			check = false;
+		}
+		if(lineOfText.text.includes(startTest)){
+			check = true;
+		}
+		if(lineOfText.text.includes(endTest)){
+			check = false;
+		}
+		if(line == lineIndex)
+			return check;
+	
+	}
+}
 // Restituisce il token, la linea e la frequenza
 function countElem(doc: vscode.TextDocument, token: string) {
 	let skip = false;
