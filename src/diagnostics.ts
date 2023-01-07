@@ -28,7 +28,6 @@ export function refreshDiagnostics(
 ): void {
 	const regex = /\.(asp|lp|dlv)$/g;
 	let atoms: [string] = [];
-
 	if (regex.test(doc.fileName)) {
 		let diagnostics: vscode.Diagnostic[] = [];
 
@@ -131,7 +130,7 @@ export function refreshDiagnostics(
 				}
 			}
 			const msg = `The rule at line ${lineIndex + 1} is not safe`;
-			if (!checkSafe(heads, tails, tails_negative, tails_in_symbols) && checkIsRule(constructs) && !check_comment_or_test(doc, lineIndex)?.check) {
+			if (!checkSafe(heads, tails, tails_negative, tails_in_symbols) && checkIsRule(constructs) && !check_comment_or_test(doc, lineIndex).check) {
 				diagnostics.push(createDiagnostic(doc, lineOfText, lineIndex, msg, vscode.DiagnosticSeverity.Warning));
 			} else {
 				diagnostics = diagnostics.filter(obj => {
@@ -149,7 +148,6 @@ function addWarningProbablyWrongName(diagnostics: vscode.Diagnostic[], atoms: [s
 
 	atoms.map(atom => {
 		const elem = countElem(doc, atom);
-
 		if (elem?.count === 1) {
 			if (elem.line !== -1) {
 				const msg = `${elem.token} is used only once`;
@@ -178,44 +176,51 @@ function check_comment_or_test(doc: vscode.TextDocument, line: number) {
 
 	for (let lineIndex = 0; lineIndex < doc.lineCount; lineIndex++) {
 
-
 		const lineOfText = doc.lineAt(lineIndex);
-		if (lineOfText.text.includes(startComment)) {
+
+		if (lineOfText.text.includes(startComment) && !check) {
 			index_start = lineOfText.text.indexOf(startComment);
 			check = true;
-
-			if (lineOfText.text.includes(endComment)) {
-				index_end = lineOfText.text.indexOf(endComment);
-				check = false;
-			}
+		}
+		if (lineOfText.text.includes(endComment)) {
+			index_end = lineOfText.text.indexOf(endComment);
+			check = false;
 		}
 
-		else if (lineOfText.text.includes(startTest)) {
+		if (lineOfText.text.includes(startTest) && !check) {
 			index_start = lineOfText.text.indexOf(startTest);
 			check = true;
+			
+		}
+		
+		if (lineOfText.text.includes(endTest)) {
+			index_end = lineOfText.text.indexOf(endTest);
+			check = false;
 
-			if (lineOfText.text.includes(endTest)) {
-				index_end = lineOfText.text.indexOf(endTest);
-				check = false;
-			}
 		}
 
-		else if (lineOfText.text.includes(single_comment)) {
+		if (lineOfText.text.includes(single_comment) 
+		&& !check 
+		&& !lineOfText.text.includes(startComment) 
+		&& !lineOfText.text.includes(endComment) 
+		&& !lineOfText.text.includes(startTest) 
+		&& !lineOfText.text.includes(endTest)) {
 			index_start = lineOfText.text.indexOf(single_comment);
-			check = false;
 		}
 
 		if (line == lineIndex)
 			return {
 				'check': check,
 				'index_start': index_start,
-				'index_end': index_end
+				'index_end': index_end,
+				'line':line
 			};
 			
 			
 		}
 		return {
 			'check': check,
+			'line':line,
 			'index_start': index_start,
 			'index_end': index_end
 		};
@@ -226,34 +231,36 @@ function countElem(doc: vscode.TextDocument, token: string) {
 	let found_at_line = -1;
 
 	for (let lineIndex = 0; lineIndex < doc.lineCount; lineIndex++) {
-		const result = check_comment_or_test(doc, lineIndex);
 		const lineOfText = doc.lineAt(lineIndex);
+		const result = check_comment_or_test(doc, lineIndex);
 		const text_line = lineOfText.text;
+
 
 		if (text_line.includes(token)) {
 			const index_of_token = text_line.indexOf(token);
-
-			if (result?.check === false && text_line.includes(token) && !text_line.includes("not")) {  // Non ci sono commenti e ho trovato il token
+			
+			if ((result?.check === false && text_line.includes(token) && !text_line.includes("not"))) {  // Non ci sono commenti e ho trovato il token
 				found_at_line = lineIndex;
 				count += 1;
 			}
 			else if (result?.check === true) { // Ci sono commenti
 				if (result.index_end == -1) { // caso del single_comment %
 					count += 1;
-					if (index_of_token < result.index_start && found_at_line < lineIndex)
+					if (index_of_token < result.index_start && lineIndex<result.line){
 						found_at_line = lineIndex;
+					}
 				}
-				else if (index_of_token < result.index_start || index_of_token > result.index_end) { // nel caso sia prima o dopo un blocco di commenti/test multiline
+				else if (index_of_token < result.index_start || (index_of_token > result.index_end && (lineIndex>= result.line))) { // nel caso sia prima o dopo un blocco di commenti/test multiline
 					count += 1;
-					if (found_at_line < lineIndex)
+					if (found_at_line < lineIndex){
 						found_at_line = lineIndex;
+					}
 				}
 			}
 		}
-		console.log(token, found_at_line, count);
-		return { 'token': token, 'line': found_at_line, 'count': count };
 	}
-	}
+	return { 'token': token, 'line': found_at_line, 'count': count };
+}
 	function checkIsRule(constructs: [string, number, number][]) {
 		if (constructs[0][1] !== ASPCore2Lexer.SYMBOLIC_CONSTANT) { // non inizia con un atomo CODE 2
 			return false;
