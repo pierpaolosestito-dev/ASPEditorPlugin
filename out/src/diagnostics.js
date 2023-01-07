@@ -55,6 +55,7 @@ function refreshDiagnostics(doc, errorDiagnostics) {
                 const index = tokens.get(i).line;
                 constructs.push([text, type, index]);
             }
+            // Divisione del costrutto tra testa e coda, simboli e negazioni per controllare la safeness
             const heads = [];
             const tails = [];
             const tails_negative = [];
@@ -62,17 +63,15 @@ function refreshDiagnostics(doc, errorDiagnostics) {
             let head = true;
             let negation = false;
             for (let i = 0; i < constructs.length; i++) {
-                //TODO filtrare i token
                 const s = constructs[i][0];
                 if (constructs[i][1] === ASPCore2Lexer_1.ASPCore2Lexer.CONS) { // se trovo un simbolo di constraint capisco che sono passata alla coda
                     head = !head;
-                    continue;
                 }
-                if ((negation && constructs[i][1] === ASPCore2Lexer_1.ASPCore2Lexer.PARAM_CLOSE)) {
+                else if ((negation && constructs[i][1] === ASPCore2Lexer_1.ASPCore2Lexer.PARAM_CLOSE)) {
                     negation = false;
                     continue;
                 }
-                if (constructs[i][1] === ASPCore2Lexer_1.ASPCore2Lexer.NAF || negation) { // se sono atomi negativi non li inserisco né in coda né in testa
+                else if (constructs[i][1] === ASPCore2Lexer_1.ASPCore2Lexer.NAF || negation) { // se sono atomi negativi non li inserisco né in coda né in testa
                     if (constructs[i][1] === ASPCore2Lexer_1.ASPCore2Lexer.CONS) {
                         negation = false;
                     }
@@ -80,23 +79,21 @@ function refreshDiagnostics(doc, errorDiagnostics) {
                         negation = true;
                     }
                 }
-                if (constructs[i][1] >= 29 && constructs[i][1] <= 34) {
+                else if (constructs[i][1] >= 29 && constructs[i][1] <= 34) { // Se sono presenti simboli inserisco il valore prima del simbolo
                     if (constructs[i - 1][1] === ASPCore2Lexer_1.ASPCore2Lexer.VARIABLE) {
                         tails_in_symbols.push(constructs[i - 1][0]);
                         continue;
                     }
-                    if (constructs[i + 1][1] === ASPCore2Lexer_1.ASPCore2Lexer.VARIABLE) {
+                    if (constructs[i + 1][1] === ASPCore2Lexer_1.ASPCore2Lexer.VARIABLE) { // ... e quello dopo 
                         tails_in_symbols.push(constructs[i - 1][0]);
                         continue;
                     }
                 }
-                if (negation && !head && constructs[i][1] == ASPCore2Lexer_1.ASPCore2Lexer.VARIABLE) {
-                    tails_negative.push(constructs[i][0]);
-                    continue;
-                }
-                if (constructs[i][1] === ASPCore2Lexer_1.ASPCore2Lexer.VARIABLE) {
-                    if (head) {
+                else if (constructs[i][1] === ASPCore2Lexer_1.ASPCore2Lexer.VARIABLE) {
+                    if (head)
                         heads.push(constructs[i][0]);
+                    else if (negation && !head && constructs[i][1] == ASPCore2Lexer_1.ASPCore2Lexer.VARIABLE) { // mi salvo separatamente le variabili negative
+                        tails_negative.push(constructs[i][0]);
                     }
                     else if (!negation && !(constructs[i - 1][1] > 29 && constructs[i - 1][1] < 34) &&
                         !(constructs[i + 1][1] > 29 && constructs[i + 1][1] < 34)) {
@@ -105,10 +102,8 @@ function refreshDiagnostics(doc, errorDiagnostics) {
                     else if (negation) {
                         tails_negative.push(constructs[i][0]);
                     }
-                    continue;
                 }
-                // constructsFiltered.push(constructs[i]);
-                if (constructs[i][1] === ASPCore2Lexer_1.ASPCore2Lexer.SYMBOLIC_CONSTANT) { // se è una atomo lo salvo
+                else if (constructs[i][1] === ASPCore2Lexer_1.ASPCore2Lexer.SYMBOLIC_CONSTANT) { // se è una atomo lo salvo
                     const result = atoms.find(atom => atom === constructs[i][0]);
                     if (!result) {
                         atoms.push(constructs[i][0]);
@@ -116,7 +111,7 @@ function refreshDiagnostics(doc, errorDiagnostics) {
                 }
             }
             const msg = `The rule at line ${lineIndex + 1} is not safe`;
-            if (!checkSafe(heads, tails, tails_negative, tails_in_symbols) && checkIsRule(constructs) && !check_comment_or_test(doc, lineIndex)) {
+            if (!checkSafe(heads, tails, tails_negative, tails_in_symbols) && checkIsRule(constructs) && !check_comment_or_test(doc, lineIndex)?.check) {
                 diagnostics.push(createDiagnostic(doc, lineOfText, lineIndex, msg, vscode.DiagnosticSeverity.Warning));
             }
             else {
@@ -133,7 +128,7 @@ exports.refreshDiagnostics = refreshDiagnostics;
 function addWarningProbablyWrongName(diagnostics, atoms, doc) {
     atoms.map(atom => {
         const elem = countElem(doc, atom);
-        if (elem.count === 1) {
+        if (elem?.count === 1) {
             if (elem.line !== -1) {
                 const msg = `${elem.token} is used only once`;
                 diagnostics.push(createDiagnostic(doc, doc.lineAt(elem.line), elem.line, msg, vscode.DiagnosticSeverity.Warning));
@@ -141,7 +136,7 @@ function addWarningProbablyWrongName(diagnostics, atoms, doc) {
         }
         else {
             diagnostics = diagnostics.filter(obj => {
-                return !obj.message.includes(`${elem.token} is used only once`);
+                return !obj.message.includes(`${elem?.token} is used only once`);
             });
         }
     });
@@ -154,86 +149,74 @@ function check_comment_or_test(doc, line) {
         const endComment = '/%';
         const startTest = '%**';
         const endTest = '**%';
+        const single_comment = '%';
+        let index_start = -1;
+        let index_end = -1;
         const lineOfText = doc.lineAt(lineIndex);
         if (lineOfText.text.includes(startComment)) {
+            index_start = lineOfText.text.indexOf(startComment);
             check = true;
+            if (lineOfText.text.includes(endComment)) {
+                index_end = lineOfText.text.indexOf(endComment);
+                check = false;
+            }
         }
-        if (lineOfText.text.includes(endComment)) {
-            check = false;
-        }
-        if (lineOfText.text.includes(startTest)) {
+        else if (lineOfText.text.includes(startTest)) {
+            index_start = lineOfText.text.indexOf(startTest);
             check = true;
+            if (lineOfText.text.includes(endTest)) {
+                index_end = lineOfText.text.indexOf(endTest);
+                check = false;
+            }
         }
-        if (lineOfText.text.includes(endTest)) {
+        else if (lineOfText.text.includes(single_comment)) {
+            index_start = lineOfText.text.indexOf(single_comment);
             check = false;
         }
         if (line == lineIndex)
-            return check;
+            return {
+                'check': check,
+                'index_start': index_start,
+                'index_end': index_end
+            };
+        else
+            return {
+                'check': check,
+                'index_start': index_start,
+                'index_end': index_end
+            };
     }
 }
 // Restituisce il token, la linea e la frequenza
 function countElem(doc, token) {
-    let skip = false;
-    const startComment = '%/';
-    const endComment = '/%';
-    const single_comment = '%';
-    const startTest = '%**';
-    const endTest = '**%';
     let count = 0;
     let found_at_line = -1;
     for (let lineIndex = 0; lineIndex < doc.lineCount; lineIndex++) {
+        const result = check_comment_or_test(doc, lineIndex);
         const lineOfText = doc.lineAt(lineIndex);
-        const comment_in_line = lineOfText.text.includes(single_comment) && !lineOfText.text.includes(startComment) && !lineOfText.text.includes(startTest);
-        const ts_in_line = (lineOfText.text.includes(startTest) && lineOfText.text.includes(endTest));
-        let text_line = lineOfText.text;
-        if ((comment_in_line || ts_in_line)) {
-            const reg_multi = /%\/.*\/%/;
-            const reg_single_comment = /%.*/;
-            text_line = text_line.replace(reg_multi, "");
-            text_line = text_line.replace(reg_single_comment, "");
-            skip = false;
-        }
-        if (text_line.includes(token) && ((text_line.includes(startComment) || text_line.includes(startTest)))) {
-            if (text_line.indexOf(token) < text_line.indexOf(startComment) || (text_line.indexOf(token) < text_line.indexOf(startTest))) {
-                skip = false;
-                count += 1;
-                if (found_at_line < lineIndex)
-                    found_at_line = lineIndex;
-            }
-            else {
-                skip = true;
-                continue;
-            }
-        }
-        if ((text_line.includes(endComment) || text_line.includes(endTest)) && text_line.includes(token)) {
-            if ((text_line.indexOf(token) > text_line.indexOf(endComment) && text_line.indexOf(endComment) !== -1)
-                || (text_line.indexOf(token) > text_line.indexOf(endTest) && text_line.indexOf(endTest) !== -1)) {
-                skip = false;
-                if (found_at_line < lineIndex)
-                    found_at_line = lineIndex;
-                count += 1;
-            }
-            else {
-                skip = false;
-                continue;
-            }
-        }
-        if (skip && (text_line.includes(endComment) || text_line.includes(endTest))) {
-            skip = false;
-        }
-        if (!skip && (text_line.includes(startComment) || text_line.includes(startTest))) {
-            skip = true;
-        }
-        const reg = `${token}\\W`;
-        if (text_line.includes(token) && text_line.match(reg) != null && !text_line.includes("not") && !skip) {
-            skip = false;
-            if (found_at_line < lineIndex)
+        const text_line = lineOfText.text;
+        if (text_line.includes(token)) {
+            const index_of_token = text_line.indexOf(token);
+            if (result?.check === false && text_line.includes(token) && !text_line.includes("not")) { // Non ci sono commenti e ho trovato il token
                 found_at_line = lineIndex;
-            count += 1;
+                count += 1;
+            }
+            else if (result?.check === true) { // Ci sono commenti
+                if (result.index_end == -1) { // caso del single_comment %
+                    count += 1;
+                    if (index_of_token < result.index_start && found_at_line < lineIndex)
+                        found_at_line = lineIndex;
+                }
+                else if (index_of_token < result.index_start || index_of_token > result.index_end) { // nel caso sia prima o dopo un blocco di commenti/test multiline
+                    count += 1;
+                    if (found_at_line < lineIndex)
+                        found_at_line = lineIndex;
+                }
+            }
         }
+        console.log(token, found_at_line, count);
+        return { 'token': token, 'line': found_at_line, 'count': count };
     }
-    console.log(token, found_at_line, count);
-    return { 'token': token, 'line': found_at_line, 'count': count };
 }
 function checkIsRule(constructs) {
     if (constructs[0][1] !== ASPCore2Lexer_1.ASPCore2Lexer.SYMBOLIC_CONSTANT) { // non inizia con un atomo CODE 2
