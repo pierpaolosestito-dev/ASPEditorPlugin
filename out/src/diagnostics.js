@@ -144,14 +144,14 @@ function addWarningProbablyWrongName(diagnostics, atoms, doc) {
 }
 function check_comment_or_test(doc, line) {
     let check = false;
+    let index_start = -1;
+    let index_end = -1;
+    const startComment = '%/';
+    const endComment = '/%';
+    const startTest = '%**';
+    const endTest = '**%';
+    const single_comment = '%';
     for (let lineIndex = 0; lineIndex < doc.lineCount; lineIndex++) {
-        const startComment = '%/';
-        const endComment = '/%';
-        const startTest = '%**';
-        const endTest = '**%';
-        const single_comment = '%';
-        let index_start = -1;
-        let index_end = -1;
         const lineOfText = doc.lineAt(lineIndex);
         if (lineOfText.text.includes(startComment)) {
             index_start = lineOfText.text.indexOf(startComment);
@@ -179,13 +179,12 @@ function check_comment_or_test(doc, line) {
                 'index_start': index_start,
                 'index_end': index_end
             };
-        else
-            return {
-                'check': check,
-                'index_start': index_start,
-                'index_end': index_end
-            };
     }
+    return {
+        'check': check,
+        'index_start': index_start,
+        'index_end': index_end
+    };
 }
 // Restituisce il token, la linea e la frequenza
 function countElem(doc, token) {

@@ -168,15 +168,15 @@ function addWarningProbablyWrongName(diagnostics: vscode.Diagnostic[], atoms: [s
 function check_comment_or_test(doc: vscode.TextDocument, line: number) {
 
 	let check = false;
+	let index_start = -1;
+	let index_end = -1;
+	const startComment = '%/';
+	const endComment = '/%';
+	const startTest = '%**';
+	const endTest = '**%';
+	const single_comment = '%';
 
 	for (let lineIndex = 0; lineIndex < doc.lineCount; lineIndex++) {
-		const startComment = '%/';
-		const endComment = '/%';
-		const startTest = '%**';
-		const endTest = '**%';
-		const single_comment = '%';
-		let index_start = -1;
-		let index_end = -1;
 
 
 		const lineOfText = doc.lineAt(lineIndex);
@@ -211,14 +211,14 @@ function check_comment_or_test(doc: vscode.TextDocument, line: number) {
 				'index_start': index_start,
 				'index_end': index_end
 			};
-		else
-			return {
-				'check': check,
-				'index_start': index_start,
-				'index_end': index_end
-			};
-
-	}
+			
+			
+		}
+		return {
+			'check': check,
+			'index_start': index_start,
+			'index_end': index_end
+		};
 }
 // Restituisce il token, la linea e la frequenza
 function countElem(doc: vscode.TextDocument, token: string) {
