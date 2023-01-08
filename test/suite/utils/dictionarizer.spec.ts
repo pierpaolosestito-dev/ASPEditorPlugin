@@ -1,4 +1,4 @@
-import { dictionarizer } from '../../src/utils/dictionarizer';
+import { dictionarizer } from '../../../src/utils/dictionarizer';
 import * as assert from 'assert';
 
 describe('Dictionarizer Test Suite', () => {

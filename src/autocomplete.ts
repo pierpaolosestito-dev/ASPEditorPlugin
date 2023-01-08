@@ -3,6 +3,7 @@ import * as path from 'path';
 import { dictionarizer } from './utils/dictionarizer';
 import { DynamicPredicateDictionary } from './utils/dynamic_predicate_dictionary';
 import { DynamicTermsDictionary } from './utils/dynamic_terms_dictionary';
+import { PrompterDetail } from './utils/prompter_detail';
 
 //Returns a provider that manages intellisense for directives, aggregates, default and custom external atoms
 export function getASPIntellisenseProvider(context: vscode.ExtensionContext): vscode.CompletionItemProvider<vscode.CompletionItem> {
@@ -97,7 +98,7 @@ export function getASPIntellisenseProvider(context: vscode.ExtensionContext): vs
                     completionItems.push(new vscode.CompletionItem(elem, vscode.CompletionItemKind.Constant));
                 });
                 
-                for(const elem of Object.values<any>(dd.get_field(fileName))) {
+                for(const elem of dd.get_field(fileName)) {
                     completionItems.push(new vscode.CompletionItem(elem.label, vscode.CompletionItemKind.Field));
                     completionItems[completionItems.length - 1].insertText = new vscode.SnippetString(elem.snippet);
                     completionItems[completionItems.length - 1].detail = elem.detail;
@@ -173,7 +174,7 @@ export function fillDictionaryWithDynamicPredicates(){
 		const text = document.document.getText();
 
 		const splitted_text = text.split("\n");
-		const array_valori = [];
+		const array_valori: PrompterDetail[] = [];
 		for(let i=0;i<splitted_text.length;i++){
 			
 			const matches = splitted_text[i].matchAll(regexp);
@@ -197,7 +198,7 @@ export function fillDictionaryWithDynamicPredicates(){
 					label = match2[1]+"(_)";
 					snippet = match2[1]+"(${1})";
 					}
-					const obj = {"label":label,"snippet":snippet,"detail": "(previous written predicates) "+label,"documentation": "**PREVIOUS PREDICATES**\n\n"+label+"\n\n---"};
+					const obj: PrompterDetail = {"label":label,"snippet":snippet,"detail": "(previous written predicates) "+label,"documentation": "**PREVIOUS PREDICATES**\n\n"+label+"\n\n---"};
 					array_valori.push(obj);
 					continue;
 				}
@@ -218,7 +219,7 @@ export function fillDictionaryWithDynamicPredicates(){
 					label = match2[1]+parenthesis;
 					snippet = match2[1]+snippetTag;
 				}
-				const obj = {"label":label,"snippet":snippet,"detail": "(previous written predicates) "+label,"documentation": "**PREVIOUS PREDICATES**\n\n"+label+"\n\n---"};
+				const obj: PrompterDetail = {"label":label,"snippet":snippet,"detail": "(previous written predicates) "+label,"documentation": "**PREVIOUS PREDICATES**\n\n"+label+"\n\n---"};
 				array_valori.push(obj);
 			}
 			//Noi dobbiamo aggiungere questi valori trovati, alla chiave, senza sovrascrivere quelli precedenti

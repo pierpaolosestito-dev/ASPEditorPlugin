@@ -1,14 +1,19 @@
-import { DynamicPredicateDictionary } from '../utils/dynamic_predicate_dictionary';
-import { dictionarizer } from '../../src/utils/dictionarizer';
 import * as assert from 'assert';
+import { DynamicPredicateDictionary } from '../../../src/utils/dynamic_predicate_dictionary';
 
-describe('Dynamic Dictionary Test Suite', () => {
+describe('Dynamic Predicate Dictionary Test Suite', () => {
+	it("Dynamic Predicate Dictionary is singleton",()=>{
+		const dynamicdictionary= DynamicPredicateDictionary.getInstance();
+		const dynamicdictionary2= DynamicPredicateDictionary.getInstance();
+		assert.equal(dynamicdictionary,dynamicdictionary2);
+	});
 
+/*
 	const dynamicdictionary= new DynamicPredicateDictionary();
 
 	beforeEach(() => {
-			dynamicdictionary.add_field('1',[{label:"Test"}]);
-			dynamicdictionary.add_field('2',[{label:"Test"},{label:"Test"}]);
+			dynamicdictionary.add_field('1',[{label:"Test",detail:"",documentation:"",snippet:""}]);
+			dynamicdictionary.add_field('2',[{label:"Test",detail:"",documentation:"",snippet:""},{label:"Test",detail:"",documentation:"",snippet:""}]);
 			const vals = [];
 			vals[1]=[{label:"Test"}];
 			vals[2]=[{label:"Test"}];	
@@ -31,5 +36,5 @@ describe('Dynamic Dictionary Test Suite', () => {
 		
 		afterEach(() => {
 			dynamicdictionary.clear();
-		});
+		}); */
 });

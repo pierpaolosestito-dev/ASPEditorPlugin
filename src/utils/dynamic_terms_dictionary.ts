@@ -23,8 +23,8 @@ export class DynamicTermsDictionary {
 		this.dictionary.delete(key);
 	}
 
-	get_field(key: string) {
-		return this.dictionary.get(key);
+	get_field(key: string): Map<string,string[]> {
+		return this.dictionary.get(key)||new Map<string,string[]>();
 	}
 
 	get_dictionary() {

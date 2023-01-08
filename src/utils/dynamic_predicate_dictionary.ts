@@ -1,6 +1,8 @@
+import { PrompterDetail } from "./prompter_detail";
+
 export class DynamicPredicateDictionary {
 
-	dictionary: Map<string, any>;
+	dictionary: Map<string, PrompterDetail[]>;
 	private static _instance: DynamicPredicateDictionary;
 
 	constructor() {
@@ -15,9 +17,9 @@ export class DynamicPredicateDictionary {
 		return DynamicPredicateDictionary._instance;
 	}
 
-	add_field(key: string, values: any) {
-		const uniqueArray = values.filter((value: any, index: number, self: []) => index === self.findIndex(
-			(t: any) =>
+	add_field(key: string, values: PrompterDetail[]) {
+		const uniqueArray = values.filter((value: PrompterDetail, index: number, array: PrompterDetail[]) => index === array.findIndex(
+			(t: PrompterDetail) =>
 			(
 				t.label === value.label
 			)
@@ -30,8 +32,8 @@ export class DynamicPredicateDictionary {
 		this.dictionary.delete(key);
 	}
 
-	get_field(key: string) {
-		return this.dictionary.get(key);
+	get_field(key: string): PrompterDetail[] {
+		return this.dictionary.get(key)||[];
 	}
 
 	get_dictionary() {
