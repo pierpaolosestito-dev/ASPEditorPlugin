@@ -3,9 +3,6 @@ import * as path from 'path';
 import { dictionarizer } from './utils/dictionarizer';
 import { DynamicPredicateDictionary } from './utils/dynamic_predicate_dictionary';
 import { DynamicTermsDictionary } from './utils/dynamic_terms_dictionary';
-import { match } from 'assert';
-import { stringify } from 'querystring';
-import { ParseInfo } from 'antlr4ts/atn/ParseInfo';
 
 //Returns a provider that manages intellisense for directives, aggregates, default and custom external atoms
 export function getASPIntellisenseProvider(context: vscode.ExtensionContext): vscode.CompletionItemProvider<vscode.CompletionItem> {
@@ -166,7 +163,7 @@ function readDictionariesandMergeIt(context: vscode.ExtensionContext): any{
 export function fillDictionaryWithDynamicPredicates(){
     const dd = DynamicPredicateDictionary.getInstance();
 	// eslint-disable-next-line no-useless-escape
-	const regexp = /(\w+\s*\(\s*\w+(?:\s*\,\s*\w+\s*)*\s*\))\s*(?:\:\-|\||\.)/g;
+	const regexp = /(\w+\s*\(\s*\w+(?:\s*\,\s*\w+\s*)*\s*\))\s*(?:\:\-|\||\.|,)/g;
 	const regexp2 = /(\w+)\s*\(/g;
 
 	vscode.workspace.onDidChangeTextDocument(document => {
@@ -234,7 +231,7 @@ export function fillDictionaryWithDynamicPredicates(){
 
 
 function sanitizeTerms(terms:string){
-    terms = terms.replace(" ","").replace(/\w+\(/,"").replace(").","").replace(/\w+\(/,"").replace(")|","").replace(/\w+\(/,"").replace("):-","");
+    terms = terms.replace(" ","").replace(/\w+\(/,"").replace(").","").replace(/\w+\(/,"").replace(")|","").replace(/\w+\(/,"").replace("):-","").replace("),","");
      return terms;
 }
 
@@ -243,7 +240,7 @@ function onlyUnique(value:string, index:number, self:string[]) {
   }
 
 export function fillDictionaryWithDynamicTerms(){
-    const terms_regex = /\w+\s*\(\s*\w+(?:\s*,\s*\w+\s*)*\s*\)\s*(?::-|\||\.)/g;
+    const terms_regex = /\w+\s*\(\s*\w+(?:\s*,\s*\w+\s*)*\s*\)\s*(?::-|\||\.|,)/g;
     const dd = DynamicTermsDictionary.getInstance();
 
     vscode.workspace.onDidChangeTextDocument(document => {
