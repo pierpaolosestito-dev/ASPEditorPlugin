@@ -1,4 +1,4 @@
-name: Update and test
+name: Node setup and Testing on push and pull requests
 
 on: [push, pull_request]
 
