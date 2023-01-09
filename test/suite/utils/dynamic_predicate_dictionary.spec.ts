@@ -1,6 +1,8 @@
 import * as assert from 'assert';
 import { DynamicPredicateDictionary } from '../../../src/utils/dynamic_predicate_dictionary';
 
+
+
 describe('Dynamic Predicate Dictionary Test Suite', () => {
 	it("Dynamic Predicate Dictionary is singleton",()=>{
 		const dynamicdictionary= DynamicPredicateDictionary.getInstance();
@@ -8,33 +10,34 @@ describe('Dynamic Predicate Dictionary Test Suite', () => {
 		assert.equal(dynamicdictionary,dynamicdictionary2);
 	});
 
-/*
-	const dynamicdictionary= new DynamicPredicateDictionary();
-
-	beforeEach(() => {
-			dynamicdictionary.add_field('1',[{label:"Test",detail:"",documentation:"",snippet:""}]);
-			dynamicdictionary.add_field('2',[{label:"Test",detail:"",documentation:"",snippet:""},{label:"Test",detail:"",documentation:"",snippet:""}]);
-			const vals = [];
-			vals[1]=[{label:"Test"}];
-			vals[2]=[{label:"Test"}];	
-		});
-	
-		it("add value in dictionary and get value by key",()=>{
-			assert.deepStrictEqual(dynamicdictionary.get_field('1'),[{label:"Test"}]);
-		});
-	
-		it("add value and get full dictionary",()=>{
-			const expectedMap = new Map();
-			expectedMap.set('1', [ { label: 'Test' }]);
-			expectedMap.set('2', [ { label: 'Test' }]);
-			assert.deepStrictEqual(dynamicdictionary.get_dictionary(), expectedMap);
-		});
-
-		it("no duplication inside the value",()=>{
-			assert.deepStrictEqual(dynamicdictionary.get_field('2'), [{ label: 'Test' } ]);	
-		});
+	it("Dynamic Predicate add field",()=>{
+		const dynamicdictionary= DynamicPredicateDictionary.getInstance();
+		dynamicdictionary.add_field("test_key",[{label:"test(_,_)",documentation:"doc1",detail:"det1",snippet:"sni1"},{label:"test2(_,_)",documentation:"doc2",detail:"det2",snippet:"sni2"}]);
 		
-		afterEach(() => {
-			dynamicdictionary.clear();
-		}); */
+		assert.equal(dynamicdictionary.get_field("test_key").length,2);
+		assert.equal(dynamicdictionary.get_field("test_key")[0].label,"test(_,_)");
+		assert.equal(dynamicdictionary.get_field("test_key")[1].label,"test2(_,_)");
+	});
+
+	it("Dynamic Predicate add field on same key subscribe older records",()=>{
+		const dynamicdictionary= DynamicPredicateDictionary.getInstance();
+		dynamicdictionary.add_field("test_key",[{label:"test(_,_)",documentation:"doc1",detail:"det1",snippet:"sni1"},{label:"test2(_,_)",documentation:"doc2",detail:"det2",snippet:"sni2"}]);
+		
+		assert.equal(dynamicdictionary.get_field("test_key").length,2);
+		assert.equal(dynamicdictionary.get_field("test_key")[0].label,"test(_,_)");
+		assert.equal(dynamicdictionary.get_field("test_key")[1].label,"test2(_,_)");
+
+		dynamicdictionary.add_field("test_key",[{label:"test3(_,_)",documentation:"doc1",detail:"det1",snippet:"sni1"},{label:"test4(_,_)",documentation:"doc2",detail:"det2",snippet:"sni2"}]);
+		assert.equal(dynamicdictionary.get_field("test_key").length,2);
+		assert.equal(dynamicdictionary.get_field("test_key")[0].label,"test3(_,_)");
+		assert.equal(dynamicdictionary.get_field("test_key")[1].label,"test4(_,_)");
+	});
+
+	it("Dynamic Predicate remove duplicates based on label",()=>{
+		const dynamicdictionary= DynamicPredicateDictionary.getInstance();
+		dynamicdictionary.add_field("test_key",[{label:"test(_,_)",documentation:"doc1",detail:"det1",snippet:"sni1"},{label:"test(_,_)",documentation:"doc2",detail:"det2",snippet:"sni2"}]);
+		assert.equal(dynamicdictionary.get_field("test_key").length,1);
+		assert.equal(dynamicdictionary.get_field("test_key")[0].label,"test(_,_)");
+	});
+
 });

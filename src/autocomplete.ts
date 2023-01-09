@@ -231,7 +231,7 @@ export function fillDictionaryWithDynamicPredicates(){
 }
 
 
-function sanitizeTerms(terms:string){
+export function sanitizeTerms(terms:string){
     terms = terms.replace(" ","").replace(/\w+\(/,"").replace(").","").replace(/\w+\(/,"").replace(")|","").replace(/\w+\(/,"").replace("):-","").replace("),","");
      return terms;
 }

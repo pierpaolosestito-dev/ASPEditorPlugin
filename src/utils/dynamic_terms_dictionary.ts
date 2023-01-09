@@ -19,19 +19,7 @@ export class DynamicTermsDictionary {
 		this.dictionary.set(key, values);
 	}
 
-	remove_field(key: string) {
-		this.dictionary.delete(key);
-	}
-
 	get_field(key: string): Map<string,string[]> {
 		return this.dictionary.get(key)||new Map<string,string[]>();
-	}
-
-	get_dictionary() {
-		return this.dictionary;
-	}
-
-	clear() {
-		this.dictionary.clear();
 	}
 }

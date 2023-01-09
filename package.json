@@ -85,10 +85,9 @@
 		"vscode:prepublish": "npm run compile",
 		"compile": "tsc -p ./",
 		"watch": "tsc -watch -p ./",
-		"pretest": "npm run compile && npm run lint",
 		"lint": "eslint src --ext ts",
 		"build": "tsc",
-		"tests": "mocha --require ts-node/register test/**/*.ts"
+		"test": "mocha --require ts-node/register test/**/*.spec.ts"
 	},
 	"devDependencies": {
 		"@types/glob": "^7.2.0",

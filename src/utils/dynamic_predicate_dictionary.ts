@@ -28,19 +28,8 @@ export class DynamicPredicateDictionary {
 		this.dictionary.set(key, uniqueArray);
 	}
 
-	remove_field(key: string) {
-		this.dictionary.delete(key);
-	}
-
 	get_field(key: string): PrompterDetail[] {
 		return this.dictionary.get(key)||[];
 	}
 
-	get_dictionary() {
-		return this.dictionary;
-	}
-
-	clear() {
-		this.dictionary.clear();
-	}
 }
