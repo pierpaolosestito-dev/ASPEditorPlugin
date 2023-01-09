@@ -22,7 +22,7 @@ exports.CODE_ERROR = "Errore 104";
 let opened = false;
 function refreshDiagnostics(doc, errorDiagnostics) {
     const regex = /\.(asp|lp|dlv)$/g;
-    let atoms = [];
+    const atoms = [];
     if (regex.test(doc.fileName)) {
         let diagnostics = [];
         for (let lineIndex = 0; lineIndex < doc.lineCount; lineIndex++) {
@@ -128,15 +128,20 @@ exports.refreshDiagnostics = refreshDiagnostics;
 function addWarningProbablyWrongName(diagnostics, atoms, doc) {
     atoms.map(atom => {
         const elem = countElem(doc, atom);
-        if (elem?.count === 1) {
-            if (elem.line !== -1) {
+        if (elem.count === 1) { // una sola occorrenza
+            if (elem.line !== -1) { // se non si trova in un commento
                 const msg = `${elem.token} is used only once`;
-                diagnostics.push(createDiagnostic(doc, doc.lineAt(elem.line), elem.line, msg, vscode.DiagnosticSeverity.Warning));
+                const tmp_diagnostic = diagnostics.find(obj => {
+                    return obj.message == msg;
+                });
+                if (tmp_diagnostic === undefined) {
+                    diagnostics.push(createDiagnostic(doc, doc.lineAt(elem.line), elem.line, msg, vscode.DiagnosticSeverity.Warning));
+                }
             }
         }
         else {
             diagnostics = diagnostics.filter(obj => {
-                return !obj.message.includes(`${elem?.token} is used only once`);
+                return !obj.message.includes(`${elem.token} is used only once`);
             });
         }
     });
@@ -152,9 +157,12 @@ function check_comment_or_test(doc, line) {
     const endTest = '**%';
     const single_comment = '%';
     for (let lineIndex = 0; lineIndex < doc.lineCount; lineIndex++) {
+        let single = false;
+        const line2 = line;
         const lineOfText = doc.lineAt(lineIndex);
         if (lineOfText.text.includes(startComment) && !check) {
             index_start = lineOfText.text.indexOf(startComment);
+            index_end = -1;
             check = true;
         }
         if (lineOfText.text.includes(endComment)) {
@@ -162,6 +170,7 @@ function check_comment_or_test(doc, line) {
             check = false;
         }
         if (lineOfText.text.includes(startTest) && !check) {
+            index_end = -1;
             index_start = lineOfText.text.indexOf(startTest);
             check = true;
         }
@@ -169,21 +178,33 @@ function check_comment_or_test(doc, line) {
             index_end = lineOfText.text.indexOf(endTest);
             check = false;
         }
-        if (lineOfText.text.includes(single_comment)
+        const single_c = lineOfText.text.includes(single_comment);
+        const test_start_comment = lineOfText.text.includes(startComment);
+        const test_end_comment = lineOfText.text.includes(endComment);
+        const test_start_test = lineOfText.text.includes(startTest);
+        const test_end_test = lineOfText.text.includes(endTest);
+        if (lineOfText.text.includes(single_comment) // %/
             && !check
             && !lineOfText.text.includes(startComment)
             && !lineOfText.text.includes(endComment)
             && !lineOfText.text.includes(startTest)
             && !lineOfText.text.includes(endTest)) {
             index_start = lineOfText.text.indexOf(single_comment);
+            single = true;
+            index_end = -1;
         }
-        if (line == lineIndex)
+        if (line == lineIndex) {
+            let temp_check = check;
+            if (single) {
+                temp_check = true;
+            }
             return {
-                'check': check,
+                'check': temp_check,
                 'index_start': index_start,
                 'index_end': index_end,
                 'line': line
             };
+        }
     }
     return {
         'check': check,
@@ -200,21 +221,23 @@ function countElem(doc, token) {
         const lineOfText = doc.lineAt(lineIndex);
         const result = check_comment_or_test(doc, lineIndex);
         const text_line = lineOfText.text;
+        const count_iter = (text_line.match(new RegExp(token, "g")) || []).length;
         if (text_line.includes(token)) {
             const index_of_token = text_line.indexOf(token);
             if ((result?.check === false && text_line.includes(token) && !text_line.includes("not"))) { // Non ci sono commenti e ho trovato il token
                 found_at_line = lineIndex;
-                count += 1;
+                count += count_iter;
             }
             else if (result?.check === true) { // Ci sono commenti
-                if (result.index_end == -1) { // caso del single_comment %
-                    count += 1;
-                    if (index_of_token < result.index_start && lineIndex < result.line) {
+                if (result.index_end == -1) { // caso del single_comment % o aperture senza chiusura
+                    if (index_of_token < result.index_start && lineIndex <= result.line) {
+                        count += count_iter;
                         found_at_line = lineIndex;
                     }
                 }
-                else if (index_of_token < result.index_start || (index_of_token > result.index_end && (lineIndex >= result.line))) { // nel caso sia prima o dopo un blocco di commenti/test multiline
-                    count += 1;
+                else if ((index_of_token < result.index_start && result.line >= lineIndex)
+                    || (index_of_token > result.index_end && (lineIndex >= result.line))) { // nel caso sia prima o dopo un blocco di commenti/test multiline
+                    count += count_iter;
                     if (found_at_line < lineIndex) {
                         found_at_line = lineIndex;
                     }
