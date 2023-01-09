@@ -148,14 +148,16 @@ function addWarningProbablyWrongName(diagnostics: vscode.Diagnostic[], atoms: [s
 
 	atoms.map(atom => {
 		const elem = countElem(doc, atom);
-		if (elem?.count === 1) {
+		if (elem.count === 1) {
+			// console.log("elem",elem);
 			if (elem.line !== -1) {
 				const msg = `${elem.token} is used only once`;
 				diagnostics.push(createDiagnostic(doc, doc.lineAt(elem.line), elem.line, msg, vscode.DiagnosticSeverity.Warning));
 			}
 		} else {
 			diagnostics = diagnostics.filter(obj => {
-				return !obj.message.includes(`${elem?.token} is used only once`);
+				// console.log(`${elem.token} is used only once`);
+				return !obj.message.includes(`${elem.token} is used only once`);
 			}
 			);
 		}
@@ -164,7 +166,7 @@ function addWarningProbablyWrongName(diagnostics: vscode.Diagnostic[], atoms: [s
 	return diagnostics;
 }
 function check_comment_or_test(doc: vscode.TextDocument, line: number) {
-
+	
 	let check = false;
 	let index_start = -1;
 	let index_end = -1;
@@ -173,9 +175,10 @@ function check_comment_or_test(doc: vscode.TextDocument, line: number) {
 	const startTest = '%**';
 	const endTest = '**%';
 	const single_comment = '%';
-
+	
 	for (let lineIndex = 0; lineIndex < doc.lineCount; lineIndex++) {
-
+		let single = false;
+		const line2 = line;
 		const lineOfText = doc.lineAt(lineIndex);
 
 		if (lineOfText.text.includes(startComment) && !check) {
@@ -198,24 +201,36 @@ function check_comment_or_test(doc: vscode.TextDocument, line: number) {
 			check = false;
 
 		}
+		const single_c = lineOfText.text.includes(single_comment);
+		const test_start_comment = lineOfText.text.includes(startComment);
+		const test_end_comment = lineOfText.text.includes(endComment);
+		const test_start_test = lineOfText.text.includes(startTest);
+		const test_end_test = lineOfText.text.includes(endTest);
 
-		if (lineOfText.text.includes(single_comment) 
+
+		if (lineOfText.text.includes(single_comment) // %/
 		&& !check 
 		&& !lineOfText.text.includes(startComment) 
 		&& !lineOfText.text.includes(endComment) 
 		&& !lineOfText.text.includes(startTest) 
 		&& !lineOfText.text.includes(endTest)) {
 			index_start = lineOfText.text.indexOf(single_comment);
+			single = true;
+			index_end = -1;
 		}
 
-		if (line == lineIndex)
+		if (line == lineIndex){
+			let temp_check = check;
+			if (single){
+				temp_check = true;
+			}
 			return {
-				'check': check,
+				'check': temp_check,
 				'index_start': index_start,
 				'index_end': index_end,
 				'line':line
 			};
-			
+		}
 			
 		}
 		return {
@@ -244,13 +259,15 @@ function countElem(doc: vscode.TextDocument, token: string) {
 				count += 1;
 			}
 			else if (result?.check === true) { // Ci sono commenti
-				if (result.index_end == -1) { // caso del single_comment %
-					count += 1;
-					if (index_of_token < result.index_start && lineIndex<result.line){
+				if (result.index_end == -1) { // caso del single_comment % o aperture senza chiusura
+					if (index_of_token < result.index_start && lineIndex<=result.line){
+						count += 1;
 						found_at_line = lineIndex;
 					}
 				}
-				else if (index_of_token < result.index_start || (index_of_token > result.index_end && (lineIndex>= result.line))) { // nel caso sia prima o dopo un blocco di commenti/test multiline
+				else if ((
+					index_of_token < result.index_start && result.line >= lineIndex) 
+					|| (index_of_token > result.index_end && (lineIndex>= result.line))) { // nel caso sia prima o dopo un blocco di commenti/test multiline
 					count += 1;
 					if (found_at_line < lineIndex){
 						found_at_line = lineIndex;
