@@ -3,7 +3,7 @@ import * as path from 'path';
 import { dictionarizer } from './utils/dictionarizer';
 import { DynamicPredicateDictionary } from './utils/dynamic_predicate_dictionary';
 import { DynamicTermsDictionary } from './utils/dynamic_terms_dictionary';
-import { PrompterDetail } from './utils/prompter_detail';
+import { IntelliDetail } from './utils/intelli_detail';
 
 //Returns a provider that manages intellisense for directives, aggregates, default and custom external atoms
 export function getASPIntellisenseProvider(context: vscode.ExtensionContext): vscode.CompletionItemProvider<vscode.CompletionItem> {
@@ -174,7 +174,7 @@ export function fillDictionaryWithDynamicPredicates(){
 		const text = document.document.getText();
 
 		const splitted_text = text.split("\n");
-		const array_valori: PrompterDetail[] = [];
+		const array_valori: IntelliDetail[] = [];
 		for(let i=0;i<splitted_text.length;i++){
 			
 			const matches = splitted_text[i].matchAll(regexp);
@@ -198,7 +198,7 @@ export function fillDictionaryWithDynamicPredicates(){
 					label = match2[1]+"(_)";
 					snippet = match2[1]+"(${1})";
 					}
-					const obj: PrompterDetail = {"label":label,"snippet":snippet,"detail": "(previous written predicates) "+label,"documentation": "**PREVIOUS PREDICATES**\n\n"+label+"\n\n---"};
+					const obj: IntelliDetail = {"label":label,"snippet":snippet,"detail": "(previous written predicates) "+label,"documentation": "**PREVIOUS PREDICATES**\n\n"+label+"\n\n---"};
 					array_valori.push(obj);
 					continue;
 				}
@@ -219,7 +219,7 @@ export function fillDictionaryWithDynamicPredicates(){
 					label = match2[1]+parenthesis;
 					snippet = match2[1]+snippetTag;
 				}
-				const obj: PrompterDetail = {"label":label,"snippet":snippet,"detail": "(previous written predicates) "+label,"documentation": "**PREVIOUS PREDICATES**\n\n"+label+"\n\n---"};
+				const obj: IntelliDetail = {"label":label,"snippet":snippet,"detail": "(previous written predicates) "+label,"documentation": "**PREVIOUS PREDICATES**\n\n"+label+"\n\n---"};
 				array_valori.push(obj);
 			}
 			//Noi dobbiamo aggiungere questi valori trovati, alla chiave, senza sovrascrivere quelli precedenti

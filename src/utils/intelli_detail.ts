@@ -1,4 +1,4 @@
-export interface PrompterDetail{
+export interface IntelliDetail{
 	label: string;
 	snippet: string;
 	detail: string;
