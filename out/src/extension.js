@@ -6,7 +6,7 @@ const diagnostics_1 = require("./diagnostics");
 const cpanel = require("./cpanel/run");
 const autocomplete_1 = require("./autocomplete");
 const prompter_1 = require("./prompter");
-const COMMAND = 'code-actions-sample.command';
+const COMMAND = 'code-actions-sample.command'; 
 function activate(context) {
     //Cookbook
     const provider = new CodePanelViewProvider(context.extensionUri);
