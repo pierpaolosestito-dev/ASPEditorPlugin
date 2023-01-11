@@ -57,7 +57,7 @@ export function getASPIntellisenseProvider(context: vscode.ExtensionContext): vs
                     if(line.text[character] === "("){
                         match_open_bracket = true;
                     }
-                    if([')','<','>','}'].includes(line.text[character]))
+                    if([')','<','>','}',':','-'].includes(line.text[character]) || ([')','<','>','}',':','-',',',' '].includes(line.text[character]) && match_open_bracket))
                     {
                         break;
                     }
@@ -72,6 +72,18 @@ export function getASPIntellisenseProvider(context: vscode.ExtensionContext): vs
                             //if(!line.text.includes(suggest))
                             completionItems.push(new vscode.CompletionItem(suggest, vscode.CompletionItemKind.Constant));
                         }
+                    }
+                }
+                else{
+                    autocompleteDict["language-constants"].forEach((elem: string) => {
+                        completionItems.push(new vscode.CompletionItem(elem, vscode.CompletionItemKind.Constant));
+                    });
+                    
+                    for(const elem of dd.get_field(fileName)) {
+                        completionItems.push(new vscode.CompletionItem(elem.label, vscode.CompletionItemKind.Field));
+                        completionItems[completionItems.length - 1].insertText = new vscode.SnippetString(elem.snippet);
+                        completionItems[completionItems.length - 1].detail = elem.detail;
+                        completionItems[completionItems.length - 1].documentation = new vscode.MarkdownString(elem.documentation);
                     }
                 }
                 

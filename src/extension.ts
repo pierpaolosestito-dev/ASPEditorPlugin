@@ -44,7 +44,7 @@ const COMMAND = 'code-actions-sample.command';
 	
 	//IntelliSense
 	
-	context.subscriptions.push(vscode.languages.registerCompletionItemProvider('asp', getASPIntellisenseProvider(context), '#', '&',':','-','(',',',' '));
+	context.subscriptions.push(vscode.languages.registerCompletionItemProvider('asp', getASPIntellisenseProvider(context), '#', '&'));
 	context.subscriptions.push(vscode.languages.registerHoverProvider("asp", getASPIntellisenseHoverProvider(context)));
 
 	fillDictionaryWithDynamicPredicates();	
