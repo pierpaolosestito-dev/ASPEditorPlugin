@@ -12,7 +12,6 @@ const ASPCore2Lexer_1 = require("./parser/ASPCore2Lexer");
 const ASPCore2Parser_1 = require("./parser/ASPCore2Parser");
 const parsing_1 = require("./parsing");
 /** String to detect in the text document. */
-const END_CHARACTER_OF_A_RULE = ".";
 exports.CODE_ERROR = "Errore 104";
 /**
  * Analyzes the text document for problems.

@@ -12,7 +12,6 @@ import { ASPCore2Parser } from "./parser/ASPCore2Parser";
 import { check_comment_or_test, countElem, checkIsRule, checkSafe, tokenize, tokenize_head_tail } from "./parsing";
 
 /** String to detect in the text document. */
-const END_CHARACTER_OF_A_RULE = ".";
 export const CODE_ERROR = "Errore 104";
 
 /**
