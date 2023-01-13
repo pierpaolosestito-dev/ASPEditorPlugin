@@ -31,7 +31,6 @@ export function refreshDiagnostics(
 	if (regex.test(doc.fileName)) {
 		let diagnostics: vscode.Diagnostic[] = [];
 
-
 		for (let lineIndex = 0; lineIndex < doc.lineCount; lineIndex++) {
 			const lineOfText = doc.lineAt(lineIndex);
 
@@ -69,7 +68,7 @@ export function refreshDiagnostics(
 			const [heads, tails, tails_negative, tails_in_symbols] = tokenize_head_tail(constructs, atoms);
 
 			const msg = `The rule at line ${lineIndex + 1} is not safe`;
-			if (!checkSafe(heads, tails, tails_negative, tails_in_symbols) && checkIsRule(constructs) && !check_comment_or_test(doc, lineIndex).check) {
+			if (!checkSafe(heads, tails, tails_negative, tails_in_symbols) &&checkIsRule(constructs) && !check_comment_or_test(doc, lineIndex).check) {
 				diagnostics.push(createDiagnostic(doc, lineOfText, lineIndex, msg, vscode.DiagnosticSeverity.Warning));
 			} else {
 				diagnostics = diagnostics.filter(obj => {

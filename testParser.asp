@@ -24,7 +24,7 @@ reached(X) :- start(X)
 reached(X) :- reached(Y), inPath(Y,X).
 
 % regole non safe
-s(X) :- body.
+
 s(Y) :- b(X), not r(X).
 s(Y) :- b(X), X<Y.
 

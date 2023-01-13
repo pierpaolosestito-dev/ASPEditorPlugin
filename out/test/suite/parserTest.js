@@ -19,10 +19,4 @@ function dummy() {
     return true;
 }
 exports.dummy = dummy;
-/*Funzioni da testare :
-check_comment_or_test
-countElem
-checkIsRule
-checkSafe
-funzione che andrà nel for dentro refreshDiagnostics */ 
 //# sourceMappingURL=parserTest.js.map

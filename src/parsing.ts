@@ -5,10 +5,10 @@ import { ASPCore2Lexer } from "./parser/ASPCore2Lexer";
 /*
 	This function checks if the line of text contains comments or tests,
 	Returns an object containing:
-	check: a boolean variable that is true if the line of text contains a comment or test,
-	index_start: the line index that signals the start of the comment/test,
-	index_end: the line index that signals the end of the comment/test,
-	line: the line of text that has been checked by the function.
+	- check: a boolean variable that is true if the line of text contains a comment or test,
+	- index_start: the line index that signals the start of the comment/test,
+	- index_end: the line index that signals the end of the comment/test,
+	- line: the line of text that has been checked by the function.
 */
 export function check_comment_or_test(doc: vscode.TextDocument, line: number) {
 	let check = false;
@@ -81,7 +81,13 @@ export function check_comment_or_test(doc: vscode.TextDocument, line: number) {
 	};
 }
 
-// Restituisce il token, la linea e la frequenza
+/*
+	Input: the document and the token to search inside the document.
+	Output:
+	- token: the token to search inside the document,
+	- count: the number of times the token is contained inside the document,
+	- line: the first occurrence of the line of text where the token has been found.
+*/
 export function countElem(doc: vscode.TextDocument, token: string) {
 	let count = 0;
 	let found_at_line = -1;
@@ -120,6 +126,10 @@ export function countElem(doc: vscode.TextDocument, token: string) {
 	return { 'token': token, 'line': found_at_line, 'count': count };
 }
 
+/*
+	Input: the list of constructs inside a single line of text.
+	Output: returns true if the line is a rule, false otherwise.
+*/
 export function checkIsRule(constructs: [string, number, number][]) {
 	if (constructs[0][1] !== ASPCore2Lexer.SYMBOLIC_CONSTANT) { // non inizia con un atomo CODE 2
 		return false;
@@ -132,6 +142,9 @@ export function checkIsRule(constructs: [string, number, number][]) {
 	return false;
 }
 
+/*
+	Check the safety of a rule. Returns true if a rule is safe, false otherwise.
+*/
 export function checkSafe(heads: string[], tails: string[], tails_negative: string[], tails_in_symbols: string[]) {
 	let safe = true;
 
@@ -147,7 +160,6 @@ export function checkSafe(heads: string[], tails: string[], tails_negative: stri
 	heads.map((el) => {
 		if (!tails.includes(el)) {
 			safe = false;
-
 		}
 	});
 
@@ -160,6 +172,12 @@ export function checkSafe(heads: string[], tails: string[], tails_negative: stri
 	return safe;
 }
 
+/*
+	Takes a CommonTokenStream and returns a list of tokens. Each token contains:
+	- text: the text of the token,
+	- type: the numeric id associated at the type of token,
+	- index: returns the index of the token inside the document
+*/
 export function tokenize(tokens: CommonTokenStream) {
 	const result: [string, number, number][] = [];
 	for (let i = 0; i < tokens.getTokens().length; i++) {
@@ -171,6 +189,9 @@ export function tokenize(tokens: CommonTokenStream) {
 	return result;
 }
 
+/*
+	Divides the constructs in head, tail, negative tail and symbols inside the tail.
+*/
 export function tokenize_head_tail(constructs: [string, number, number][], atoms: string[]) {
 	// Divisione del costrutto tra testa e coda, simboli e negazioni per controllare la safeness
 	const heads = [];
