@@ -151,8 +151,10 @@ export function checkIsRule(constructs: [string, number, number][]) {
 */
 export function checkSafe(heads: string[], tails: string[], tails_negative: string[], tails_in_symbols: string[]) {
 	let safe = true;
-	if (heads.length === 0 || tails.length === 0)
+
+	if (heads.length === 0 || tails.length === 0) {
 		return !safe;
+	}
 	//  variabili negative nel corpo devono apparire in atomi positivi nel corpo
 	tails_negative.map((el) => {
 		if (!tails.includes(el)) {
@@ -168,9 +170,8 @@ export function checkSafe(heads: string[], tails: string[], tails_negative: stri
 
 	//tutto ciò che è in <>!= deve apparire positivamente nel corpo
 	tails_in_symbols.map((el) => {
-		if (!tails.includes(el)) {
+		if (!tails.includes(el)) 
 			safe = false;
-		}
 	});
 	return safe;
 }
@@ -225,18 +226,13 @@ export function tokenize_head_tail(constructs: [string, number, number][], atoms
 			continue;
 		}
 
-		else if (constructs[i][1] === ASPCore2Lexer.NAF || negation  && !skip ) { // se sono atomi negativi non li inserisco né in coda né in testa
-			if (constructs[i][1] === ASPCore2Lexer.CONS) {
-				negation = false;
-			} else {
+		if ((constructs[i][1] === ASPCore2Lexer.NAF || negation)  && !skip ) { // se sono atomi negativi non li inserisco né in coda né in testa
 				negation = true;
-			}
 		}
-		else if (constructs[i][1] >= 29 && constructs[i][1] <= 34 && !skip) { // Se sono presenti simboli inserisco il valore prima del simbolo
+		if (constructs[i][1] >= 29 && constructs[i][1] <= 34 && !skip) { // Se sono presenti simboli inserisco il valore prima del simbolo
 			if (constructs[i - 1][1] === ASPCore2Lexer.VARIABLE) {
 				tails_in_symbols.push(constructs[i - 1][0]);
 				continue;
-
 			}
 			if (constructs[i + 1][1] === ASPCore2Lexer.VARIABLE) {  // ... e quello dopo 
 				tails_in_symbols.push(constructs[i - 1][0]);
@@ -263,7 +259,6 @@ export function tokenize_head_tail(constructs: [string, number, number][], atoms
 			}
 		}
 	}
-
 	return [heads, tails, tails_negative, tails_in_symbols] as const;
 
 }
