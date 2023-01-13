@@ -134,9 +134,12 @@ export function countElem(doc: vscode.TextDocument, token: string) {
 	Output: returns true if the line is a rule, false otherwise.
 */
 export function checkIsRule(constructs: [string, number, number][]) {
-
+	let head = false;
 	for (let i = 0; i < constructs.length; i++) {
-		if (constructs[i][1] === ASPCore2Lexer.CONS) { // è presente il :-
+		if (constructs[i][1] === ASPCore2Lexer.VARIABLE){
+			head = true;
+		}
+		if (constructs[i][1] === ASPCore2Lexer.CONS && head) { // è presente il :-
 			return true;
 		}
 	}

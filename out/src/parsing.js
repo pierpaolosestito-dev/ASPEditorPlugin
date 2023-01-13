@@ -121,8 +121,12 @@ exports.countElem = countElem;
     Output: returns true if the line is a rule, false otherwise.
 */
 function checkIsRule(constructs) {
+    let head = false;
     for (let i = 0; i < constructs.length; i++) {
-        if (constructs[i][1] === ASPCore2Lexer_1.ASPCore2Lexer.CONS) { // è presente il :-
+        if (constructs[i][1] === ASPCore2Lexer_1.ASPCore2Lexer.VARIABLE) {
+            head = true;
+        }
+        if (constructs[i][1] === ASPCore2Lexer_1.ASPCore2Lexer.CONS && head) { // è presente il :-
             return true;
         }
     }
