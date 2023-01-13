@@ -90,8 +90,6 @@ function countElem(doc, token) {
         const count_iter = (text_line.match(regex_for_token) || []).length;
         const regex_for_builtins = new RegExp(`&\\s*${token}\\W+`, "g");
         const skip_match_builtins = (text_line.match(regex_for_builtins) || []).length;
-        console.log("check__", text_line.includes(token) && skip_match_builtins === 0, token);
-        console.log("count__", count_iter, token);
         if (count_iter !== 0 && skip_match_builtins === 0) {
             const index_of_token = text_line.indexOf(token);
             if ((result?.check === false && !text_line.includes("not"))) { // Non ci sono commenti e ho trovato il token
@@ -115,7 +113,6 @@ function countElem(doc, token) {
             }
         }
     }
-    console.log({ 'token': token, 'line': found_at_line, 'count': count });
     return { 'token': token, 'line': found_at_line, 'count': count };
 }
 exports.countElem = countElem;
@@ -125,13 +122,10 @@ exports.countElem = countElem;
 */
 function checkIsRule(constructs) {
     for (let i = 0; i < constructs.length; i++) {
-        console.log("construct", constructs[i][1]);
         if (constructs[i][1] === ASPCore2Lexer_1.ASPCore2Lexer.CONS) { // è presente il :-
-            console.log("true");
             return true;
         }
     }
-    console.log("false");
     return false;
 }
 exports.checkIsRule = checkIsRule;
@@ -140,7 +134,6 @@ exports.checkIsRule = checkIsRule;
 */
 function checkSafe(heads, tails, tails_negative, tails_in_symbols) {
     let safe = true;
-    console.log(heads.length, tails.length);
     if (heads.length === 0 || tails.length === 0)
         return !safe;
     //  variabili negative nel corpo devono apparire in atomi positivi nel corpo

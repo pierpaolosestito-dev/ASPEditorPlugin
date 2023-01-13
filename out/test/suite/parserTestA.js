@@ -7,7 +7,8 @@ const chai_1 = require("chai");
 require("mocha");
 const antlr4ts_1 = require("antlr4ts");
 const ANTLRInputStream_1 = require("antlr4ts/ANTLRInputStream");
-const ASPCore2Lexer_1 = require("../parser/ASPCore2Lexer");
+const ASPCore2Lexer_1 = require("../../src/parser/ASPCore2Lexer");
+const parsing_1 = require("../../src/parsing");
 //Test
 describe('Dummy test A', () => {
     //Descrizione del risultato del test
@@ -30,20 +31,19 @@ function trasformText(text) {
     return tokens;
 }
 exports.trasformText = trasformText;
-/*//Test
-describe('tokenize positive test 1',
-  () => {
-  //Descrizione del risultato del test
+//Test
+describe('tokenize positive test 1', () => {
+    //Descrizione del risultato del test
     it('Tests if an empty rule is tokenized correctly', () => {
-    //Corpo del test
-      const input = "";
-      const tokens = trasformText(input);
-
-      const result = tokenize(tokens); //Risultato della funzione da testare
-      const expected_result: [string, number, number][] = []; //Risultato atteso
-
-      expect(result).to.equal(expected_result); //Asserzione
-  });
-}); */
+        //Corpo del test
+        const input = "";
+        const tokens = trasformText(input);
+        const result = (0, parsing_1.tokenize)(tokens); //Risultato della funzione da testare
+        const expected_result = [
+            ['<EOF>', -1, 1]
+        ]; //Risultato atteso
+        (0, chai_1.expect)(result).to.equal(expected_result); //Asserzione
+    });
+});
 //Testing tokenize and tokenize_head_tail.
 //# sourceMappingURL=parserTestA.js.map
