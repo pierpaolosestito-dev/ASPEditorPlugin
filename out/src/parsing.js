@@ -86,10 +86,15 @@ function countElem(doc, token) {
         const lineOfText = doc.lineAt(lineIndex);
         const result = check_comment_or_test(doc, lineIndex);
         const text_line = lineOfText.text;
-        const count_iter = (text_line.match(new RegExp(token, "g")) || []).length;
-        if (text_line.includes(token)) {
+        const regex_for_token = new RegExp(`(\\s*|\\.)+${token}\\W+`, "g");
+        const count_iter = (text_line.match(regex_for_token) || []).length;
+        const regex_for_builtins = new RegExp(`&\\s*${token}\\W+`, "g");
+        const skip_match_builtins = (text_line.match(regex_for_builtins) || []).length;
+        console.log("check__", text_line.includes(token) && skip_match_builtins === 0, token);
+        console.log("count__", count_iter, token);
+        if (count_iter !== 0 && skip_match_builtins === 0) {
             const index_of_token = text_line.indexOf(token);
-            if ((result?.check === false && text_line.includes(token) && !text_line.includes("not"))) { // Non ci sono commenti e ho trovato il token
+            if ((result?.check === false && !text_line.includes("not"))) { // Non ci sono commenti e ho trovato il token
                 found_at_line = lineIndex;
                 count += count_iter;
             }
@@ -110,6 +115,7 @@ function countElem(doc, token) {
             }
         }
     }
+    console.log({ 'token': token, 'line': found_at_line, 'count': count });
     return { 'token': token, 'line': found_at_line, 'count': count };
 }
 exports.countElem = countElem;
@@ -118,14 +124,14 @@ exports.countElem = countElem;
     Output: returns true if the line is a rule, false otherwise.
 */
 function checkIsRule(constructs) {
-    if (constructs[0][1] !== ASPCore2Lexer_1.ASPCore2Lexer.SYMBOLIC_CONSTANT) { // non inizia con un atomo CODE 2
-        return false;
-    }
     for (let i = 0; i < constructs.length; i++) {
+        console.log("construct", constructs[i][1]);
         if (constructs[i][1] === ASPCore2Lexer_1.ASPCore2Lexer.CONS) { // è presente il :-
+            console.log("true");
             return true;
         }
     }
+    console.log("false");
     return false;
 }
 exports.checkIsRule = checkIsRule;
@@ -134,6 +140,7 @@ exports.checkIsRule = checkIsRule;
 */
 function checkSafe(heads, tails, tails_negative, tails_in_symbols) {
     let safe = true;
+    console.log(heads.length, tails.length);
     if (heads.length === 0 || tails.length === 0)
         return !safe;
     //  variabili negative nel corpo devono apparire in atomi positivi nel corpo
@@ -185,16 +192,24 @@ function tokenize_head_tail(constructs, atoms) {
     const tails_in_symbols = [];
     let head = true;
     let negation = false;
+    let skip = false;
     for (let i = 0; i < constructs.length; i++) {
-        const s = constructs[i][0];
-        if (constructs[i][1] === ASPCore2Lexer_1.ASPCore2Lexer.CONS) { // se trovo un simbolo di constraint capisco che sono passata alla coda
+        const s = constructs[i][1];
+        if (s == ASPCore2Lexer_1.ASPCore2Lexer.AGGR_COUNT ||
+            s == ASPCore2Lexer_1.ASPCore2Lexer.AGGR_MAX || s == ASPCore2Lexer_1.ASPCore2Lexer.AGGR_MIN || s == ASPCore2Lexer_1.ASPCore2Lexer.AGGR_SUM) {
+            skip = true;
+        }
+        if (s == ASPCore2Lexer_1.ASPCore2Lexer.CURLY_CLOSE && skip) {
+            skip = false;
+        }
+        if (constructs[i][1] === ASPCore2Lexer_1.ASPCore2Lexer.CONS && !skip) { // se trovo un simbolo di constraint capisco che sono passata alla coda
             head = !head;
         }
-        else if ((negation && constructs[i][1] === ASPCore2Lexer_1.ASPCore2Lexer.PARAM_CLOSE)) {
+        else if ((negation && constructs[i][1] === ASPCore2Lexer_1.ASPCore2Lexer.PARAM_CLOSE) && !skip) {
             negation = false;
             continue;
         }
-        else if (constructs[i][1] === ASPCore2Lexer_1.ASPCore2Lexer.NAF || negation) { // se sono atomi negativi non li inserisco né in coda né in testa
+        else if (constructs[i][1] === ASPCore2Lexer_1.ASPCore2Lexer.NAF || negation && !skip) { // se sono atomi negativi non li inserisco né in coda né in testa
             if (constructs[i][1] === ASPCore2Lexer_1.ASPCore2Lexer.CONS) {
                 negation = false;
             }
@@ -202,7 +217,7 @@ function tokenize_head_tail(constructs, atoms) {
                 negation = true;
             }
         }
-        else if (constructs[i][1] >= 29 && constructs[i][1] <= 34) { // Se sono presenti simboli inserisco il valore prima del simbolo
+        else if (constructs[i][1] >= 29 && constructs[i][1] <= 34 && !skip) { // Se sono presenti simboli inserisco il valore prima del simbolo
             if (constructs[i - 1][1] === ASPCore2Lexer_1.ASPCore2Lexer.VARIABLE) {
                 tails_in_symbols.push(constructs[i - 1][0]);
                 continue;
@@ -212,7 +227,7 @@ function tokenize_head_tail(constructs, atoms) {
                 continue;
             }
         }
-        else if (constructs[i][1] === ASPCore2Lexer_1.ASPCore2Lexer.VARIABLE) {
+        else if (constructs[i][1] === ASPCore2Lexer_1.ASPCore2Lexer.VARIABLE && !skip) {
             if (head)
                 heads.push(constructs[i][0]);
             else if (negation && !head && constructs[i][1] == ASPCore2Lexer_1.ASPCore2Lexer.VARIABLE) { // mi salvo separatamente le variabili negative
@@ -226,7 +241,7 @@ function tokenize_head_tail(constructs, atoms) {
                 tails_negative.push(constructs[i][0]);
             }
         }
-        else if (constructs[i][1] === ASPCore2Lexer_1.ASPCore2Lexer.SYMBOLIC_CONSTANT) { // se è una atomo lo salvo
+        else if (constructs[i][1] === ASPCore2Lexer_1.ASPCore2Lexer.SYMBOLIC_CONSTANT && !skip) { // se è una atomo lo salvo
             const result = atoms.find(atom => atom === constructs[i][0]);
             if (!result) {
                 atoms.push(constructs[i][0]);
