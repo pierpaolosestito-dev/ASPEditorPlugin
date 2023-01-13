@@ -24,11 +24,13 @@ function check_comment_or_test(doc, line) {
         const line2 = line;
         const lineOfText = doc.lineAt(lineIndex);
         if (lineOfText.text.includes(startComment) && !check) {
+            console.log("start");
             index_start = lineOfText.text.indexOf(startComment);
             index_end = -1;
             check = true;
         }
         if (lineOfText.text.includes(endComment)) {
+            console.log("end");
             index_end = lineOfText.text.indexOf(endComment);
             check = false;
         }
@@ -92,11 +94,11 @@ function countElem(doc, token) {
         const skip_match_builtins = (text_line.match(regex_for_builtins) || []).length;
         if (count_iter !== 0 && skip_match_builtins === 0) {
             const index_of_token = text_line.search(regex_for_token);
-            if ((result?.check === false && !text_line.includes("not"))) { // Non ci sono commenti e ho trovato il token
+            if ((result?.check === false && !text_line.includes("not")) && result.index_start === -1 && result.index_end === -1) { // Non ci sono commenti e ho trovato il token
                 found_at_line = lineIndex;
                 count += count_iter;
             }
-            else if (result?.check === true) { // Ci sono commenti
+            else if (result?.check === true || (result.index_end != -1 || result.index_end != -1)) { // Ci sono commenti
                 if (result.index_end == -1) { // caso del single_comment % o aperture senza chiusura
                     if (index_of_token < result.index_start && lineIndex <= result.line) {
                         count += count_iter;
