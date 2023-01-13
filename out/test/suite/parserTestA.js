@@ -1,10 +1,13 @@
 "use strict";
 //I test si eseguono tramite il comando npm run tests
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.dummy = void 0;
+exports.trasformText = exports.dummy = void 0;
 //import { ... } from '../../src/parsing'; //Funzioni da testare
 const chai_1 = require("chai");
 require("mocha");
+const antlr4ts_1 = require("antlr4ts");
+const ANTLRInputStream_1 = require("antlr4ts/ANTLRInputStream");
+const ASPCore2Lexer_1 = require("../parser/ASPCore2Lexer");
 //Test
 describe('Dummy test A', () => {
     //Descrizione del risultato del test
@@ -19,5 +22,28 @@ function dummy() {
     return true;
 }
 exports.dummy = dummy;
+//Trasforma un input testuale in un CommonTokenStream, utilizzato nei test
+function trasformText(text) {
+    const input = new ANTLRInputStream_1.ANTLRInputStream(text);
+    const aspLexer = new ASPCore2Lexer_1.ASPCore2Lexer(input);
+    const tokens = new antlr4ts_1.CommonTokenStream(aspLexer);
+    return tokens;
+}
+exports.trasformText = trasformText;
+/*//Test
+describe('tokenize positive test 1',
+  () => {
+  //Descrizione del risultato del test
+    it('Tests if an empty rule is tokenized correctly', () => {
+    //Corpo del test
+      const input = "";
+      const tokens = trasformText(input);
+
+      const result = tokenize(tokens); //Risultato della funzione da testare
+      const expected_result: [string, number, number][] = []; //Risultato atteso
+
+      expect(result).to.equal(expected_result); //Asserzione
+  });
+}); */
 //Testing tokenize and tokenize_head_tail.
 //# sourceMappingURL=parserTestA.js.map
