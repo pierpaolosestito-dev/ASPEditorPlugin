@@ -5,7 +5,7 @@ import { expect } from 'chai';
 import 'mocha';
 
 //Test
-describe('Dummy test', 
+describe('Dummy test S', 
   () => { 
 	//Descrizione del risultato del test
     it('should return true', () => {
