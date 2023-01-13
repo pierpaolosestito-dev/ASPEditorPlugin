@@ -26,13 +26,11 @@ export function check_comment_or_test(doc: vscode.TextDocument, line: number) {
 		const lineOfText = doc.lineAt(lineIndex);
 
 		if (lineOfText.text.includes(startComment) && !check) {
-			console.log("start");
 			index_start = lineOfText.text.indexOf(startComment);
 			index_end = -1;
 			check = true;
 		}
 		if (lineOfText.text.includes(endComment)) {
-			console.log("end");
 			index_end = lineOfText.text.indexOf(endComment);
 			check = false;
 		}

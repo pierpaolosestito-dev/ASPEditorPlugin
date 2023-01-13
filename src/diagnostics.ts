@@ -56,12 +56,6 @@ export function refreshDiagnostics(
 						msg: string,
 						e: Error | undefined
 					): void {
-						if (lineOfText.text.includes("/%") ||  lineOfText.text.includes("**%")){
-							if(charPositionInLine > lineOfText.text.indexOf("/%") && lineOfText.text.indexOf("/%")!=-1 ||
-							(charPositionInLine > lineOfText.text.indexOf("**%") && lineOfText.text.indexOf("**%")!=-1))
-								diagnostics.push(createDiagnosticForFacts(doc, lineOfText, lineIndex, charPositionInLine, msg, vscode.DiagnosticSeverity.Error));
-						}
-						else
 							diagnostics.push(createDiagnosticForFacts(doc, lineOfText, lineIndex, charPositionInLine, msg, vscode.DiagnosticSeverity.Error));
 
 					},
