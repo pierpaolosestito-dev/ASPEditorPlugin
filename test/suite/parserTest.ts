@@ -1,6 +1,6 @@
 //I test si eseguono tramite il comando npm run tests
 
-//import { helloTest } from '../src/hello-test'; //Funzione da testare
+//import { ... } from '../../src/parsing'; //Funzioni da testare
 import { expect } from 'chai';
 import 'mocha';
 
@@ -17,8 +17,9 @@ describe('Dummy test',
 });
 
 export function dummy(){
-    return true; 
+    return true;
 }
+
 
 /*Funzioni da testare :
 check_comment_or_test
