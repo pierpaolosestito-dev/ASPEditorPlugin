@@ -44,7 +44,7 @@ export function refreshDiagnostics(
 			}
 			if (lineOfText.text.includes("/%") || lineOfText.text.includes("**%")) {
 				opened = false;
-				continue;
+				// continue;
 			}
 			if (!opened) {
 				aspParser.addErrorListener({
@@ -67,10 +67,6 @@ export function refreshDiagnostics(
 			const [heads, tails, tails_negative, tails_in_symbols] = tokenize_head_tail(constructs, atoms);
 
 			const msg = `The rule at line ${lineIndex + 1} is not safe`;
-			console.log("C",constructs);
-			console.log("Check safe",checkSafe(heads, tails, tails_negative, tails_in_symbols));
-			console.log("Check rule",checkIsRule(constructs));
-
 
 			if (!checkSafe(heads, tails, tails_negative, tails_in_symbols) && checkIsRule(constructs) && !check_comment_or_test(doc, lineIndex).check) {
 				diagnostics.push(createDiagnostic(doc, lineOfText, lineIndex, msg, vscode.DiagnosticSeverity.Warning));
@@ -175,7 +171,9 @@ function createDiagnosticForAtoms(
 	atom: string,
 	codeError: string,
 	severity: vscode.DiagnosticSeverity) {
-	const startCharacter = lineOfText.text.indexOf(atom);
+	const regex_for_token = new RegExp(`${atom}\\b`, "g");
+
+	const startCharacter = lineOfText.text.search(regex_for_token);
 	const endCharacter = startCharacter + (atom.length - 1);
 	const range = new vscode.Range(
 		lineIndex,
