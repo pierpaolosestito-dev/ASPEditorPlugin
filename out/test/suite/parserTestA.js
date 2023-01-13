@@ -5,6 +5,7 @@ exports.trasformText = exports.dummy = void 0;
 //import { ... } from '../../src/parsing'; //Funzioni da testare
 const chai_1 = require("chai");
 require("mocha");
+const assert = require("assert");
 const antlr4ts_1 = require("antlr4ts");
 const ANTLRInputStream_1 = require("antlr4ts/ANTLRInputStream");
 const ASPCore2Lexer_1 = require("../../src/parser/ASPCore2Lexer");
@@ -42,7 +43,14 @@ describe('tokenize positive test 1', () => {
         const expected_result = [
             ['<EOF>', -1, 1]
         ]; //Risultato atteso
-        (0, chai_1.expect)(result).to.equal(expected_result); //Asserzione
+        console.log('[0][0]', result[0][0] === expected_result[0][0]);
+        console.log('[0][1]', result[0][1] === expected_result[0][1]);
+        console.log('[0][2]', result[0][2] === expected_result[0][2]);
+        console.log('[0]', result[0] === expected_result[0]);
+        console.log(result[0]);
+        console.log(expected_result[0]);
+        //expect(result).to.equal(expected_result); //Asserzione
+        assert.strictEqual(result, expected_result);
     });
 });
 //Testing tokenize and tokenize_head_tail.
