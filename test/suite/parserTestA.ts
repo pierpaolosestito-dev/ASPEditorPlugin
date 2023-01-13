@@ -32,11 +32,12 @@ export function trasformText(text: string) {
   const input = new ANTLRInputStream(text);
   const aspLexer = new ASPCore2Lexer(input);
   const tokens = new CommonTokenStream(aspLexer);
+  tokens.fill();
   return tokens;
 }
 
 //Test
-describe('tokenize positive test 1',
+describe('tokenize positive tests',
   () => {
   //Descrizione del risultato del test
     it('Tests if an empty rule is tokenized correctly', () => {
@@ -49,9 +50,27 @@ describe('tokenize positive test 1',
         [ '<EOF>', -1, 1 ]
       ]; //Risultato atteso
       //expect(result).to.equal(expected_result); //Asserzione
-      expect(result).deep.equal(expected_result);
+      expect(result).deep.equal(expected_result); //Asserzione per controllare se due array sono uguali
+  });
+  it('Tests if a simple fact is tokenized correctly', () => {
+    //Corpo del test
+      const input = "node(1).";
+      const tokens = trasformText(input);
+
+      const result: [string, number, number][] = tokenize(tokens); //Risultato della funzione da testare
+      const expected_result: [string, number, number][] = [
+        [ 'node', 2, 1 ] , 
+        ['(', 21, 1 ],
+        ['1', 5, 1],
+        [')', 22, 1],
+        ['.', 7, 1],
+        ['<EOF>', -1, 1]
+
+      ]; //Risultato atteso
+      //expect(result).to.equal(expected_result); //Asserzione
+      expect(result).deep.equal(expected_result); //Asserzione per controllare se due array sono uguali
   });
 });
 
-
-//Testing tokenize and tokenize_head_tail.
+//TODO Testing tokenize : more facts on a single line of text, simple rule, 
+//more rules on a simple line of text, complex program.
