@@ -5,6 +5,7 @@
 /** To demonstrate code actions associated with Diagnostics problems, this file provides a mock diagnostics entries. */
 import { CommonTokenStream, Recognizer } from "antlr4ts";
 import { ANTLRInputStream } from "antlr4ts/ANTLRInputStream";
+import { Console } from "console";
 import { cp } from "fs";
 import { removeAllListeners } from "process";
 import { text } from "stream/consumers";
@@ -58,7 +59,7 @@ export function refreshDiagnostics(
 						msg: string,
 						e: Error | undefined
 					): void {
-						diagnostics.push(createDiagnostic(doc, lineOfText, lineIndex, msg, vscode.DiagnosticSeverity.Error));
+						diagnostics.push(createDiagnosticForFacts(doc, lineOfText, lineIndex, charPositionInLine, msg, vscode.DiagnosticSeverity.Error));
 					},
 				});
 			}
@@ -155,7 +156,7 @@ function addWarningProbablyWrongName(diagnostics: vscode.Diagnostic[], atoms: st
 					return obj.message == msg;
 				});
 				if(tmp_diagnostic === undefined){
-					diagnostics.push(createDiagnostic(doc, doc.lineAt(elem.line), elem.line, msg, vscode.DiagnosticSeverity.Warning));
+					diagnostics.push(createDiagnosticForAtoms(doc, doc.lineAt(elem.line), elem.line, elem.token, msg, vscode.DiagnosticSeverity.Warning));
 				}
 			}
 		} else {
@@ -182,7 +183,7 @@ function check_comment_or_test(doc: vscode.TextDocument, line: number) {
 	for (let lineIndex = 0; lineIndex < doc.lineCount; lineIndex++) {
 		let single = false;
 		const line2 = line;
-		const lineOfText = doc.lineAt(lineIndex);
+		let lineOfText = doc.lineAt(lineIndex);
 		
 		if (lineOfText.text.includes(startComment) && !check) {
 			index_start = lineOfText.text.indexOf(startComment);
@@ -330,12 +331,69 @@ function countElem(doc: vscode.TextDocument, token: string) {
 		severity: vscode.DiagnosticSeverity
 	): vscode.Diagnostic {
 		// const index = lineOfText.text.indexOf(END_CHARACTER_OF_A_RULE);
-
 		const range = new vscode.Range(
 			lineIndex,
 			0,
 			lineIndex,
 			0 + lineOfText.text.length
+		);
+		
+		const diagnostic = new vscode.Diagnostic(
+			range,
+			codeError,
+			severity
+		);
+		return diagnostic;
+	}
+	function createDiagnosticForFacts(
+		doc: vscode.TextDocument,
+		lineOfText: vscode.TextLine,
+		lineIndex: number,
+		endCharacter: number,
+		codeError: string,
+		severity: vscode.DiagnosticSeverity
+	): vscode.Diagnostic {
+		let range = undefined;
+		if(codeError.includes("no viable alternative at input") && !lineOfText.text.includes("/%")) {
+			const error = codeError.split("'");
+			const startCharacter = lineOfText.text.indexOf(error[1]);
+			if(startCharacter >= 0) {
+				range = new vscode.Range(
+					lineIndex,
+					startCharacter,
+					lineIndex,
+					0 + (endCharacter+1)
+				);
+			}
+			else {
+				return createDiagnostic(doc, lineOfText, lineIndex, codeError, severity);
+			}
+		}
+		else {
+			return createDiagnostic(doc, lineOfText, lineIndex, codeError, severity);
+		}
+		const diagnostic = new vscode.Diagnostic(
+			range,
+			codeError,
+			severity
+		);
+		return diagnostic;
+
+	}
+	function createDiagnosticForAtoms(
+		doc: vscode.TextDocument,
+		lineOfText: vscode.TextLine,
+		lineIndex: number,
+		atom: string,
+		codeError: string,
+		severity: vscode.DiagnosticSeverity) {
+		const startCharacter = lineOfText.text.indexOf(atom);
+		const endCharacter = startCharacter + (atom.length-1);
+		const range = new vscode.Range(
+			lineIndex,
+			startCharacter,
+			lineIndex,
+			0 + (endCharacter+1)
 		);
 		const diagnostic = new vscode.Diagnostic(
 			range,
@@ -344,7 +402,9 @@ function countElem(doc: vscode.TextDocument, token: string) {
 		);
 		return diagnostic;
 	}
-
+		/*
+		
+		*/
 	export function subscribeToDocumentChanges(
 		context: vscode.ExtensionContext,
 		errorDiagnostics: vscode.DiagnosticCollection

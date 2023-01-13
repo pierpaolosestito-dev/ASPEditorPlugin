@@ -43,7 +43,7 @@ function refreshDiagnostics(doc, errorDiagnostics) {
             if (!opened) {
                 aspParser.addErrorListener({
                     syntaxError(recognizer, offendingSymbol, line, charPositionInLine, msg, e) {
-                        diagnostics.push(createDiagnostic(doc, lineOfText, lineIndex, msg, vscode.DiagnosticSeverity.Error));
+                        diagnostics.push(createDiagnosticForFacts(doc, lineOfText, lineIndex, charPositionInLine, msg, vscode.DiagnosticSeverity.Error));
                     },
                 });
             }
@@ -135,7 +135,7 @@ function addWarningProbablyWrongName(diagnostics, atoms, doc) {
                     return obj.message == msg;
                 });
                 if (tmp_diagnostic === undefined) {
-                    diagnostics.push(createDiagnostic(doc, doc.lineAt(elem.line), elem.line, msg, vscode.DiagnosticSeverity.Warning));
+                    diagnostics.push(createDiagnosticForAtoms(doc, doc.lineAt(elem.line), elem.line, elem.token, msg, vscode.DiagnosticSeverity.Warning));
                 }
             }
         }
@@ -159,7 +159,7 @@ function check_comment_or_test(doc, line) {
     for (let lineIndex = 0; lineIndex < doc.lineCount; lineIndex++) {
         let single = false;
         const line2 = line;
-        const lineOfText = doc.lineAt(lineIndex);
+        let lineOfText = doc.lineAt(lineIndex);
         if (lineOfText.text.includes(startComment) && !check) {
             index_start = lineOfText.text.indexOf(startComment);
             index_end = -1;
@@ -289,6 +289,34 @@ function createDiagnostic(doc, lineOfText, lineIndex, codeError, severity) {
     const diagnostic = new vscode.Diagnostic(range, codeError, severity);
     return diagnostic;
 }
+function createDiagnosticForFacts(doc, lineOfText, lineIndex, endCharacter, codeError, severity) {
+    let range = undefined;
+    if (codeError.includes("no viable alternative at input") && !lineOfText.text.includes("/%")) {
+        const error = codeError.split("'");
+        const startCharacter = lineOfText.text.indexOf(error[1]);
+        if (startCharacter >= 0) {
+            range = new vscode.Range(lineIndex, startCharacter, lineIndex, 0 + (endCharacter + 1));
+        }
+        else {
+            return createDiagnostic(doc, lineOfText, lineIndex, codeError, severity);
+        }
+    }
+    else {
+        return createDiagnostic(doc, lineOfText, lineIndex, codeError, severity);
+    }
+    const diagnostic = new vscode.Diagnostic(range, codeError, severity);
+    return diagnostic;
+}
+function createDiagnosticForAtoms(doc, lineOfText, lineIndex, atom, codeError, severity) {
+    const startCharacter = lineOfText.text.indexOf(atom);
+    const endCharacter = startCharacter + (atom.length - 1);
+    const range = new vscode.Range(lineIndex, startCharacter, lineIndex, 0 + (endCharacter + 1));
+    const diagnostic = new vscode.Diagnostic(range, codeError, severity);
+    return diagnostic;
+}
+/*
+
+*/
 function subscribeToDocumentChanges(context, errorDiagnostics) {
     if (vscode.window.activeTextEditor) {
         refreshDiagnostics(vscode.window.activeTextEditor.document, errorDiagnostics);
