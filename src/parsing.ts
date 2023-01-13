@@ -100,8 +100,6 @@ export function countElem(doc: vscode.TextDocument, token: string) {
 
 		const regex_for_builtins = new RegExp(`&\\s*${token}\\W+`, "g");
 		const skip_match_builtins = (text_line.match(regex_for_builtins) || []).length;
-		console.log("check__",text_line.includes(token) && skip_match_builtins === 0,token);
-		console.log("count__",count_iter, token);
 
 		if (count_iter !== 0 && skip_match_builtins === 0) {
 			const index_of_token = text_line.indexOf(token);
@@ -128,7 +126,6 @@ export function countElem(doc: vscode.TextDocument, token: string) {
 			}
 		}
 	}
-	console.log({ 'token': token, 'line': found_at_line, 'count': count });
 	return { 'token': token, 'line': found_at_line, 'count': count };
 }
 
@@ -139,13 +136,10 @@ export function countElem(doc: vscode.TextDocument, token: string) {
 export function checkIsRule(constructs: [string, number, number][]) {
 
 	for (let i = 0; i < constructs.length; i++) {
-		console.log("construct",constructs[i][1]);
 		if (constructs[i][1] === ASPCore2Lexer.CONS) { // è presente il :-
-			console.log("true");
 			return true;
 		}
 	}
-	console.log("false");
 	return false;
 }
 
@@ -154,7 +148,6 @@ export function checkIsRule(constructs: [string, number, number][]) {
 */
 export function checkSafe(heads: string[], tails: string[], tails_negative: string[], tails_in_symbols: string[]) {
 	let safe = true;
-	console.log(heads.length,tails.length);
 	if (heads.length === 0 || tails.length === 0)
 		return !safe;
 	//  variabili negative nel corpo devono apparire in atomi positivi nel corpo
