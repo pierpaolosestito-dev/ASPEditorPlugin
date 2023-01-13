@@ -1,6 +1,6 @@
 //I test si eseguono tramite il comando npm run tests
 
-import { checkSafe, tokenize_head_tail } from "../../src/parsing"; //Funzioni da testare
+import { checkIsRule, checkSafe, tokenize_head_tail } from "../../src/parsing"; //Funzioni da testare
 import { expect } from "chai";
 import "mocha";
 import * as assert from "assert";
@@ -61,6 +61,22 @@ const NEGATIVE_SAFETY_TEST = {
   test3: ":- circle(A,Y).",
   test4: "circle(A,Y).",
   test5: "triangle(A,Z,G):- circle(A,Z,G), not A(H).",
+};
+
+const POSITIVE_RULE_TEST = {
+  test1: "room(A,Z):- chair(A,Y).",
+  test2: "room(A,Z):- chair(A,Y), not desk(A).",
+  test3: "room(A,Z) | not room(A,Z):- chair(A,Y), not desk(A).",
+  test4: "room(A,Z):- chair(A,Y), A>Y.",
+  test5: "room(A,Z):- chair(A,Y), A<>Y.",
+
+};
+
+const NEGATIVE_RULE_TEST = {
+  test1: ":- not figure(Y).",
+  test2: ":~ out(X),object(X,A,Y). [Y@1,X]",
+  test3: ":- circle(A,Y).[Y@1,A]",
+  test4: "triangle(A,Z,G).",
 };
 
 describe("positive safety", () => {
@@ -151,3 +167,94 @@ describe("negative safety", () => {
     expect(result).deep.equal(expected_result);
   });
 });
+
+describe("positive check rule", () => {
+  //Descrizione del risultato del test
+  it("Tests1 if there is a rule", () => {
+    //Corpo del test
+    const input = POSITIVE_RULE_TEST.test1;
+    const tokens = trasformText(input);
+    const constructs: [string, number, number][] = tokenize(tokens);
+    const result = checkIsRule(constructs);
+    const expected_result = true;
+    expect(result).deep.equal(expected_result);
+  });
+  it("Tests2 if there is a rule", () => {
+    //Corpo del test
+    const input = POSITIVE_RULE_TEST.test2;
+    const tokens = trasformText(input);
+    const constructs: [string, number, number][] = tokenize(tokens);
+    const result = checkIsRule(constructs);
+    const expected_result = true;
+    expect(result).deep.equal(expected_result);
+  });
+  it("Tests3 if there is a rule", () => {
+    //Corpo del test
+    const input = POSITIVE_RULE_TEST.test3;
+    const tokens = trasformText(input);
+    const constructs: [string, number, number][] = tokenize(tokens);
+    const result = checkIsRule(constructs);
+    const expected_result = true;
+    expect(result).deep.equal(expected_result);
+  });
+  it("Tests4 if there is a rule", () => {
+    //Corpo del test
+    const input = POSITIVE_RULE_TEST.test4;
+    const tokens = trasformText(input);
+    const constructs: [string, number, number][] = tokenize(tokens);
+    const result = checkIsRule(constructs);
+    const expected_result = true;
+    expect(result).deep.equal(expected_result);
+  });
+  it("Tests5 if there is a rule", () => {
+    //Corpo del test
+    const input = POSITIVE_RULE_TEST.test5;
+    const tokens = trasformText(input);
+    const constructs: [string, number, number][] = tokenize(tokens);
+    const result = checkIsRule(constructs);
+    const expected_result = true;
+    expect(result).deep.equal(expected_result);
+  });
+});
+
+describe("negative check rule", () => {
+  //Descrizione del risultato del test
+  it("Tests1 if there is a not rule", () => {
+    //Corpo del test
+    const input = NEGATIVE_RULE_TEST.test1;
+    const tokens = trasformText(input);
+    const constructs: [string, number, number][] = tokenize(tokens);
+    const result = checkIsRule(constructs);
+    const expected_result = false;
+    expect(result).deep.equal(expected_result);
+  });
+  it("Tests2 if there is not a rule", () => {
+    //Corpo del test
+    const input = NEGATIVE_RULE_TEST.test2;
+    const tokens = trasformText(input);
+    const constructs: [string, number, number][] = tokenize(tokens);
+    const result = checkIsRule(constructs);
+    const expected_result = false;
+    expect(result).deep.equal(expected_result);
+  });
+  it("Tests3 if there is not a rule", () => {
+    //Corpo del test
+    const input = NEGATIVE_RULE_TEST.test3;
+    const tokens = trasformText(input);
+    const constructs: [string, number, number][] = tokenize(tokens);
+    const result = checkIsRule(constructs);
+    const expected_result = false;
+    expect(result).deep.equal(expected_result);
+  });
+  it("Tests4 if there is not a rule", () => {
+    //Corpo del test
+    const input = NEGATIVE_RULE_TEST.test4;
+    const tokens = trasformText(input);
+    const constructs: [string, number, number][] = tokenize(tokens);
+    const result = checkIsRule(constructs);
+    const expected_result = false;
+    expect(result).deep.equal(expected_result);
+  });
+ 
+});
+
