@@ -95,15 +95,15 @@ export function countElem(doc: vscode.TextDocument, token: string) {
 		const lineOfText = doc.lineAt(lineIndex);
 		const result = check_comment_or_test(doc, lineIndex);
 		const text_line = lineOfText.text;
-		const regex_for_token = new RegExp(`(\\s*|\\.)+${token}\\W+`, "g");
+		const regex_for_token = new RegExp(`\\b${token}\\b`, "g");
 		const count_iter = (text_line.match(regex_for_token) || []).length;
 
-		const regex_for_builtins = new RegExp(`&\\s*${token}\\W+`, "g");
+		const regex_for_builtins = new RegExp(`\\W*&\\s*${token}\\W+`, "g");
 		const skip_match_builtins = (text_line.match(regex_for_builtins) || []).length;
 
 		if (count_iter !== 0 && skip_match_builtins === 0) {
-			const index_of_token = text_line.indexOf(token);
-
+			const index_of_token = text_line.search(regex_for_token);
+			
 			if ((result?.check === false && !text_line.includes("not"))) {  // Non ci sono commenti e ho trovato il token
 				found_at_line = lineIndex;
 				count += count_iter;
@@ -134,9 +134,12 @@ export function countElem(doc: vscode.TextDocument, token: string) {
 	Output: returns true if the line is a rule, false otherwise.
 */
 export function checkIsRule(constructs: [string, number, number][]) {
-
+	let head = false;
 	for (let i = 0; i < constructs.length; i++) {
-		if (constructs[i][1] === ASPCore2Lexer.CONS) { // è presente il :-
+		if (constructs[i][1] === ASPCore2Lexer.VARIABLE){
+			head = true;
+		}
+		if (constructs[i][1] === ASPCore2Lexer.CONS && head) { // è presente il :-
 			return true;
 		}
 	}
