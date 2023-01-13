@@ -24,13 +24,11 @@ function check_comment_or_test(doc, line) {
         const line2 = line;
         const lineOfText = doc.lineAt(lineIndex);
         if (lineOfText.text.includes(startComment) && !check) {
-            console.log("start");
             index_start = lineOfText.text.indexOf(startComment);
             index_end = -1;
             check = true;
         }
         if (lineOfText.text.includes(endComment)) {
-            console.log("end");
             index_end = lineOfText.text.indexOf(endComment);
             check = false;
         }
@@ -140,8 +138,9 @@ exports.checkIsRule = checkIsRule;
 */
 function checkSafe(heads, tails, tails_negative, tails_in_symbols) {
     let safe = true;
-    if (heads.length === 0 || tails.length === 0)
+    if (heads.length === 0 || tails.length === 0) {
         return !safe;
+    }
     //  variabili negative nel corpo devono apparire in atomi positivi nel corpo
     tails_negative.map((el) => {
         if (!tails.includes(el)) {
@@ -156,9 +155,8 @@ function checkSafe(heads, tails, tails_negative, tails_in_symbols) {
     });
     //tutto ciò che è in <>!= deve apparire positivamente nel corpo
     tails_in_symbols.map((el) => {
-        if (!tails.includes(el)) {
+        if (!tails.includes(el))
             safe = false;
-        }
     });
     return safe;
 }
@@ -208,15 +206,10 @@ function tokenize_head_tail(constructs, atoms) {
             negation = false;
             continue;
         }
-        else if (constructs[i][1] === ASPCore2Lexer_1.ASPCore2Lexer.NAF || negation && !skip) { // se sono atomi negativi non li inserisco né in coda né in testa
-            if (constructs[i][1] === ASPCore2Lexer_1.ASPCore2Lexer.CONS) {
-                negation = false;
-            }
-            else {
-                negation = true;
-            }
+        if ((constructs[i][1] === ASPCore2Lexer_1.ASPCore2Lexer.NAF || negation) && !skip) { // se sono atomi negativi non li inserisco né in coda né in testa
+            negation = true;
         }
-        else if (constructs[i][1] >= 29 && constructs[i][1] <= 34 && !skip) { // Se sono presenti simboli inserisco il valore prima del simbolo
+        if (constructs[i][1] >= 29 && constructs[i][1] <= 34 && !skip) { // Se sono presenti simboli inserisco il valore prima del simbolo
             if (constructs[i - 1][1] === ASPCore2Lexer_1.ASPCore2Lexer.VARIABLE) {
                 tails_in_symbols.push(constructs[i - 1][0]);
                 continue;

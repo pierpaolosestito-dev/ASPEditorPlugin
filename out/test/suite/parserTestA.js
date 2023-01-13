@@ -5,7 +5,6 @@ exports.trasformText = exports.dummy = void 0;
 //import { ... } from '../../src/parsing'; //Funzioni da testare
 const chai_1 = require("chai");
 require("mocha");
-const assert = require("assert");
 const antlr4ts_1 = require("antlr4ts");
 const ANTLRInputStream_1 = require("antlr4ts/ANTLRInputStream");
 const ASPCore2Lexer_1 = require("../../src/parser/ASPCore2Lexer");
@@ -29,11 +28,12 @@ function trasformText(text) {
     const input = new ANTLRInputStream_1.ANTLRInputStream(text);
     const aspLexer = new ASPCore2Lexer_1.ASPCore2Lexer(input);
     const tokens = new antlr4ts_1.CommonTokenStream(aspLexer);
+    tokens.fill();
     return tokens;
 }
 exports.trasformText = trasformText;
 //Test
-describe('tokenize positive test 1', () => {
+describe('tokenize positive tests', () => {
     //Descrizione del risultato del test
     it('Tests if an empty rule is tokenized correctly', () => {
         //Corpo del test
@@ -43,15 +43,80 @@ describe('tokenize positive test 1', () => {
         const expected_result = [
             ['<EOF>', -1, 1]
         ]; //Risultato atteso
-        console.log('[0][0]', result[0][0] === expected_result[0][0]);
-        console.log('[0][1]', result[0][1] === expected_result[0][1]);
-        console.log('[0][2]', result[0][2] === expected_result[0][2]);
-        console.log('[0]', result[0] === expected_result[0]);
-        console.log(result[0]);
-        console.log(expected_result[0]);
         //expect(result).to.equal(expected_result); //Asserzione
-        assert.strictEqual(result, expected_result);
+        (0, chai_1.expect)(result).deep.equal(expected_result); //Asserzione per controllare se due array sono uguali
+    });
+    it('Tests if a simple fact is tokenized correctly', () => {
+        //Corpo del test
+        const input = "node(1).";
+        const tokens = trasformText(input);
+        const result = (0, parsing_1.tokenize)(tokens); //Risultato della funzione da testare
+        const expected_result = [
+            ['node', 2, 1],
+            ['(', 21, 1],
+            ['1', 5, 1],
+            [')', 22, 1],
+            ['.', 7, 1],
+            ['<EOF>', -1, 1]
+        ]; //Risultato atteso
+        //expect(result).to.equal(expected_result); //Asserzione
+        (0, chai_1.expect)(result).deep.equal(expected_result); //Asserzione per controllare se due array sono uguali
+    });
+    it('Tests if multiple facts on the same line are tokenized correctly', () => {
+        //Corpo del test
+        const input = "node(1).node(2).node(3).";
+        const tokens = trasformText(input);
+        const result = (0, parsing_1.tokenize)(tokens); //Risultato della funzione da testare
+        const expected_result = [
+            ['node', 2, 1],
+            ['(', 21, 1],
+            ['1', 5, 1],
+            [')', 22, 1],
+            ['.', 7, 1],
+            ['node', 2, 1],
+            ['(', 21, 1],
+            ['2', 5, 1],
+            [')', 22, 1],
+            ['.', 7, 1],
+            ['node', 2, 1],
+            ['(', 21, 1],
+            ['3', 5, 1],
+            [')', 22, 1],
+            ['.', 7, 1],
+            ['<EOF>', -1, 1]
+        ]; //Risultato atteso
+        //expect(result).to.equal(expected_result); //Asserzione
+        (0, chai_1.expect)(result).deep.equal(expected_result); //Asserzione per controllare se due array sono uguali
+    });
+    it('Tests if multiple facts on multiple lines are tokenized correctly', () => {
+        //Corpo del test
+        const input = "node(1).node(2).\nnode(3).";
+        const tokens = trasformText(input);
+        const result = (0, parsing_1.tokenize)(tokens); //Risultato della funzione da testare
+        console.log(result);
+        const expected_result = [
+            ['node', 2, 1],
+            ['(', 21, 1],
+            ['1', 5, 1],
+            [')', 22, 1],
+            ['.', 7, 1],
+            ['node', 2, 1],
+            ['(', 21, 1],
+            ['2', 5, 1],
+            [')', 22, 1],
+            ['.', 7, 1],
+            ['<EOF>', -1, 1],
+            ['node', 2, 2],
+            ['(', 21, 2],
+            ['3', 5, 2],
+            [')', 22, 2],
+            ['.', 7, 2],
+            ['<EOF>', -1, 2]
+        ]; //Risultato atteso
+        //expect(result).to.equal(expected_result); //Asserzione
+        (0, chai_1.expect)(result).deep.equal(expected_result); //Asserzione per controllare se due array sono uguali
     });
 });
-//Testing tokenize and tokenize_head_tail.
+//TODO Testing tokenize : multiple facts on a multiple lines of text, simple rule, 
+//more rules on a simple line of text, complex program.
 //# sourceMappingURL=parserTestA.js.map
