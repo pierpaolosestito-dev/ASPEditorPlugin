@@ -51,6 +51,9 @@ function refreshDiagnostics(doc, errorDiagnostics) {
             const constructs = (0, parsing_1.tokenize)(tokens);
             const [heads, tails, tails_negative, tails_in_symbols] = (0, parsing_1.tokenize_head_tail)(constructs, atoms);
             const msg = `The rule at line ${lineIndex + 1} is not safe`;
+            console.log("C", constructs);
+            console.log("Check safe", (0, parsing_1.checkSafe)(heads, tails, tails_negative, tails_in_symbols));
+            console.log("Check rule", (0, parsing_1.checkIsRule)(constructs));
             if (!(0, parsing_1.checkSafe)(heads, tails, tails_negative, tails_in_symbols) && (0, parsing_1.checkIsRule)(constructs) && !(0, parsing_1.check_comment_or_test)(doc, lineIndex).check) {
                 diagnostics.push(createDiagnostic(doc, lineOfText, lineIndex, msg, vscode.DiagnosticSeverity.Warning));
             }
