@@ -1,36 +1,37 @@
 import * as vscode from 'vscode';
 import * as path from 'path';
 import { dictionarizer } from './utils/dictionarizer';
-import { DynamicDictionary } from './utils/dynamic_dictionary';
+import { DynamicPredicateDictionary } from './utils/dynamic_predicate_dictionary';
+import { DynamicTermsDictionary } from './utils/dynamic_terms_dictionary';
+import { IntelliDetail } from './utils/intelli_detail';
 
 //Returns a provider that manages intellisense for directives, aggregates, default and custom external atoms
 export function getASPIntellisenseProvider(context: vscode.ExtensionContext): vscode.CompletionItemProvider<vscode.CompletionItem> {
-    const dd = DynamicDictionary.getInstance();
+    const dd = DynamicPredicateDictionary.getInstance();
+    const terms_dd = DynamicTermsDictionary.getInstance();
     const autocompleteDict = readDictionariesandMergeIt(context);
 
-    return {
-        //autocompleteDict: readDictionariesandMergeIt(context),
-        
+    return {        
         //Provides autocomplete
 		provideCompletionItems: function(document: vscode.TextDocument, position: vscode.Position, token: vscode.CancellationToken, context: vscode.CompletionContext) {
-            //Leggiamo il file a prescindere, se ha contenuto, con una regex prendiamo i predicati e facciamo la stessa cosa.
+            //Reads the whole file to retrieve predicates and terms
             const completionItems: vscode.CompletionItem[] = [];
             const activeTextEditor = vscode.window.activeTextEditor;
-            let chiave = '';
+            let fileName = '';
             if(activeTextEditor){
-                chiave = path.basename(activeTextEditor.document.fileName);
+                fileName = path.basename(activeTextEditor.document.fileName);
             }
             
          
-            //Checks if the text being inserted is after a trigger character (# or &)
+            //Checks if the text being inserted is after a trigger character (',','(','#','&')
             let triggerCharacter;
-            //Con questa funzione possiamo prendere la linea scritta.
+            
             const line = document.lineAt(position);
             let character = position.character - 1;
-            const validCharacters = /[a-zA-Z0-9_#&:-]/;
+            const validCharacters = /[ (,a-zA-Z0-9_#&:-]/;
          
             while(character >= 0 && validCharacters.test(line.text[character])) {
-                if(line.text[character] === '#' || line.text[character] === '&' ) {
+                if([',','(','#','&',' '].includes(line.text[character])){
                     triggerCharacter = line.text[character];
                     break;
                 }
@@ -38,35 +39,82 @@ export function getASPIntellisenseProvider(context: vscode.ExtensionContext): vs
             }
 
             //If the trigger character is found it provides every completion item associated with that character
-            if(triggerCharacter) {
-                // eslint-disable-next-line no-inner-declarations
-                function registerAutcompleteEntry(elem:any) {
+            if(triggerCharacter == '#' || triggerCharacter == '&') {
+            
+                //#,&
+                for(const elem of Object.values<any>(autocompleteDict[triggerCharacter])) {
                     completionItems.push(new vscode.CompletionItem(elem.label, vscode.CompletionItemKind.Method));
                     completionItems[completionItems.length - 1].insertText = new vscode.SnippetString(elem.snippet);
                     completionItems[completionItems.length - 1].detail = elem.detail;
                     completionItems[completionItems.length - 1].documentation = new vscode.MarkdownString(elem.documentation);
                 }
-            
-                //#,&
-                for(const elem of Object.values(autocompleteDict[triggerCharacter])) {
-                    registerAutcompleteEntry(elem);
-                }
 
+            }else if(triggerCharacter == ',' || triggerCharacter == ' '){
+                let match_open_bracket = false;
+                let predicato = "";
+                --character;
+                while (character >= 0){
+                    if(line.text[character] === "("){
+                        match_open_bracket = true;
+                    }
+                    if([')','<','>','}',':','-'].includes(line.text[character]) || ([')','<','>','}',':','-',',',' '].includes(line.text[character]) && match_open_bracket))
+                    {
+                        break;
+                    }
+                    predicato+=line.text[character];
+                    --character;
+                }
+                if(match_open_bracket){
+                    const dictionary = terms_dd.get_field(fileName);
+                    const dic2 = dictionary?.get(predicato.split("").reverse().join("").split('(')[0].trim());
+                    if(dic2){
+                        for(const suggest of dic2){
+                            //if(!line.text.includes(suggest))
+                            completionItems.push(new vscode.CompletionItem(suggest, vscode.CompletionItemKind.Constant));
+                        }
+                    }
+                }
+                else{
+                    autocompleteDict["language-constants"].forEach((elem: string) => {
+                        completionItems.push(new vscode.CompletionItem(elem, vscode.CompletionItemKind.Constant));
+                    });
+                    
+                    for(const elem of dd.get_field(fileName)) {
+                        completionItems.push(new vscode.CompletionItem(elem.label, vscode.CompletionItemKind.Field));
+                        completionItems[completionItems.length - 1].insertText = new vscode.SnippetString(elem.snippet);
+                        completionItems[completionItems.length - 1].detail = elem.detail;
+                        completionItems[completionItems.length - 1].documentation = new vscode.MarkdownString(elem.documentation);
+                    }
+                }
+                
+            }else if(triggerCharacter == '('){
+                let predicato = "";
+                --character;
+                while (character >= 0 && line.text[character] !== "," && line.text[character] !== " "){ //Condizione da rafforzare
+                    predicato+=line.text[character];
+                    --character;
+                }
+                
+                const dictionary = terms_dd.get_field(fileName);
+                const dic2 = dictionary?.get(predicato.split("").reverse().join(""));
+                if(dic2){
+                    for(const suggest of dic2){
+                        completionItems.push(new vscode.CompletionItem(suggest, vscode.CompletionItemKind.Constant));
+                    }
+                }
+            
             }
             else {
-                // eslint-disable-next-line no-inner-declarations
-                function registerDynamicEntry(elem: any) {
-                    completionItems.push(new vscode.CompletionItem(elem.label, vscode.CompletionItemKind.Field));
-                    completionItems[completionItems.length - 1].insertText = new vscode.SnippetString(elem.snippet);
-                    completionItems[completionItems.length - 1].detail = elem.detail;
-                    completionItems[completionItems.length - 1].documentation = new vscode.MarkdownString(elem.documentation);
-                }
 
                 autocompleteDict["language-constants"].forEach((elem: string) => {
                     completionItems.push(new vscode.CompletionItem(elem, vscode.CompletionItemKind.Constant));
                 });
-                for(const elem of Object.values(dd.get_field(chiave))) {
-                    registerDynamicEntry(elem);
+                
+                for(const elem of dd.get_field(fileName)) {
+                    completionItems.push(new vscode.CompletionItem(elem.label, vscode.CompletionItemKind.Field));
+                    completionItems[completionItems.length - 1].insertText = new vscode.SnippetString(elem.snippet);
+                    completionItems[completionItems.length - 1].detail = elem.detail;
+                    completionItems[completionItems.length - 1].documentation = new vscode.MarkdownString(elem.documentation);
                 }
           
             }
@@ -126,9 +174,9 @@ function readDictionariesandMergeIt(context: vscode.ExtensionContext): any{
 }
 
 export function fillDictionaryWithDynamicPredicates(){
-    const dd = DynamicDictionary.getInstance();
+    const dd = DynamicPredicateDictionary.getInstance();
 	// eslint-disable-next-line no-useless-escape
-	const regexp = /(\w+\s*\(\s*\w+(?:\s*\,\s*\w+\s*)*\s*\))\s*(?:\:\-|\||\.)/g;
+	const regexp = /(\w+\s*\(\s*\w+(?:\s*\,\s*\w+\s*)*\s*\))\s*(?:\:\-|\||\.|,)/g;
 	const regexp2 = /(\w+)\s*\(/g;
 
 	vscode.workspace.onDidChangeTextDocument(document => {
@@ -138,7 +186,7 @@ export function fillDictionaryWithDynamicPredicates(){
 		const text = document.document.getText();
 
 		const splitted_text = text.split("\n");
-		const array_valori = [];
+		const array_valori: IntelliDetail[] = [];
 		for(let i=0;i<splitted_text.length;i++){
 			
 			const matches = splitted_text[i].matchAll(regexp);
@@ -160,9 +208,9 @@ export function fillDictionaryWithDynamicPredicates(){
 					let snippet = "";
 					for(const match2 of matches2){
 					label = match2[1]+"(_)";
-					snippet = match2[1]+"(${1},${2})";
+					snippet = match2[1]+"(${1})";
 					}
-					const obj = {"label":label,"snippet":snippet,"detail": "(previous written predicates) "+label,"documentation": "**PREVIOUS PREDICATES**\n\n"+label+"\n\n---"};
+					const obj: IntelliDetail = {"label":label,"snippet":snippet,"detail": "(previous written predicates) "+label,"documentation": "**PREVIOUS PREDICATES**\n\n"+label+"\n\n---"};
 					array_valori.push(obj);
 					continue;
 				}
@@ -183,13 +231,68 @@ export function fillDictionaryWithDynamicPredicates(){
 					label = match2[1]+parenthesis;
 					snippet = match2[1]+snippetTag;
 				}
-				const obj = {"label":label,"snippet":snippet,"detail": "(previous written predicates) "+label,"documentation": "**PREVIOUS PREDICATES**\n\n"+label+"\n\n---"};
+				const obj: IntelliDetail = {"label":label,"snippet":snippet,"detail": "(previous written predicates) "+label,"documentation": "**PREVIOUS PREDICATES**\n\n"+label+"\n\n---"};
 				array_valori.push(obj);
 			}
 			//Noi dobbiamo aggiungere questi valori trovati, alla chiave, senza sovrascrivere quelli precedenti
-			dd.add_field(chiave,array_valori);
+			dd.add_field(chiave,array_valori); 
 		}                
 
 	}
 	});
+}
+
+
+export function sanitizeTerms(terms:string){
+    terms = terms.replace(" ","").replace(/\w+\(/,"").replace(").","").replace(/\w+\(/,"").replace(")|","").replace(/\w+\(/,"").replace("):-","").replace("),","");
+     return terms;
+}
+
+function onlyUnique(value:string, index:number, self:string[]) {
+    return self.indexOf(value) === index;
+  }
+
+export function fillDictionaryWithDynamicTerms(){
+    const terms_regex = /\w+\s*\(\s*\w+(?:\s*,\s*\w+\s*)*\s*\)\s*(?::-|\||\.|,)/g;
+    const dd = DynamicTermsDictionary.getInstance();
+
+    vscode.workspace.onDidChangeTextDocument(document => {
+        const allContent = document.document.getText();
+        const rows = allContent.split("\n");
+        const filename = path.basename(document.document.fileName);
+        const predicatesMap = new Map<string,string[]>;
+        for(let i=0;i<rows.length;i++){
+            if(rows[i].startsWith('%')){
+                continue;
+            }
+            const matches = rows[i].match(terms_regex);
+            if(matches){
+                for(let i=0;i<matches.length;i++){
+                    const matches_predicate = matches[i].match(/\w+/);
+                    if(matches_predicate){
+                    
+                    const sanitized = sanitizeTerms(matches[i]);
+                    if(sanitized){
+                        if(predicatesMap.has(matches_predicate[0])){
+                            let terms = sanitized.split(",");
+                            const previousTerms = predicatesMap.get(matches_predicate[0]);
+                            if(previousTerms !== undefined){
+                                terms = terms.concat(previousTerms);
+                            }
+                            predicatesMap.set(matches_predicate[0], terms.filter(onlyUnique));
+                        }
+                        else{
+                            predicatesMap.set(matches_predicate[0],sanitized.split(",").filter(onlyUnique));
+                        }
+                    }
+                    
+                    }
+                    
+                }
+            } 
+        }
+        dd.add_field(filename,predicatesMap);   
+    });
+    
+
 }

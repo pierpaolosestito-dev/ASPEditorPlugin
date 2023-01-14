@@ -1,7 +1,7 @@
 import { CODE_ERROR} from './diagnostics';
 import { similarity } from './utils/similarity';
 import { dictionarizer } from './utils/dictionarizer';
-import { DynamicDictionary } from './utils/dynamic_dictionary';
+import { DynamicPredicateDictionary } from './utils/dynamic_predicate_dictionary';
 import * as path from 'path';
 import * as vscode from 'vscode';
 
@@ -131,7 +131,7 @@ export class BuiltinAggregateFixer implements vscode.CodeActionProvider {
 	if (this.isAtStartOfDynamicPredicates(document, range)) {
 		//Starting point for dynamic predicates correction
 		const chiave = path.basename(document.fileName);
-		const dd = DynamicDictionary.getInstance();
+		const dd = DynamicPredicateDictionary.getInstance();
 		const start = range.start;
 		const line = document.lineAt(start.line).text;
 		const aggregateRegex = /(\w+)\(/gm;

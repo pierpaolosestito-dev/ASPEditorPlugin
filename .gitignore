@@ -86,7 +86,7 @@ web_modules/
 # Next.js build output
 .next
 # Rimozione necessaria per il cookbook
-# out
+out
 
 # Nuxt.js build / generate output
 .nuxt
@@ -129,3 +129,4 @@ dist
 .yarn/build-state.yml
 .yarn/install-state.gz
 .pnp.*
+
