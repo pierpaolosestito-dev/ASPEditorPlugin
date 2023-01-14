@@ -104,7 +104,6 @@ describe('tokenize positive tests',
       const tokens = trasformText(input);
 
       const result: [string, number, number][] = tokenize(tokens); //Risultato della funzione da testare
-      console.log(result);
       const expected_result: [string, number, number][] = [
         [ 'node', 2, 1], 
         ['(', 21, 1],
@@ -127,7 +126,35 @@ describe('tokenize positive tests',
       //expect(result).to.equal(expected_result); //Asserzione
       expect(result).deep.equal(expected_result); //Asserzione per controllare se due array sono uguali
   });
+  /*it('Tests if a simple rule is tokenized correctly', () => {
+    //Corpo del test
+      const input = "gatto(X):-animale(X),felino(X).";
+      const tokens = trasformText(input);
+
+      const result: [string, number, number][] = tokenize(tokens); //Risultato della funzione da testare
+      console.log(result);
+      const expected_result: [string, number, number][] = [ //TODO inserire expected_result corretto.
+        [ 'node', 2, 1 ], 
+        ['(', 21, 1 ],
+        ['1', 5, 1],
+        [')', 22, 1],
+        ['.', 7, 1],
+        [ 'node', 2, 1 ] , 
+        ['(', 21, 1 ],
+        ['2', 5, 1],
+        [')', 22, 1],
+        ['.', 7, 1],
+        [ 'node', 2, 1 ], 
+        ['(', 21, 1 ],
+        ['3', 5, 1],
+        [')', 22, 1],
+        ['.', 7, 1],
+        ['<EOF>', -1, 1]
+
+      ]; //Risultato atteso
+      //expect(result).to.equal(expected_result); //Asserzione
+      expect(result).deep.equal(expected_result); //Asserzione per controllare se due array sono uguali
+  }); */
 });
 
-//TODO Testing tokenize : multiple facts on a multiple lines of text(read from file maybe), simple rule, 
-//more rules on a simple line of text, complex program.
+//TODO complex program.
