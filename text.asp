@@ -9,8 +9,8 @@
 #sum{X,x:prova(_)}.
 #count{_,_:ciao(x,y),prova(_,_)}.
 
-%/ commento % prova prova
-multilinea /% questo non è un commento, non dovresti evidenziarlo in grigio o verde
+%/ commento
+multilinea /%
 
 #count{ _ , _ : ciao( x , y ) }. %commento
 #count{ X , _ : ciao( x , y ) }.
@@ -22,10 +22,3 @@ multilinea /% questo non è un commento, non dovresti evidenziarlo in grigio o v
 #sum{ X , x : prova( X )}.
 #sum{ X , x : prova( _ )}.
 #count{ _ , _ : ciao( x , y ) , prova( _ , _ ) }.
-
-%non machare
-#count{ _ , _ : ciao( x  y ) }.
-#count{ X  _ : ciao( x , y ) }.
-#count{ _ , x  ciao( x , y ) }.
-#sum{ X , x : prova X , y ) }.
-#count{ _ , _ : ciao( x , y ) , prova( __ ) }.

@@ -1,4 +1,4 @@
-// Generated from src/parser/ASPCore2.g4 by ANTLR 4.9.0-SNAPSHOT
+// Generated from ./src/parser/ASPCore2.g4 by ANTLR 4.9.0-SNAPSHOT
 
 
 import { ATN } from "antlr4ts/atn/ATN";
@@ -101,8 +101,11 @@ export class ASPCore2Parser extends Parser {
 	public static readonly ANNOTATION_GLOBAL_WASP_HEURISTIC = 71;
 	public static readonly ANNOTATION_GLOBAL_WASP_HEURISTIC_FILE = 72;
 	public static readonly ANNOTATION_GLOBAL_WASP_HEURISTIC_ELEMENTS = 73;
-	public static readonly EMPTY_COMMENT = 74;
-	public static readonly COMMENT = 75;
+	public static readonly START_TEST = 74;
+	public static readonly END_TEST = 75;
+	public static readonly START_COMMENT = 76;
+	public static readonly END_COMMENT = 77;
+	public static readonly COMMENT = 78;
 	public static readonly RULE_program = 0;
 	public static readonly RULE_rule = 1;
 	public static readonly RULE_simple_rule = 2;
@@ -254,7 +257,7 @@ export class ASPCore2Parser extends Parser {
 		"'@UT_INT'", "'@R_INT'", "'@T_INT'", "'%@global_ordering'", "'%@global_atom_indexed'", 
 		"'%@global_partial_order'", "'%@global_external_predicate_conversion'", 
 		"'%@rule_to_decompose'", "'%@rule_to_not_decompose'", "'%@global_heuristic'", 
-		"'@file'", "'@elements'",
+		"'@file'", "'@elements'", "'%**'", "'**%'", "'%/'", "'/%'", "'%'",
 	];
 	private static readonly _SYMBOLIC_NAMES: Array<string | undefined> = [
 		undefined, "NAF", "SYMBOLIC_CONSTANT", "VARIABLE", "STRING", "NUMBER", 
@@ -275,7 +278,7 @@ export class ASPCore2Parser extends Parser {
 		"ANNOTATION_GLOBAL_ATOM_INDEXED", "ANNOTATION_GLOBAL_PARTIAL_ORDER", "ANNOTATION_GLOBAL_EXTATOM_CONVERSION", 
 		"ANNOTATION_RULE_TO_DECOMPOSE", "ANNOTATION_RULE_TO_NOT_DECOMPOSE", "ANNOTATION_GLOBAL_WASP_HEURISTIC", 
 		"ANNOTATION_GLOBAL_WASP_HEURISTIC_FILE", "ANNOTATION_GLOBAL_WASP_HEURISTIC_ELEMENTS", 
-		"EMPTY_COMMENT", "COMMENT",
+		"START_TEST", "END_TEST", "START_COMMENT", "END_COMMENT", "COMMENT",
 	];
 	public static readonly VOCABULARY: Vocabulary = new VocabularyImpl(ASPCore2Parser._LITERAL_NAMES, ASPCore2Parser._SYMBOLIC_NAMES, []);
 
@@ -305,7 +308,7 @@ export class ASPCore2Parser extends Parser {
 	}
 	// @RuleVersion(0)
 	public program(): ProgramContext {
-		let _localctx: ProgramContext = new ProgramContext(this._ctx, this.state);
+		const _localctx: ProgramContext = new ProgramContext(this._ctx, this.state);
 		this.enterRule(_localctx, 0, ASPCore2Parser.RULE_program);
 		let _la: number;
 		try {
@@ -343,7 +346,7 @@ export class ASPCore2Parser extends Parser {
 	}
 	// @RuleVersion(0)
 	public rule(): RuleContext {
-		let _localctx: RuleContext = new RuleContext(this._ctx, this.state);
+		const  _localctx: RuleContext = new RuleContext(this._ctx, this.state);
 		this.enterRule(_localctx, 2, ASPCore2Parser.RULE_rule);
 		try {
 			this.state = 222;
@@ -422,7 +425,7 @@ export class ASPCore2Parser extends Parser {
 	}
 	// @RuleVersion(0)
 	public simple_rule(): Simple_ruleContext {
-		let _localctx: Simple_ruleContext = new Simple_ruleContext(this._ctx, this.state);
+		const  _localctx: Simple_ruleContext = new Simple_ruleContext(this._ctx, this.state);
 		this.enterRule(_localctx, 4, ASPCore2Parser.RULE_simple_rule);
 		try {
 			this.state = 246;
@@ -515,7 +518,7 @@ export class ASPCore2Parser extends Parser {
 	}
 	// @RuleVersion(0)
 	public head(): HeadContext {
-		let _localctx: HeadContext = new HeadContext(this._ctx, this.state);
+		const  _localctx: HeadContext = new HeadContext(this._ctx, this.state);
 		this.enterRule(_localctx, 6, ASPCore2Parser.RULE_head);
 		try {
 			this.state = 250;
@@ -554,7 +557,7 @@ export class ASPCore2Parser extends Parser {
 	}
 	// @RuleVersion(0)
 	public body(): BodyContext {
-		let _localctx: BodyContext = new BodyContext(this._ctx, this.state);
+		const  _localctx: BodyContext = new BodyContext(this._ctx, this.state);
 		this.enterRule(_localctx, 8, ASPCore2Parser.RULE_body);
 		try {
 			this.enterOuterAlt(_localctx, 1);
@@ -579,7 +582,7 @@ export class ASPCore2Parser extends Parser {
 	}
 	// @RuleVersion(0)
 	public weight_at_levels(): Weight_at_levelsContext {
-		let _localctx: Weight_at_levelsContext = new Weight_at_levelsContext(this._ctx, this.state);
+		const  _localctx: Weight_at_levelsContext = new Weight_at_levelsContext(this._ctx, this.state);
 		this.enterRule(_localctx, 10, ASPCore2Parser.RULE_weight_at_levels);
 		try {
 			this.state = 263;
@@ -628,7 +631,7 @@ export class ASPCore2Parser extends Parser {
 	}
 	// @RuleVersion(0)
 	public levels_and_terms(): Levels_and_termsContext {
-		let _localctx: Levels_and_termsContext = new Levels_and_termsContext(this._ctx, this.state);
+		const  _localctx: Levels_and_termsContext = new Levels_and_termsContext(this._ctx, this.state);
 		this.enterRule(_localctx, 12, ASPCore2Parser.RULE_levels_and_terms);
 		try {
 			this.state = 274;
@@ -685,7 +688,7 @@ export class ASPCore2Parser extends Parser {
 	}
 	// @RuleVersion(0)
 	public disjunction(): DisjunctionContext {
-		let _localctx: DisjunctionContext = new DisjunctionContext(this._ctx, this.state);
+		const  _localctx: DisjunctionContext = new DisjunctionContext(this._ctx, this.state);
 		this.enterRule(_localctx, 14, ASPCore2Parser.RULE_disjunction);
 		try {
 			this.state = 286;
@@ -748,7 +751,7 @@ export class ASPCore2Parser extends Parser {
 	}
 	// @RuleVersion(0)
 	public conjunction(): ConjunctionContext {
-		let _localctx: ConjunctionContext = new ConjunctionContext(this._ctx, this.state);
+		const  _localctx: ConjunctionContext = new ConjunctionContext(this._ctx, this.state);
 		this.enterRule(_localctx, 16, ASPCore2Parser.RULE_conjunction);
 		try {
 			this.state = 293;
@@ -791,7 +794,7 @@ export class ASPCore2Parser extends Parser {
 	}
 	// @RuleVersion(0)
 	public choice_atom(): Choice_atomContext {
-		let _localctx: Choice_atomContext = new Choice_atomContext(this._ctx, this.state);
+		const  _localctx: Choice_atomContext = new Choice_atomContext(this._ctx, this.state);
 		this.enterRule(_localctx, 18, ASPCore2Parser.RULE_choice_atom);
 		try {
 			this.state = 315;
@@ -870,7 +873,7 @@ export class ASPCore2Parser extends Parser {
 	}
 	// @RuleVersion(0)
 	public lower_guard(): Lower_guardContext {
-		let _localctx: Lower_guardContext = new Lower_guardContext(this._ctx, this.state);
+		const  _localctx: Lower_guardContext = new Lower_guardContext(this._ctx, this.state);
 		this.enterRule(_localctx, 20, ASPCore2Parser.RULE_lower_guard);
 		try {
 			this.enterOuterAlt(_localctx, 1);
@@ -897,7 +900,7 @@ export class ASPCore2Parser extends Parser {
 	}
 	// @RuleVersion(0)
 	public upper_guard(): Upper_guardContext {
-		let _localctx: Upper_guardContext = new Upper_guardContext(this._ctx, this.state);
+		const  _localctx: Upper_guardContext = new Upper_guardContext(this._ctx, this.state);
 		this.enterRule(_localctx, 22, ASPCore2Parser.RULE_upper_guard);
 		try {
 			this.enterOuterAlt(_localctx, 1);
@@ -924,7 +927,7 @@ export class ASPCore2Parser extends Parser {
 	}
 	// @RuleVersion(0)
 	public choice_elements(): Choice_elementsContext {
-		let _localctx: Choice_elementsContext = new Choice_elementsContext(this._ctx, this.state);
+		const  _localctx: Choice_elementsContext = new Choice_elementsContext(this._ctx, this.state);
 		this.enterRule(_localctx, 24, ASPCore2Parser.RULE_choice_elements);
 		try {
 			this.state = 328;
@@ -967,7 +970,7 @@ export class ASPCore2Parser extends Parser {
 	}
 	// @RuleVersion(0)
 	public choice_element(): Choice_elementContext {
-		let _localctx: Choice_elementContext = new Choice_elementContext(this._ctx, this.state);
+		const  _localctx: Choice_elementContext = new Choice_elementContext(this._ctx, this.state);
 		this.enterRule(_localctx, 26, ASPCore2Parser.RULE_choice_element);
 		try {
 			this.state = 335;
@@ -1010,7 +1013,7 @@ export class ASPCore2Parser extends Parser {
 	}
 	// @RuleVersion(0)
 	public choice_element_atom(): Choice_element_atomContext {
-		let _localctx: Choice_element_atomContext = new Choice_element_atomContext(this._ctx, this.state);
+		const  _localctx: Choice_element_atomContext = new Choice_element_atomContext(this._ctx, this.state);
 		this.enterRule(_localctx, 28, ASPCore2Parser.RULE_choice_element_atom);
 		try {
 			this.enterOuterAlt(_localctx, 1);
@@ -1035,7 +1038,7 @@ export class ASPCore2Parser extends Parser {
 	}
 	// @RuleVersion(0)
 	public choice_elements_literals(): Choice_elements_literalsContext {
-		let _localctx: Choice_elements_literalsContext = new Choice_elements_literalsContext(this._ctx, this.state);
+		const  _localctx: Choice_elements_literalsContext = new Choice_elements_literalsContext(this._ctx, this.state);
 		this.enterRule(_localctx, 30, ASPCore2Parser.RULE_choice_elements_literals);
 		try {
 			this.state = 344;
@@ -1078,7 +1081,7 @@ export class ASPCore2Parser extends Parser {
 	}
 	// @RuleVersion(0)
 	public naf_literals(): Naf_literalsContext {
-		let _localctx: Naf_literalsContext = new Naf_literalsContext(this._ctx, this.state);
+		const  _localctx: Naf_literalsContext = new Naf_literalsContext(this._ctx, this.state);
 		this.enterRule(_localctx, 32, ASPCore2Parser.RULE_naf_literals);
 		try {
 			this.state = 351;
@@ -1121,7 +1124,7 @@ export class ASPCore2Parser extends Parser {
 	}
 	// @RuleVersion(0)
 	public naf_literal(): Naf_literalContext {
-		let _localctx: Naf_literalContext = new Naf_literalContext(this._ctx, this.state);
+		const  _localctx: Naf_literalContext = new Naf_literalContext(this._ctx, this.state);
 		this.enterRule(_localctx, 34, ASPCore2Parser.RULE_naf_literal);
 		try {
 			this.state = 360;
@@ -1188,7 +1191,7 @@ export class ASPCore2Parser extends Parser {
 	}
 	// @RuleVersion(0)
 	public naf_literal_aggregate(): Naf_literal_aggregateContext {
-		let _localctx: Naf_literal_aggregateContext = new Naf_literal_aggregateContext(this._ctx, this.state);
+		const  _localctx: Naf_literal_aggregateContext = new Naf_literal_aggregateContext(this._ctx, this.state);
 		this.enterRule(_localctx, 36, ASPCore2Parser.RULE_naf_literal_aggregate);
 		try {
 			this.state = 366;
@@ -1237,7 +1240,7 @@ export class ASPCore2Parser extends Parser {
 	}
 	// @RuleVersion(0)
 	public existential_atom(): Existential_atomContext {
-		let _localctx: Existential_atomContext = new Existential_atomContext(this._ctx, this.state);
+		const  _localctx: Existential_atomContext = new Existential_atomContext(this._ctx, this.state);
 		this.enterRule(_localctx, 38, ASPCore2Parser.RULE_existential_atom);
 		try {
 			this.enterOuterAlt(_localctx, 1);
@@ -1266,7 +1269,7 @@ export class ASPCore2Parser extends Parser {
 	}
 	// @RuleVersion(0)
 	public classic_literal(): Classic_literalContext {
-		let _localctx: Classic_literalContext = new Classic_literalContext(this._ctx, this.state);
+		const  _localctx: Classic_literalContext = new Classic_literalContext(this._ctx, this.state);
 		this.enterRule(_localctx, 40, ASPCore2Parser.RULE_classic_literal);
 		try {
 			this.state = 375;
@@ -1310,7 +1313,7 @@ export class ASPCore2Parser extends Parser {
 	}
 	// @RuleVersion(0)
 	public atom(): AtomContext {
-		let _localctx: AtomContext = new AtomContext(this._ctx, this.state);
+		const  _localctx: AtomContext = new AtomContext(this._ctx, this.state);
 		this.enterRule(_localctx, 42, ASPCore2Parser.RULE_atom);
 		try {
 			this.state = 387;
@@ -1367,7 +1370,7 @@ export class ASPCore2Parser extends Parser {
 	}
 	// @RuleVersion(0)
 	public extAtom(): ExtAtomContext {
-		let _localctx: ExtAtomContext = new ExtAtomContext(this._ctx, this.state);
+		const  _localctx: ExtAtomContext = new ExtAtomContext(this._ctx, this.state);
 		this.enterRule(_localctx, 44, ASPCore2Parser.RULE_extAtom);
 		try {
 			this.state = 416;
@@ -1460,7 +1463,7 @@ export class ASPCore2Parser extends Parser {
 	}
 	// @RuleVersion(0)
 	public extSemicol(): ExtSemicolContext {
-		let _localctx: ExtSemicolContext = new ExtSemicolContext(this._ctx, this.state);
+		const  _localctx: ExtSemicolContext = new ExtSemicolContext(this._ctx, this.state);
 		this.enterRule(_localctx, 46, ASPCore2Parser.RULE_extSemicol);
 		try {
 			this.enterOuterAlt(_localctx, 1);
@@ -1485,7 +1488,7 @@ export class ASPCore2Parser extends Parser {
 	}
 	// @RuleVersion(0)
 	public terms(): TermsContext {
-		let _localctx: TermsContext = new TermsContext(this._ctx, this.state);
+		const  _localctx: TermsContext = new TermsContext(this._ctx, this.state);
 		this.enterRule(_localctx, 48, ASPCore2Parser.RULE_terms);
 		try {
 			this.state = 425;
@@ -1528,7 +1531,7 @@ export class ASPCore2Parser extends Parser {
 	}
 	// @RuleVersion(0)
 	public basic_terms(): Basic_termsContext {
-		let _localctx: Basic_termsContext = new Basic_termsContext(this._ctx, this.state);
+		const  _localctx: Basic_termsContext = new Basic_termsContext(this._ctx, this.state);
 		this.enterRule(_localctx, 50, ASPCore2Parser.RULE_basic_terms);
 		try {
 			this.state = 432;
@@ -1571,7 +1574,7 @@ export class ASPCore2Parser extends Parser {
 	}
 	// @RuleVersion(0)
 	public builtin_atom(): Builtin_atomContext {
-		let _localctx: Builtin_atomContext = new Builtin_atomContext(this._ctx, this.state);
+		const  _localctx: Builtin_atomContext = new Builtin_atomContext(this._ctx, this.state);
 		this.enterRule(_localctx, 52, ASPCore2Parser.RULE_builtin_atom);
 		try {
 			this.enterOuterAlt(_localctx, 1);
@@ -1600,7 +1603,7 @@ export class ASPCore2Parser extends Parser {
 	}
 	// @RuleVersion(0)
 	public compareop(): CompareopContext {
-		let _localctx: CompareopContext = new CompareopContext(this._ctx, this.state);
+		const  _localctx: CompareopContext = new CompareopContext(this._ctx, this.state);
 		this.enterRule(_localctx, 54, ASPCore2Parser.RULE_compareop);
 		let _la: number;
 		try {
@@ -1636,7 +1639,7 @@ export class ASPCore2Parser extends Parser {
 	}
 	// @RuleVersion(0)
 	public binop(): BinopContext {
-		let _localctx: BinopContext = new BinopContext(this._ctx, this.state);
+		const  _localctx: BinopContext = new BinopContext(this._ctx, this.state);
 		this.enterRule(_localctx, 56, ASPCore2Parser.RULE_binop);
 		try {
 			this.state = 444;
@@ -1691,7 +1694,7 @@ export class ASPCore2Parser extends Parser {
 	}
 	// @RuleVersion(0)
 	public arithop1(): Arithop1Context {
-		let _localctx: Arithop1Context = new Arithop1Context(this._ctx, this.state);
+		const  _localctx: Arithop1Context = new Arithop1Context(this._ctx, this.state);
 		this.enterRule(_localctx, 58, ASPCore2Parser.RULE_arithop1);
 		let _la: number;
 		try {
@@ -1727,7 +1730,7 @@ export class ASPCore2Parser extends Parser {
 	}
 	// @RuleVersion(0)
 	public arithop2(): Arithop2Context {
-		let _localctx: Arithop2Context = new Arithop2Context(this._ctx, this.state);
+		const  _localctx: Arithop2Context = new Arithop2Context(this._ctx, this.state);
 		this.enterRule(_localctx, 60, ASPCore2Parser.RULE_arithop2);
 		let _la: number;
 		try {
@@ -1763,7 +1766,7 @@ export class ASPCore2Parser extends Parser {
 	}
 	// @RuleVersion(0)
 	public term_(): Term_Context {
-		let _localctx: Term_Context = new Term_Context(this._ctx, this.state);
+		const  _localctx: Term_Context = new Term_Context(this._ctx, this.state);
 		this.enterRule(_localctx, 62, ASPCore2Parser.RULE_term_);
 		try {
 			this.state = 461;
@@ -1831,7 +1834,7 @@ export class ASPCore2Parser extends Parser {
 	}
 	// @RuleVersion(0)
 	public term__(): Term__Context {
-		let _localctx: Term__Context = new Term__Context(this._ctx, this.state);
+		const  _localctx: Term__Context = new Term__Context(this._ctx, this.state);
 		this.enterRule(_localctx, 64, ASPCore2Parser.RULE_term__);
 		try {
 			this.state = 469;
@@ -1884,7 +1887,7 @@ export class ASPCore2Parser extends Parser {
 	}
 	// @RuleVersion(0)
 	public term(): TermContext {
-		let _localctx: TermContext = new TermContext(this._ctx, this.state);
+		const  _localctx: TermContext = new TermContext(this._ctx, this.state);
 		this.enterRule(_localctx, 66, ASPCore2Parser.RULE_term);
 		try {
 			this.state = 474;
@@ -1931,7 +1934,7 @@ export class ASPCore2Parser extends Parser {
 	}
 	// @RuleVersion(0)
 	public expr(): ExprContext {
-		let _localctx: ExprContext = new ExprContext(this._ctx, this.state);
+		const  _localctx: ExprContext = new ExprContext(this._ctx, this.state);
 		this.enterRule(_localctx, 68, ASPCore2Parser.RULE_expr);
 		try {
 			this.state = 481;
@@ -1974,7 +1977,7 @@ export class ASPCore2Parser extends Parser {
 	}
 	// @RuleVersion(0)
 	public factor(): FactorContext {
-		let _localctx: FactorContext = new FactorContext(this._ctx, this.state);
+		const  _localctx: FactorContext = new FactorContext(this._ctx, this.state);
 		this.enterRule(_localctx, 70, ASPCore2Parser.RULE_factor);
 		try {
 			this.state = 488;
@@ -2017,7 +2020,7 @@ export class ASPCore2Parser extends Parser {
 	}
 	// @RuleVersion(0)
 	public basic_term(): Basic_termContext {
-		let _localctx: Basic_termContext = new Basic_termContext(this._ctx, this.state);
+		const  _localctx: Basic_termContext = new Basic_termContext(this._ctx, this.state);
 		this.enterRule(_localctx, 72, ASPCore2Parser.RULE_basic_term);
 		try {
 			this.state = 493;
@@ -2064,7 +2067,7 @@ export class ASPCore2Parser extends Parser {
 	}
 	// @RuleVersion(0)
 	public ground_term(): Ground_termContext {
-		let _localctx: Ground_termContext = new Ground_termContext(this._ctx, this.state);
+		const  _localctx: Ground_termContext = new Ground_termContext(this._ctx, this.state);
 		this.enterRule(_localctx, 74, ASPCore2Parser.RULE_ground_term);
 		try {
 			this.state = 500;
@@ -2120,7 +2123,7 @@ export class ASPCore2Parser extends Parser {
 	}
 	// @RuleVersion(0)
 	public variable_term(): Variable_termContext {
-		let _localctx: Variable_termContext = new Variable_termContext(this._ctx, this.state);
+		const  _localctx: Variable_termContext = new Variable_termContext(this._ctx, this.state);
 		this.enterRule(_localctx, 76, ASPCore2Parser.RULE_variable_term);
 		let _la: number;
 		try {
@@ -2156,7 +2159,7 @@ export class ASPCore2Parser extends Parser {
 	}
 	// @RuleVersion(0)
 	public functional_term(): Functional_termContext {
-		let _localctx: Functional_termContext = new Functional_termContext(this._ctx, this.state);
+		const  _localctx: Functional_termContext = new Functional_termContext(this._ctx, this.state);
 		this.enterRule(_localctx, 78, ASPCore2Parser.RULE_functional_term);
 		try {
 			this.enterOuterAlt(_localctx, 1);
@@ -2187,7 +2190,7 @@ export class ASPCore2Parser extends Parser {
 	}
 	// @RuleVersion(0)
 	public vars(): VarsContext {
-		let _localctx: VarsContext = new VarsContext(this._ctx, this.state);
+		const  _localctx: VarsContext = new VarsContext(this._ctx, this.state);
 		this.enterRule(_localctx, 80, ASPCore2Parser.RULE_vars);
 		try {
 			this.state = 513;
@@ -2230,7 +2233,7 @@ export class ASPCore2Parser extends Parser {
 	}
 	// @RuleVersion(0)
 	public identifier(): IdentifierContext {
-		let _localctx: IdentifierContext = new IdentifierContext(this._ctx, this.state);
+		const  _localctx: IdentifierContext = new IdentifierContext(this._ctx, this.state);
 		this.enterRule(_localctx, 82, ASPCore2Parser.RULE_identifier);
 		let _la: number;
 		try {
@@ -2266,7 +2269,7 @@ export class ASPCore2Parser extends Parser {
 	}
 	// @RuleVersion(0)
 	public directive(): DirectiveContext {
-		let _localctx: DirectiveContext = new DirectiveContext(this._ctx, this.state);
+		const  _localctx: DirectiveContext = new DirectiveContext(this._ctx, this.state);
 		this.enterRule(_localctx, 84, ASPCore2Parser.RULE_directive);
 		try {
 			this.enterOuterAlt(_localctx, 1);
@@ -2293,7 +2296,7 @@ export class ASPCore2Parser extends Parser {
 	}
 	// @RuleVersion(0)
 	public query(): QueryContext {
-		let _localctx: QueryContext = new QueryContext(this._ctx, this.state);
+		const  _localctx: QueryContext = new QueryContext(this._ctx, this.state);
 		this.enterRule(_localctx, 86, ASPCore2Parser.RULE_query);
 		try {
 			this.enterOuterAlt(_localctx, 1);
@@ -2320,7 +2323,7 @@ export class ASPCore2Parser extends Parser {
 	}
 	// @RuleVersion(0)
 	public lower_guard_compare_aggregate(): Lower_guard_compare_aggregateContext {
-		let _localctx: Lower_guard_compare_aggregateContext = new Lower_guard_compare_aggregateContext(this._ctx, this.state);
+		const  _localctx: Lower_guard_compare_aggregateContext = new Lower_guard_compare_aggregateContext(this._ctx, this.state);
 		this.enterRule(_localctx, 88, ASPCore2Parser.RULE_lower_guard_compare_aggregate);
 		try {
 			this.enterOuterAlt(_localctx, 1);
@@ -2347,7 +2350,7 @@ export class ASPCore2Parser extends Parser {
 	}
 	// @RuleVersion(0)
 	public upper_guard_compare_aggregate(): Upper_guard_compare_aggregateContext {
-		let _localctx: Upper_guard_compare_aggregateContext = new Upper_guard_compare_aggregateContext(this._ctx, this.state);
+		const  _localctx: Upper_guard_compare_aggregateContext = new Upper_guard_compare_aggregateContext(this._ctx, this.state);
 		this.enterRule(_localctx, 90, ASPCore2Parser.RULE_upper_guard_compare_aggregate);
 		try {
 			this.enterOuterAlt(_localctx, 1);
@@ -2374,7 +2377,7 @@ export class ASPCore2Parser extends Parser {
 	}
 	// @RuleVersion(0)
 	public compare_aggregate(): Compare_aggregateContext {
-		let _localctx: Compare_aggregateContext = new Compare_aggregateContext(this._ctx, this.state);
+		const  _localctx: Compare_aggregateContext = new Compare_aggregateContext(this._ctx, this.state);
 		this.enterRule(_localctx, 92, ASPCore2Parser.RULE_compare_aggregate);
 		try {
 			this.state = 535;
@@ -2427,7 +2430,7 @@ export class ASPCore2Parser extends Parser {
 	}
 	// @RuleVersion(0)
 	public lower_guard_leftward_left_aggregate(): Lower_guard_leftward_left_aggregateContext {
-		let _localctx: Lower_guard_leftward_left_aggregateContext = new Lower_guard_leftward_left_aggregateContext(this._ctx, this.state);
+		const  _localctx: Lower_guard_leftward_left_aggregateContext = new Lower_guard_leftward_left_aggregateContext(this._ctx, this.state);
 		this.enterRule(_localctx, 94, ASPCore2Parser.RULE_lower_guard_leftward_left_aggregate);
 		try {
 			this.enterOuterAlt(_localctx, 1);
@@ -2454,7 +2457,7 @@ export class ASPCore2Parser extends Parser {
 	}
 	// @RuleVersion(0)
 	public leftward_left_aggregate(): Leftward_left_aggregateContext {
-		let _localctx: Leftward_left_aggregateContext = new Leftward_left_aggregateContext(this._ctx, this.state);
+		const  _localctx: Leftward_left_aggregateContext = new Leftward_left_aggregateContext(this._ctx, this.state);
 		this.enterRule(_localctx, 96, ASPCore2Parser.RULE_leftward_left_aggregate);
 		try {
 			this.enterOuterAlt(_localctx, 1);
@@ -2481,7 +2484,7 @@ export class ASPCore2Parser extends Parser {
 	}
 	// @RuleVersion(0)
 	public left_aggregate(): Left_aggregateContext {
-		let _localctx: Left_aggregateContext = new Left_aggregateContext(this._ctx, this.state);
+		const  _localctx: Left_aggregateContext = new Left_aggregateContext(this._ctx, this.state);
 		this.enterRule(_localctx, 98, ASPCore2Parser.RULE_left_aggregate);
 		try {
 			this.state = 545;
@@ -2520,7 +2523,7 @@ export class ASPCore2Parser extends Parser {
 	}
 	// @RuleVersion(0)
 	public lower_guard_rightward_left_aggregate(): Lower_guard_rightward_left_aggregateContext {
-		let _localctx: Lower_guard_rightward_left_aggregateContext = new Lower_guard_rightward_left_aggregateContext(this._ctx, this.state);
+		const  _localctx: Lower_guard_rightward_left_aggregateContext = new Lower_guard_rightward_left_aggregateContext(this._ctx, this.state);
 		this.enterRule(_localctx, 100, ASPCore2Parser.RULE_lower_guard_rightward_left_aggregate);
 		try {
 			this.enterOuterAlt(_localctx, 1);
@@ -2547,7 +2550,7 @@ export class ASPCore2Parser extends Parser {
 	}
 	// @RuleVersion(0)
 	public rightward_left_aggregate(): Rightward_left_aggregateContext {
-		let _localctx: Rightward_left_aggregateContext = new Rightward_left_aggregateContext(this._ctx, this.state);
+		const  _localctx: Rightward_left_aggregateContext = new Rightward_left_aggregateContext(this._ctx, this.state);
 		this.enterRule(_localctx, 102, ASPCore2Parser.RULE_rightward_left_aggregate);
 		try {
 			this.enterOuterAlt(_localctx, 1);
@@ -2574,7 +2577,7 @@ export class ASPCore2Parser extends Parser {
 	}
 	// @RuleVersion(0)
 	public upper_guard_leftward_right_aggregate(): Upper_guard_leftward_right_aggregateContext {
-		let _localctx: Upper_guard_leftward_right_aggregateContext = new Upper_guard_leftward_right_aggregateContext(this._ctx, this.state);
+		const  _localctx: Upper_guard_leftward_right_aggregateContext = new Upper_guard_leftward_right_aggregateContext(this._ctx, this.state);
 		this.enterRule(_localctx, 104, ASPCore2Parser.RULE_upper_guard_leftward_right_aggregate);
 		try {
 			this.enterOuterAlt(_localctx, 1);
@@ -2601,7 +2604,7 @@ export class ASPCore2Parser extends Parser {
 	}
 	// @RuleVersion(0)
 	public upper_guard_rightward_right_aggregate(): Upper_guard_rightward_right_aggregateContext {
-		let _localctx: Upper_guard_rightward_right_aggregateContext = new Upper_guard_rightward_right_aggregateContext(this._ctx, this.state);
+		const  _localctx: Upper_guard_rightward_right_aggregateContext = new Upper_guard_rightward_right_aggregateContext(this._ctx, this.state);
 		this.enterRule(_localctx, 106, ASPCore2Parser.RULE_upper_guard_rightward_right_aggregate);
 		try {
 			this.enterOuterAlt(_localctx, 1);
@@ -2628,7 +2631,7 @@ export class ASPCore2Parser extends Parser {
 	}
 	// @RuleVersion(0)
 	public right_aggregate(): Right_aggregateContext {
-		let _localctx: Right_aggregateContext = new Right_aggregateContext(this._ctx, this.state);
+		const  _localctx: Right_aggregateContext = new Right_aggregateContext(this._ctx, this.state);
 		this.enterRule(_localctx, 108, ASPCore2Parser.RULE_right_aggregate);
 		try {
 			this.state = 565;
@@ -2671,7 +2674,7 @@ export class ASPCore2Parser extends Parser {
 	}
 	// @RuleVersion(0)
 	public aggregate_atom(): Aggregate_atomContext {
-		let _localctx: Aggregate_atomContext = new Aggregate_atomContext(this._ctx, this.state);
+		const  _localctx: Aggregate_atomContext = new Aggregate_atomContext(this._ctx, this.state);
 		this.enterRule(_localctx, 110, ASPCore2Parser.RULE_aggregate_atom);
 		try {
 			this.state = 576;
@@ -2738,7 +2741,7 @@ export class ASPCore2Parser extends Parser {
 	}
 	// @RuleVersion(0)
 	public leftwardop(): LeftwardopContext {
-		let _localctx: LeftwardopContext = new LeftwardopContext(this._ctx, this.state);
+		const  _localctx: LeftwardopContext = new LeftwardopContext(this._ctx, this.state);
 		this.enterRule(_localctx, 112, ASPCore2Parser.RULE_leftwardop);
 		let _la: number;
 		try {
@@ -2774,7 +2777,7 @@ export class ASPCore2Parser extends Parser {
 	}
 	// @RuleVersion(0)
 	public rightwardop(): RightwardopContext {
-		let _localctx: RightwardopContext = new RightwardopContext(this._ctx, this.state);
+		const  _localctx: RightwardopContext = new RightwardopContext(this._ctx, this.state);
 		this.enterRule(_localctx, 114, ASPCore2Parser.RULE_rightwardop);
 		let _la: number;
 		try {
@@ -2810,7 +2813,7 @@ export class ASPCore2Parser extends Parser {
 	}
 	// @RuleVersion(0)
 	public aggregate(): AggregateContext {
-		let _localctx: AggregateContext = new AggregateContext(this._ctx, this.state);
+		const  _localctx: AggregateContext = new AggregateContext(this._ctx, this.state);
 		this.enterRule(_localctx, 116, ASPCore2Parser.RULE_aggregate);
 		try {
 			this.state = 591;
@@ -2859,7 +2862,7 @@ export class ASPCore2Parser extends Parser {
 	}
 	// @RuleVersion(0)
 	public aggregate_elements(): Aggregate_elementsContext {
-		let _localctx: Aggregate_elementsContext = new Aggregate_elementsContext(this._ctx, this.state);
+		const  _localctx: Aggregate_elementsContext = new Aggregate_elementsContext(this._ctx, this.state);
 		this.enterRule(_localctx, 118, ASPCore2Parser.RULE_aggregate_elements);
 		try {
 			this.state = 598;
@@ -2902,7 +2905,7 @@ export class ASPCore2Parser extends Parser {
 	}
 	// @RuleVersion(0)
 	public aggregate_element(): Aggregate_elementContext {
-		let _localctx: Aggregate_elementContext = new Aggregate_elementContext(this._ctx, this.state);
+		const  _localctx: Aggregate_elementContext = new Aggregate_elementContext(this._ctx, this.state);
 		this.enterRule(_localctx, 120, ASPCore2Parser.RULE_aggregate_element);
 		try {
 			this.enterOuterAlt(_localctx, 1);
@@ -2931,7 +2934,7 @@ export class ASPCore2Parser extends Parser {
 	}
 	// @RuleVersion(0)
 	public aggregate_function(): Aggregate_functionContext {
-		let _localctx: Aggregate_functionContext = new Aggregate_functionContext(this._ctx, this.state);
+		const  _localctx: Aggregate_functionContext = new Aggregate_functionContext(this._ctx, this.state);
 		this.enterRule(_localctx, 122, ASPCore2Parser.RULE_aggregate_function);
 		let _la: number;
 		try {
@@ -2967,7 +2970,7 @@ export class ASPCore2Parser extends Parser {
 	}
 	// @RuleVersion(0)
 	public annotation_global(): Annotation_globalContext {
-		let _localctx: Annotation_globalContext = new Annotation_globalContext(this._ctx, this.state);
+		const  _localctx: Annotation_globalContext = new Annotation_globalContext(this._ctx, this.state);
 		this.enterRule(_localctx, 124, ASPCore2Parser.RULE_annotation_global);
 		try {
 			this.state = 612;
@@ -3035,7 +3038,7 @@ export class ASPCore2Parser extends Parser {
 	}
 	// @RuleVersion(0)
 	public annotations_rule(): Annotations_ruleContext {
-		let _localctx: Annotations_ruleContext = new Annotations_ruleContext(this._ctx, this.state);
+		const  _localctx: Annotations_ruleContext = new Annotations_ruleContext(this._ctx, this.state);
 		this.enterRule(_localctx, 126, ASPCore2Parser.RULE_annotations_rule);
 		try {
 			this.state = 618;
@@ -3076,7 +3079,7 @@ export class ASPCore2Parser extends Parser {
 	}
 	// @RuleVersion(0)
 	public annotation_rule(): Annotation_ruleContext {
-		let _localctx: Annotation_ruleContext = new Annotation_ruleContext(this._ctx, this.state);
+		const  _localctx: Annotation_ruleContext = new Annotation_ruleContext(this._ctx, this.state);
 		this.enterRule(_localctx, 128, ASPCore2Parser.RULE_annotation_rule);
 		try {
 			this.state = 629;
@@ -3165,7 +3168,7 @@ export class ASPCore2Parser extends Parser {
 	}
 	// @RuleVersion(0)
 	public annotation_rule_to_decompose(): Annotation_rule_to_decomposeContext {
-		let _localctx: Annotation_rule_to_decomposeContext = new Annotation_rule_to_decomposeContext(this._ctx, this.state);
+		const  _localctx: Annotation_rule_to_decomposeContext = new Annotation_rule_to_decomposeContext(this._ctx, this.state);
 		this.enterRule(_localctx, 130, ASPCore2Parser.RULE_annotation_rule_to_decompose);
 		try {
 			this.state = 637;
@@ -3212,7 +3215,7 @@ export class ASPCore2Parser extends Parser {
 	}
 	// @RuleVersion(0)
 	public annotation_rule_to_not_decompose(): Annotation_rule_to_not_decomposeContext {
-		let _localctx: Annotation_rule_to_not_decomposeContext = new Annotation_rule_to_not_decomposeContext(this._ctx, this.state);
+		const  _localctx: Annotation_rule_to_not_decomposeContext = new Annotation_rule_to_not_decomposeContext(this._ctx, this.state);
 		this.enterRule(_localctx, 132, ASPCore2Parser.RULE_annotation_rule_to_not_decompose);
 		try {
 			this.state = 645;
@@ -3259,7 +3262,7 @@ export class ASPCore2Parser extends Parser {
 	}
 	// @RuleVersion(0)
 	public annotation_rule_ordering(): Annotation_rule_orderingContext {
-		let _localctx: Annotation_rule_orderingContext = new Annotation_rule_orderingContext(this._ctx, this.state);
+		const  _localctx: Annotation_rule_orderingContext = new Annotation_rule_orderingContext(this._ctx, this.state);
 		this.enterRule(_localctx, 134, ASPCore2Parser.RULE_annotation_rule_ordering);
 		try {
 			this.state = 661;
@@ -3318,7 +3321,7 @@ export class ASPCore2Parser extends Parser {
 	}
 	// @RuleVersion(0)
 	public annotation_global_ordering(): Annotation_global_orderingContext {
-		let _localctx: Annotation_global_orderingContext = new Annotation_global_orderingContext(this._ctx, this.state);
+		const  _localctx: Annotation_global_orderingContext = new Annotation_global_orderingContext(this._ctx, this.state);
 		this.enterRule(_localctx, 136, ASPCore2Parser.RULE_annotation_global_ordering);
 		try {
 			this.state = 677;
@@ -3377,7 +3380,7 @@ export class ASPCore2Parser extends Parser {
 	}
 	// @RuleVersion(0)
 	public annotation_global_extatom_conversion(): Annotation_global_extatom_conversionContext {
-		let _localctx: Annotation_global_extatom_conversionContext = new Annotation_global_extatom_conversionContext(this._ctx, this.state);
+		const  _localctx: Annotation_global_extatom_conversionContext = new Annotation_global_extatom_conversionContext(this._ctx, this.state);
 		this.enterRule(_localctx, 138, ASPCore2Parser.RULE_annotation_global_extatom_conversion);
 		try {
 			this.enterOuterAlt(_localctx, 1);
@@ -3422,7 +3425,7 @@ export class ASPCore2Parser extends Parser {
 	}
 	// @RuleVersion(0)
 	public annotation_extpredicate(): Annotation_extpredicateContext {
-		let _localctx: Annotation_extpredicateContext = new Annotation_extpredicateContext(this._ctx, this.state);
+		const  _localctx: Annotation_extpredicateContext = new Annotation_extpredicateContext(this._ctx, this.state);
 		this.enterRule(_localctx, 140, ASPCore2Parser.RULE_annotation_extpredicate);
 		try {
 			this.enterOuterAlt(_localctx, 1);
@@ -3449,7 +3452,7 @@ export class ASPCore2Parser extends Parser {
 	}
 	// @RuleVersion(0)
 	public extatom_conv_types(): Extatom_conv_typesContext {
-		let _localctx: Extatom_conv_typesContext = new Extatom_conv_typesContext(this._ctx, this.state);
+		const  _localctx: Extatom_conv_typesContext = new Extatom_conv_typesContext(this._ctx, this.state);
 		this.enterRule(_localctx, 142, ASPCore2Parser.RULE_extatom_conv_types);
 		try {
 			this.state = 699;
@@ -3492,7 +3495,7 @@ export class ASPCore2Parser extends Parser {
 	}
 	// @RuleVersion(0)
 	public extatom_conv_type(): Extatom_conv_typeContext {
-		let _localctx: Extatom_conv_typeContext = new Extatom_conv_typeContext(this._ctx, this.state);
+		const  _localctx: Extatom_conv_typeContext = new Extatom_conv_typeContext(this._ctx, this.state);
 		this.enterRule(_localctx, 144, ASPCore2Parser.RULE_extatom_conv_type);
 		let _la: number;
 		try {
@@ -3528,7 +3531,7 @@ export class ASPCore2Parser extends Parser {
 	}
 	// @RuleVersion(0)
 	public rule_ordering_type(): Rule_ordering_typeContext {
-		let _localctx: Rule_ordering_typeContext = new Rule_ordering_typeContext(this._ctx, this.state);
+		const  _localctx: Rule_ordering_typeContext = new Rule_ordering_typeContext(this._ctx, this.state);
 		this.enterRule(_localctx, 146, ASPCore2Parser.RULE_rule_ordering_type);
 		try {
 			this.enterOuterAlt(_localctx, 1);
@@ -3553,7 +3556,7 @@ export class ASPCore2Parser extends Parser {
 	}
 	// @RuleVersion(0)
 	public global_ordering_type(): Global_ordering_typeContext {
-		let _localctx: Global_ordering_typeContext = new Global_ordering_typeContext(this._ctx, this.state);
+		const  _localctx: Global_ordering_typeContext = new Global_ordering_typeContext(this._ctx, this.state);
 		this.enterRule(_localctx, 148, ASPCore2Parser.RULE_global_ordering_type);
 		try {
 			this.enterOuterAlt(_localctx, 1);
@@ -3578,7 +3581,7 @@ export class ASPCore2Parser extends Parser {
 	}
 	// @RuleVersion(0)
 	public annotation_rule_atom_indexed(): Annotation_rule_atom_indexedContext {
-		let _localctx: Annotation_rule_atom_indexedContext = new Annotation_rule_atom_indexedContext(this._ctx, this.state);
+		const  _localctx: Annotation_rule_atom_indexedContext = new Annotation_rule_atom_indexedContext(this._ctx, this.state);
 		this.enterRule(_localctx, 150, ASPCore2Parser.RULE_annotation_rule_atom_indexed);
 		try {
 			this.enterOuterAlt(_localctx, 1);
@@ -3627,7 +3630,7 @@ export class ASPCore2Parser extends Parser {
 	}
 	// @RuleVersion(0)
 	public annotation_global_atom_indexed(): Annotation_global_atom_indexedContext {
-		let _localctx: Annotation_global_atom_indexedContext = new Annotation_global_atom_indexedContext(this._ctx, this.state);
+		const  _localctx: Annotation_global_atom_indexedContext = new Annotation_global_atom_indexedContext(this._ctx, this.state);
 		this.enterRule(_localctx, 152, ASPCore2Parser.RULE_annotation_global_atom_indexed);
 		try {
 			this.enterOuterAlt(_localctx, 1);
@@ -3676,7 +3679,7 @@ export class ASPCore2Parser extends Parser {
 	}
 	// @RuleVersion(0)
 	public rule_indexing_arguments(): Rule_indexing_argumentsContext {
-		let _localctx: Rule_indexing_argumentsContext = new Rule_indexing_argumentsContext(this._ctx, this.state);
+		const  _localctx: Rule_indexing_argumentsContext = new Rule_indexing_argumentsContext(this._ctx, this.state);
 		this.enterRule(_localctx, 154, ASPCore2Parser.RULE_rule_indexing_arguments);
 		try {
 			this.state = 739;
@@ -3719,7 +3722,7 @@ export class ASPCore2Parser extends Parser {
 	}
 	// @RuleVersion(0)
 	public rule_naf_literal_annotation(): Rule_naf_literal_annotationContext {
-		let _localctx: Rule_naf_literal_annotationContext = new Rule_naf_literal_annotationContext(this._ctx, this.state);
+		const  _localctx: Rule_naf_literal_annotationContext = new Rule_naf_literal_annotationContext(this._ctx, this.state);
 		this.enterRule(_localctx, 156, ASPCore2Parser.RULE_rule_naf_literal_annotation);
 		try {
 			this.state = 744;
@@ -3764,7 +3767,7 @@ export class ASPCore2Parser extends Parser {
 	}
 	// @RuleVersion(0)
 	public global_indexing_arguments(): Global_indexing_argumentsContext {
-		let _localctx: Global_indexing_argumentsContext = new Global_indexing_argumentsContext(this._ctx, this.state);
+		const  _localctx: Global_indexing_argumentsContext = new Global_indexing_argumentsContext(this._ctx, this.state);
 		this.enterRule(_localctx, 158, ASPCore2Parser.RULE_global_indexing_arguments);
 		try {
 			this.state = 750;
@@ -3807,7 +3810,7 @@ export class ASPCore2Parser extends Parser {
 	}
 	// @RuleVersion(0)
 	public global_naf_literal_annotation(): Global_naf_literal_annotationContext {
-		let _localctx: Global_naf_literal_annotationContext = new Global_naf_literal_annotationContext(this._ctx, this.state);
+		const  _localctx: Global_naf_literal_annotationContext = new Global_naf_literal_annotationContext(this._ctx, this.state);
 		this.enterRule(_localctx, 160, ASPCore2Parser.RULE_global_naf_literal_annotation);
 		try {
 			this.state = 755;
@@ -3852,7 +3855,7 @@ export class ASPCore2Parser extends Parser {
 	}
 	// @RuleVersion(0)
 	public rule_atom_annotation_before(): Rule_atom_annotation_beforeContext {
-		let _localctx: Rule_atom_annotation_beforeContext = new Rule_atom_annotation_beforeContext(this._ctx, this.state);
+		const  _localctx: Rule_atom_annotation_beforeContext = new Rule_atom_annotation_beforeContext(this._ctx, this.state);
 		this.enterRule(_localctx, 162, ASPCore2Parser.RULE_rule_atom_annotation_before);
 		try {
 			this.state = 767;
@@ -3937,7 +3940,7 @@ export class ASPCore2Parser extends Parser {
 	}
 	// @RuleVersion(0)
 	public global_atom_annotation_before(): Global_atom_annotation_beforeContext {
-		let _localctx: Global_atom_annotation_beforeContext = new Global_atom_annotation_beforeContext(this._ctx, this.state);
+		const  _localctx: Global_atom_annotation_beforeContext = new Global_atom_annotation_beforeContext(this._ctx, this.state);
 		this.enterRule(_localctx, 164, ASPCore2Parser.RULE_global_atom_annotation_before);
 		try {
 			this.state = 779;
@@ -4022,7 +4025,7 @@ export class ASPCore2Parser extends Parser {
 	}
 	// @RuleVersion(0)
 	public rule_atom_annotation_after(): Rule_atom_annotation_afterContext {
-		let _localctx: Rule_atom_annotation_afterContext = new Rule_atom_annotation_afterContext(this._ctx, this.state);
+		const  _localctx: Rule_atom_annotation_afterContext = new Rule_atom_annotation_afterContext(this._ctx, this.state);
 		this.enterRule(_localctx, 166, ASPCore2Parser.RULE_rule_atom_annotation_after);
 		try {
 			this.state = 791;
@@ -4107,7 +4110,7 @@ export class ASPCore2Parser extends Parser {
 	}
 	// @RuleVersion(0)
 	public global_atom_annotation_after(): Global_atom_annotation_afterContext {
-		let _localctx: Global_atom_annotation_afterContext = new Global_atom_annotation_afterContext(this._ctx, this.state);
+		const  _localctx: Global_atom_annotation_afterContext = new Global_atom_annotation_afterContext(this._ctx, this.state);
 		this.enterRule(_localctx, 168, ASPCore2Parser.RULE_global_atom_annotation_after);
 		try {
 			this.state = 803;
@@ -4192,7 +4195,7 @@ export class ASPCore2Parser extends Parser {
 	}
 	// @RuleVersion(0)
 	public rule_atoms_annotation_before(): Rule_atoms_annotation_beforeContext {
-		let _localctx: Rule_atoms_annotation_beforeContext = new Rule_atoms_annotation_beforeContext(this._ctx, this.state);
+		const  _localctx: Rule_atoms_annotation_beforeContext = new Rule_atoms_annotation_beforeContext(this._ctx, this.state);
 		this.enterRule(_localctx, 170, ASPCore2Parser.RULE_rule_atoms_annotation_before);
 		try {
 			this.state = 810;
@@ -4235,7 +4238,7 @@ export class ASPCore2Parser extends Parser {
 	}
 	// @RuleVersion(0)
 	public global_atoms_annotation_before(): Global_atoms_annotation_beforeContext {
-		let _localctx: Global_atoms_annotation_beforeContext = new Global_atoms_annotation_beforeContext(this._ctx, this.state);
+		const  _localctx: Global_atoms_annotation_beforeContext = new Global_atoms_annotation_beforeContext(this._ctx, this.state);
 		this.enterRule(_localctx, 172, ASPCore2Parser.RULE_global_atoms_annotation_before);
 		try {
 			this.state = 817;
@@ -4278,7 +4281,7 @@ export class ASPCore2Parser extends Parser {
 	}
 	// @RuleVersion(0)
 	public rule_atoms_annotation_after(): Rule_atoms_annotation_afterContext {
-		let _localctx: Rule_atoms_annotation_afterContext = new Rule_atoms_annotation_afterContext(this._ctx, this.state);
+		const  _localctx: Rule_atoms_annotation_afterContext = new Rule_atoms_annotation_afterContext(this._ctx, this.state);
 		this.enterRule(_localctx, 174, ASPCore2Parser.RULE_rule_atoms_annotation_after);
 		try {
 			this.state = 824;
@@ -4321,7 +4324,7 @@ export class ASPCore2Parser extends Parser {
 	}
 	// @RuleVersion(0)
 	public global_atoms_annotation_after(): Global_atoms_annotation_afterContext {
-		let _localctx: Global_atoms_annotation_afterContext = new Global_atoms_annotation_afterContext(this._ctx, this.state);
+		const  _localctx: Global_atoms_annotation_afterContext = new Global_atoms_annotation_afterContext(this._ctx, this.state);
 		this.enterRule(_localctx, 176, ASPCore2Parser.RULE_global_atoms_annotation_after);
 		try {
 			this.state = 832;
@@ -4366,7 +4369,7 @@ export class ASPCore2Parser extends Parser {
 	}
 	// @RuleVersion(0)
 	public annotation_rule_partial_order_begin(): Annotation_rule_partial_order_beginContext {
-		let _localctx: Annotation_rule_partial_order_beginContext = new Annotation_rule_partial_order_beginContext(this._ctx, this.state);
+		const  _localctx: Annotation_rule_partial_order_beginContext = new Annotation_rule_partial_order_beginContext(this._ctx, this.state);
 		this.enterRule(_localctx, 178, ASPCore2Parser.RULE_annotation_rule_partial_order_begin);
 		try {
 			this.enterOuterAlt(_localctx, 1);
@@ -4391,7 +4394,7 @@ export class ASPCore2Parser extends Parser {
 	}
 	// @RuleVersion(0)
 	public annotation_global_partial_order_begin(): Annotation_global_partial_order_beginContext {
-		let _localctx: Annotation_global_partial_order_beginContext = new Annotation_global_partial_order_beginContext(this._ctx, this.state);
+		const  _localctx: Annotation_global_partial_order_beginContext = new Annotation_global_partial_order_beginContext(this._ctx, this.state);
 		this.enterRule(_localctx, 180, ASPCore2Parser.RULE_annotation_global_partial_order_begin);
 		try {
 			this.enterOuterAlt(_localctx, 1);
@@ -4416,7 +4419,7 @@ export class ASPCore2Parser extends Parser {
 	}
 	// @RuleVersion(0)
 	public annotation_rule_partial_order(): Annotation_rule_partial_orderContext {
-		let _localctx: Annotation_rule_partial_orderContext = new Annotation_rule_partial_orderContext(this._ctx, this.state);
+		const  _localctx: Annotation_rule_partial_orderContext = new Annotation_rule_partial_orderContext(this._ctx, this.state);
 		this.enterRule(_localctx, 182, ASPCore2Parser.RULE_annotation_rule_partial_order);
 		try {
 			this.state = 870;
@@ -4511,7 +4514,7 @@ export class ASPCore2Parser extends Parser {
 	}
 	// @RuleVersion(0)
 	public annotation_global_partial_order(): Annotation_global_partial_orderContext {
-		let _localctx: Annotation_global_partial_orderContext = new Annotation_global_partial_orderContext(this._ctx, this.state);
+		const  _localctx: Annotation_global_partial_orderContext = new Annotation_global_partial_orderContext(this._ctx, this.state);
 		this.enterRule(_localctx, 184, ASPCore2Parser.RULE_annotation_global_partial_order);
 		try {
 			this.state = 904;
@@ -4606,7 +4609,7 @@ export class ASPCore2Parser extends Parser {
 	}
 	// @RuleVersion(0)
 	public annotation_rule_projection(): Annotation_rule_projectionContext {
-		let _localctx: Annotation_rule_projectionContext = new Annotation_rule_projectionContext(this._ctx, this.state);
+		const  _localctx: Annotation_rule_projectionContext = new Annotation_rule_projectionContext(this._ctx, this.state);
 		this.enterRule(_localctx, 186, ASPCore2Parser.RULE_annotation_rule_projection);
 		try {
 			this.enterOuterAlt(_localctx, 1);
@@ -4643,7 +4646,7 @@ export class ASPCore2Parser extends Parser {
 	}
 	// @RuleVersion(0)
 	public annotation_rule_projection_value(): Annotation_rule_projection_valueContext {
-		let _localctx: Annotation_rule_projection_valueContext = new Annotation_rule_projection_valueContext(this._ctx, this.state);
+		const  _localctx: Annotation_rule_projection_valueContext = new Annotation_rule_projection_valueContext(this._ctx, this.state);
 		this.enterRule(_localctx, 188, ASPCore2Parser.RULE_annotation_rule_projection_value);
 		try {
 			this.enterOuterAlt(_localctx, 1);
@@ -4668,7 +4671,7 @@ export class ASPCore2Parser extends Parser {
 	}
 	// @RuleVersion(0)
 	public annotation_rule_rewriting_arith(): Annotation_rule_rewriting_arithContext {
-		let _localctx: Annotation_rule_rewriting_arithContext = new Annotation_rule_rewriting_arithContext(this._ctx, this.state);
+		const  _localctx: Annotation_rule_rewriting_arithContext = new Annotation_rule_rewriting_arithContext(this._ctx, this.state);
 		this.enterRule(_localctx, 190, ASPCore2Parser.RULE_annotation_rule_rewriting_arith);
 		try {
 			this.state = 922;
@@ -4715,7 +4718,7 @@ export class ASPCore2Parser extends Parser {
 	}
 	// @RuleVersion(0)
 	public annotation_rule_align_substitutions(): Annotation_rule_align_substitutionsContext {
-		let _localctx: Annotation_rule_align_substitutionsContext = new Annotation_rule_align_substitutionsContext(this._ctx, this.state);
+		const  _localctx: Annotation_rule_align_substitutionsContext = new Annotation_rule_align_substitutionsContext(this._ctx, this.state);
 		this.enterRule(_localctx, 192, ASPCore2Parser.RULE_annotation_rule_align_substitutions);
 		try {
 			this.state = 930;
@@ -4762,7 +4765,7 @@ export class ASPCore2Parser extends Parser {
 	}
 	// @RuleVersion(0)
 	public annotation_rule_look_ahead(): Annotation_rule_look_aheadContext {
-		let _localctx: Annotation_rule_look_aheadContext = new Annotation_rule_look_aheadContext(this._ctx, this.state);
+		const  _localctx: Annotation_rule_look_aheadContext = new Annotation_rule_look_aheadContext(this._ctx, this.state);
 		this.enterRule(_localctx, 194, ASPCore2Parser.RULE_annotation_rule_look_ahead);
 		try {
 			this.state = 938;
@@ -4809,7 +4812,7 @@ export class ASPCore2Parser extends Parser {
 	}
 	// @RuleVersion(0)
 	public annotation_global_wasp_propagator(): Annotation_global_wasp_propagatorContext {
-		let _localctx: Annotation_global_wasp_propagatorContext = new Annotation_global_wasp_propagatorContext(this._ctx, this.state);
+		const  _localctx: Annotation_global_wasp_propagatorContext = new Annotation_global_wasp_propagatorContext(this._ctx, this.state);
 		this.enterRule(_localctx, 196, ASPCore2Parser.RULE_annotation_global_wasp_propagator);
 		try {
 			this.state = 968;
@@ -4896,7 +4899,7 @@ export class ASPCore2Parser extends Parser {
 	}
 	// @RuleVersion(0)
 	public annotation_global_wasp_propagator_begin(): Annotation_global_wasp_propagator_beginContext {
-		let _localctx: Annotation_global_wasp_propagator_beginContext = new Annotation_global_wasp_propagator_beginContext(this._ctx, this.state);
+		const  _localctx: Annotation_global_wasp_propagator_beginContext = new Annotation_global_wasp_propagator_beginContext(this._ctx, this.state);
 		this.enterRule(_localctx, 198, ASPCore2Parser.RULE_annotation_global_wasp_propagator_begin);
 		try {
 			this.enterOuterAlt(_localctx, 1);
@@ -4921,7 +4924,7 @@ export class ASPCore2Parser extends Parser {
 	}
 	// @RuleVersion(0)
 	public annotation_global_wasp_heuristic(): Annotation_global_wasp_heuristicContext {
-		let _localctx: Annotation_global_wasp_heuristicContext = new Annotation_global_wasp_heuristicContext(this._ctx, this.state);
+		const  _localctx: Annotation_global_wasp_heuristicContext = new Annotation_global_wasp_heuristicContext(this._ctx, this.state);
 		this.enterRule(_localctx, 200, ASPCore2Parser.RULE_annotation_global_wasp_heuristic);
 		try {
 			this.state = 1000;
@@ -5008,7 +5011,7 @@ export class ASPCore2Parser extends Parser {
 	}
 	// @RuleVersion(0)
 	public annotation_global_wasp_heuristic_begin(): Annotation_global_wasp_heuristic_beginContext {
-		let _localctx: Annotation_global_wasp_heuristic_beginContext = new Annotation_global_wasp_heuristic_beginContext(this._ctx, this.state);
+		const  _localctx: Annotation_global_wasp_heuristic_beginContext = new Annotation_global_wasp_heuristic_beginContext(this._ctx, this.state);
 		this.enterRule(_localctx, 202, ASPCore2Parser.RULE_annotation_global_wasp_heuristic_begin);
 		try {
 			this.enterOuterAlt(_localctx, 1);
@@ -5033,7 +5036,7 @@ export class ASPCore2Parser extends Parser {
 	}
 	// @RuleVersion(0)
 	public heuristic_python_file(): Heuristic_python_fileContext {
-		let _localctx: Heuristic_python_fileContext = new Heuristic_python_fileContext(this._ctx, this.state);
+		const  _localctx: Heuristic_python_fileContext = new Heuristic_python_fileContext(this._ctx, this.state);
 		this.enterRule(_localctx, 204, ASPCore2Parser.RULE_heuristic_python_file);
 		try {
 			this.enterOuterAlt(_localctx, 1);
@@ -5058,7 +5061,7 @@ export class ASPCore2Parser extends Parser {
 	}
 	// @RuleVersion(0)
 	public aggregate_element_heuristic(): Aggregate_element_heuristicContext {
-		let _localctx: Aggregate_element_heuristicContext = new Aggregate_element_heuristicContext(this._ctx, this.state);
+		const  _localctx: Aggregate_element_heuristicContext = new Aggregate_element_heuristicContext(this._ctx, this.state);
 		this.enterRule(_localctx, 206, ASPCore2Parser.RULE_aggregate_element_heuristic);
 		try {
 			this.state = 1008;
@@ -5097,7 +5100,7 @@ export class ASPCore2Parser extends Parser {
 	}
 	// @RuleVersion(0)
 	public aggregate_elements_heuristic(): Aggregate_elements_heuristicContext {
-		let _localctx: Aggregate_elements_heuristicContext = new Aggregate_elements_heuristicContext(this._ctx, this.state);
+		const  _localctx: Aggregate_elements_heuristicContext = new Aggregate_elements_heuristicContext(this._ctx, this.state);
 		this.enterRule(_localctx, 208, ASPCore2Parser.RULE_aggregate_elements_heuristic);
 		try {
 			this.state = 1015;
@@ -5141,7 +5144,7 @@ export class ASPCore2Parser extends Parser {
 
 	private static readonly _serializedATNSegments: number = 2;
 	private static readonly _serializedATNSegment0: string =
-		"\x03\uC91D\uCABA\u058D\uAFBA\u4F53\u0607\uEA8B\uC241\x03M\u03FC\x04\x02" +
+		"\x03\uC91D\uCABA\u058D\uAFBA\u4F53\u0607\uEA8B\uC241\x03P\u03FC\x04\x02" +
 		"\t\x02\x04\x03\t\x03\x04\x04\t\x04\x04\x05\t\x05\x04\x06\t\x06\x04\x07" +
 		"\t\x07\x04\b\t\b\x04\t\t\t\x04\n\t\n\x04\v\t\v\x04\f\t\f\x04\r\t\r\x04" +
 		"\x0E\t\x0E\x04\x0F\t\x0F\x04\x10\t\x10\x04\x11\t\x11\x04\x12\t\x12\x04" +

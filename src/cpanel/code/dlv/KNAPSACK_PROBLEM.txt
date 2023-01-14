@@ -1,0 +1,3 @@
+in(X)|out(X) :- object(X,_,_).
+:- capacity(C), not #sum{Y,X : object(X,Y,_), in(X)} <= C.
+:~ out(X),object(X,_,Y). [Y@1,X]

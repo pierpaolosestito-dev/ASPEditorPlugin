@@ -1,0 +1,11 @@
+starting(A). starting(B).
+starting(C). starting(D).
+starting(E). starting(F).
+edge(A,B, "blue"). edge(A,C, "blue").
+edge(B,C, "blue"). edge(B,D, "blue").
+edge(C,D, "blue"). edge(C,E, "blue").
+edge(D,E, "blue"). edge(D,F, "blue").
+edge(E,F, "blue").
+
+node(X, "red") | node(X, "yellow") | node(X, "green") :- starting(X).
+:- node(X,C),node(Y,C), edge(X,Y,_),X!=Y.

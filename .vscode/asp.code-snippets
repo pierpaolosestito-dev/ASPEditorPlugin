@@ -1,0 +1,17 @@
+{
+	"Reachability": {
+		"prefix": "reach",
+		"body": [
+			"reached($1) :- start($1).",
+			"reached($1) :- reached($2), $3($2,$1)."
+		],
+		"description": "Reachability template"
+	},
+	"Guess": {
+		"prefix": "in",
+		"body": [
+			"in($1)|out($1) :- $2($3)."
+		],
+		"description": "Guess template"
+	}
+}

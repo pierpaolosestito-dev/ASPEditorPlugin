@@ -1,4 +1,4 @@
-// Generated from src/parser/ASPCore2.g4 by ANTLR 4.9.0-SNAPSHOT
+// Generated from ./src/parser/ASPCore2.g4 by ANTLR 4.9.0-SNAPSHOT
 
 
 import { ParseTreeListener } from "antlr4ts/tree/ParseTreeListener";
