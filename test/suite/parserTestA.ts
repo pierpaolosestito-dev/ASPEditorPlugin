@@ -3,7 +3,7 @@
 //import { ... } from '../../src/parsing'; //Funzioni da testare
 import { expect } from 'chai';
 import 'mocha';
-import * as assert from 'assert';
+import * as fs from 'fs';
 
 import { CommonTokenStream } from "antlr4ts";
 import { ANTLRInputStream } from "antlr4ts/ANTLRInputStream";
@@ -100,7 +100,7 @@ describe('tokenize positive tests',
   });
   it('Tests if multiple facts on multiple lines are tokenized correctly', () => {
     //Corpo del test
-      const input = "node(1).node(2).\nnode(3).";
+      const input = fs.readFileSync('./test/suite/test.asp', 'utf-8');
       const tokens = trasformText(input);
 
       const result: [string, number, number][] = tokenize(tokens); //Risultato della funzione da testare
@@ -116,7 +116,6 @@ describe('tokenize positive tests',
         ['2', 5, 1],
         [')', 22, 1],
         ['.', 7, 1],
-        ['<EOF>', -1, 1],
         [ 'node', 2, 2 ], 
         ['(', 21, 2],
         ['3', 5, 2],
@@ -130,5 +129,5 @@ describe('tokenize positive tests',
   });
 });
 
-//TODO Testing tokenize : multiple facts on a multiple lines of text, simple rule, 
+//TODO Testing tokenize : multiple facts on a multiple lines of text(read from file maybe), simple rule, 
 //more rules on a simple line of text, complex program.
