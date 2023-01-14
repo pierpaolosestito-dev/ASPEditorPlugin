@@ -1,4 +1,4 @@
-import { CommonTokenStream } from "antlr4ts";
+import { CommonTokenStream, ANTLRInputStream } from "antlr4ts";
 import * as vscode from "vscode";
 import { ASPCore2Lexer } from "./parser/ASPCore2Lexer";
 
@@ -64,6 +64,14 @@ export function check_comment_or_test(doc: vscode.TextDocument, line: number) {
 			if (single) {
 				temp_check = true;
 			}
+			// modifica di GABRIEL
+			// FATTO PER AVERE LA SAFETY DI UNA REGOLA SCRITTA SULLA STESSA RIGA DI UN INIZIO-FINE COMMENTO O TEST.
+			/*
+			if( (lineOfText.text.includes(startComment) && !lineOfText.text.startsWith(startComment)) || (lineOfText.text.includes(startTest) && !lineOfText.text.startsWith(startTest))
+			|| (lineOfText.text.includes(endComment) && !lineOfText.text.endsWith(endComment)) || (lineOfText.text.includes(endTest) && !lineOfText.text.endsWith(endTest))
+			) {
+				temp_check = false;
+			}*/
 			return {
 				'check': temp_check,
 				'index_start': index_start,
@@ -262,3 +270,27 @@ export function tokenize_head_tail(constructs: [string, number, number][], atoms
 	return [heads, tails, tails_negative, tails_in_symbols] as const;
 
 }
+/*
+export function inputText(lineOfText: vscode.TextLine) {
+	if((lineOfText.text.includes("%/") && !lineOfText.text.startsWith("%/")) || (lineOfText.text.includes("%**") && !lineOfText.text.startsWith("%**"))) {
+		let splitText = undefined;
+		if(lineOfText.text.includes("%/")) {
+			splitText = lineOfText.text.split("%/");
+		}
+		else {
+			splitText = lineOfText.text.split("%**");
+		}
+		return [new ANTLRInputStream(splitText[0]), true] as const;
+	}
+	if((lineOfText.text.includes("/%") && !lineOfText.text.endsWith("/%")) || (lineOfText.text.includes("**%") && !lineOfText.text.endsWith("**%"))) {
+		let splitText = undefined;
+		if(lineOfText.text.includes("/%")) {
+			splitText = lineOfText.text.split("/%");
+		}
+		else {
+			splitText = lineOfText.text.split("**%");
+		}
+		return [new ANTLRInputStream(splitText[1]), true] as const;
+	}
+	return [new ANTLRInputStream(lineOfText.text), false] as const;
+}*/

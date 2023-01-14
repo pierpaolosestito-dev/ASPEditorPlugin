@@ -9,7 +9,7 @@ import * as vscode from "vscode";
 import { ASPCore2Lexer } from "./parser/ASPCore2Lexer";
 import { ASPCore2Parser } from "./parser/ASPCore2Parser";
 
-import { check_comment_or_test, countElem, checkIsRule, checkSafe, tokenize, tokenize_head_tail } from "./parsing";
+import { check_comment_or_test, countElem, checkIsRule, checkSafe, tokenize, tokenize_head_tail, /*inputText*/ } from "./parsing";
 
 /** String to detect in the text document. */
 export const CODE_ERROR = "Errore 104";
@@ -27,13 +27,41 @@ export function refreshDiagnostics(
 ): void {
 	const regex = /\.(asp|lp|dlv)$/g;
 	const atoms: string[] = [];
+	let runDiagnostic = false;
 	if (regex.test(doc.fileName)) {
 		let diagnostics: vscode.Diagnostic[] = [];
 
 		for (let lineIndex = 0; lineIndex < doc.lineCount; lineIndex++) {
 			const lineOfText = doc.lineAt(lineIndex);
-
-			const input = new ANTLRInputStream(lineOfText.text);
+			//const [input, runDiagnostic] = inputText(lineOfText);
+			
+			let input = undefined;
+			if((lineOfText.text.includes("%/") && !lineOfText.text.startsWith("%/")) || (lineOfText.text.includes("%**") && !lineOfText.text.startsWith("%**"))) {
+				runDiagnostic = true;
+				let splitText = undefined;
+				if(lineOfText.text.includes("%/")) {
+					splitText = lineOfText.text.split("%/");
+				}
+				else {
+					splitText = lineOfText.text.split("%**");
+				}
+				input = new ANTLRInputStream(splitText[0]);
+			}
+			else if((lineOfText.text.includes("/%") && !lineOfText.text.endsWith("/%")) || (lineOfText.text.includes("**%") && !lineOfText.text.endsWith("**%"))) {
+				runDiagnostic = true;
+				let split = undefined;
+				if(lineOfText.text.includes("/%")) {
+					split = lineOfText.text.split("/%");
+				}
+				else {
+					split = lineOfText.text.split("**%");
+				}
+				input = new ANTLRInputStream(split[1]);
+			}
+			else {
+				runDiagnostic = false;
+				input = new ANTLRInputStream(lineOfText.text);
+			}
 			const aspLexer = new ASPCore2Lexer(input);
 			const tokens = new CommonTokenStream(aspLexer);
 			tokens.fill();
@@ -44,9 +72,11 @@ export function refreshDiagnostics(
 			}
 			if (lineOfText.text.includes("/%") || lineOfText.text.includes("**%")) {
 				opened = false;
-				// continue;
+				if(!runDiagnostic) {
+					continue;
+				}
 			}
-			if (!opened) {
+			if (!opened  || runDiagnostic) {
 				aspParser.addErrorListener({
 					syntaxError<T>(
 						recognizer: Recognizer<T, any>,
@@ -56,8 +86,12 @@ export function refreshDiagnostics(
 						msg: string,
 						e: Error | undefined
 					): void {
+						if(lineOfText.text.includes("/%") || lineOfText.text.includes("**%")) {
+							diagnostics.push(createDiagnosticForEndCommentsAndTests(doc, lineOfText, lineIndex, msg, vscode.DiagnosticSeverity.Error));
+						}
+						else {
 							diagnostics.push(createDiagnosticForFacts(doc, lineOfText, lineIndex, charPositionInLine, msg, vscode.DiagnosticSeverity.Error));
-
+						}
 					},
 				});
 			}
@@ -68,7 +102,6 @@ export function refreshDiagnostics(
 			const [heads, tails, tails_negative, tails_in_symbols] = tokenize_head_tail(constructs, atoms);
 
 			const msg = `The rule at line ${lineIndex + 1} is not safe`;
-
 			if (!checkSafe(heads, tails, tails_negative, tails_in_symbols) && checkIsRule(constructs) && !check_comment_or_test(doc, lineIndex).check) {
 				diagnostics.push(createDiagnostic(doc, lineOfText, lineIndex, msg, vscode.DiagnosticSeverity.Warning));
 			} else {
@@ -130,6 +163,38 @@ function createDiagnostic(
 	);
 	return diagnostic;
 }
+function createDiagnosticForEndCommentsAndTests(
+	doc: vscode.TextDocument,
+	lineOfText: vscode.TextLine,
+	lineIndex: number,
+	codeError: string,
+	severity: vscode.DiagnosticSeverity
+): vscode.Diagnostic {
+	let regex = undefined;
+	let startCharacter = 0;
+	if(lineOfText.text.includes("/%")) {
+		regex = new RegExp(`/%\\s*.+`);
+		startCharacter += 2;
+	}
+	else {
+		regex = new RegExp(`\\*\\*%\\s*.+`);
+		startCharacter += 3;
+	}
+	startCharacter += lineOfText.text.search(regex);
+	const endCharacter = lineOfText.text.length - 1; 
+	const range = new vscode.Range(
+		lineIndex,
+		startCharacter,
+		lineIndex,
+		0 + (endCharacter + 1)
+	);
+	const diagnostic = new vscode.Diagnostic(
+		range,
+		codeError,
+		severity
+	);
+	return diagnostic;
+}
 function createDiagnosticForFacts(
 	doc: vscode.TextDocument,
 	lineOfText: vscode.TextLine,
@@ -138,32 +203,26 @@ function createDiagnosticForFacts(
 	codeError: string,
 	severity: vscode.DiagnosticSeverity
 ): vscode.Diagnostic {
-	let range = undefined;
-	if (codeError.includes("no viable alternative at input") && !lineOfText.text.includes("/%")) {
+	if (codeError.includes("no viable alternative at input")) {
 		const error = codeError.split("'");
 		const startCharacter = lineOfText.text.indexOf(error[1]);
 		if (startCharacter >= 0) {
-			range = new vscode.Range(
+			const range = new vscode.Range(
 				lineIndex,
 				startCharacter,
 				lineIndex,
 				0 + (endCharacter + 1)
 			);
+			const diagnostic = new vscode.Diagnostic(
+				range,
+				codeError,
+				severity
+			);
+			return diagnostic;
 		}
-		else {
-			return createDiagnostic(doc, lineOfText, lineIndex, codeError, severity);
-		}
-	}
-	else {
 		return createDiagnostic(doc, lineOfText, lineIndex, codeError, severity);
 	}
-	const diagnostic = new vscode.Diagnostic(
-		range,
-		codeError,
-		severity
-	);
-	return diagnostic;
-
+	return createDiagnostic(doc, lineOfText, lineIndex, codeError, severity);
 }
 function createDiagnosticForAtoms(
 	doc: vscode.TextDocument,
