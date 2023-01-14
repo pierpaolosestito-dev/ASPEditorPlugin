@@ -10,7 +10,7 @@ const ANTLRInputStream_1 = require("antlr4ts/ANTLRInputStream");
 const ASPCore2Lexer_1 = require("../../src/parser/ASPCore2Lexer");
 const parsing_2 = require("../../src/parsing");
 //Test
-describe("Dummy test A", () => {
+describe("Dummy test F", () => {
     //Descrizione del risultato del test
     it("should return true", () => {
         //Corpo del test
@@ -51,6 +51,19 @@ const NEGATIVE_SAFETY_TEST = {
     test3: ":- circle(A,Y).",
     test4: "circle(A,Y).",
     test5: "triangle(A,Z,G):- circle(A,Z,G), not A(H).",
+};
+const POSITIVE_RULE_TEST = {
+    test1: "room(A,Z):- chair(A,Y).",
+    test2: "room(A,Z):- chair(A,Y), not desk(A).",
+    test3: "room(A,Z) | not room(A,Z):- chair(A,Y), not desk(A).",
+    test4: "room(A,Z):- chair(A,Y), A>Y.",
+    test5: "room(A,Z):- chair(A,Y), A<>Y.",
+};
+const NEGATIVE_RULE_TEST = {
+    test1: ":- not figure(Y).",
+    test2: ":~ out(X),object(X,A,Y). [Y@1,X]",
+    test3: ":- circle(A,Y).[Y@1,A]",
+    test4: "triangle(A,Z,G).",
 };
 describe("positive safety", () => {
     //Descrizione del risultato del test
@@ -135,6 +148,93 @@ describe("negative safety", () => {
         const tokens = trasformText(input);
         const constructs = (0, parsing_2.tokenize)(tokens);
         const result = simulate_check_safety(constructs);
+        const expected_result = false;
+        (0, chai_1.expect)(result).deep.equal(expected_result);
+    });
+});
+describe("positive check rule", () => {
+    //Descrizione del risultato del test
+    it("Tests1 if there is a rule", () => {
+        //Corpo del test
+        const input = POSITIVE_RULE_TEST.test1;
+        const tokens = trasformText(input);
+        const constructs = (0, parsing_2.tokenize)(tokens);
+        const result = (0, parsing_1.checkIsRule)(constructs);
+        const expected_result = true;
+        (0, chai_1.expect)(result).deep.equal(expected_result);
+    });
+    it("Tests2 if there is a rule", () => {
+        //Corpo del test
+        const input = POSITIVE_RULE_TEST.test2;
+        const tokens = trasformText(input);
+        const constructs = (0, parsing_2.tokenize)(tokens);
+        const result = (0, parsing_1.checkIsRule)(constructs);
+        const expected_result = true;
+        (0, chai_1.expect)(result).deep.equal(expected_result);
+    });
+    it("Tests3 if there is a rule", () => {
+        //Corpo del test
+        const input = POSITIVE_RULE_TEST.test3;
+        const tokens = trasformText(input);
+        const constructs = (0, parsing_2.tokenize)(tokens);
+        const result = (0, parsing_1.checkIsRule)(constructs);
+        const expected_result = true;
+        (0, chai_1.expect)(result).deep.equal(expected_result);
+    });
+    it("Tests4 if there is a rule", () => {
+        //Corpo del test
+        const input = POSITIVE_RULE_TEST.test4;
+        const tokens = trasformText(input);
+        const constructs = (0, parsing_2.tokenize)(tokens);
+        const result = (0, parsing_1.checkIsRule)(constructs);
+        const expected_result = true;
+        (0, chai_1.expect)(result).deep.equal(expected_result);
+    });
+    it("Tests5 if there is a rule", () => {
+        //Corpo del test
+        const input = POSITIVE_RULE_TEST.test5;
+        const tokens = trasformText(input);
+        const constructs = (0, parsing_2.tokenize)(tokens);
+        const result = (0, parsing_1.checkIsRule)(constructs);
+        const expected_result = true;
+        (0, chai_1.expect)(result).deep.equal(expected_result);
+    });
+});
+describe("negative check rule", () => {
+    //Descrizione del risultato del test
+    it("Tests1 if there is a not rule", () => {
+        //Corpo del test
+        const input = NEGATIVE_RULE_TEST.test1;
+        const tokens = trasformText(input);
+        const constructs = (0, parsing_2.tokenize)(tokens);
+        const result = (0, parsing_1.checkIsRule)(constructs);
+        const expected_result = false;
+        (0, chai_1.expect)(result).deep.equal(expected_result);
+    });
+    it("Tests2 if there is not a rule", () => {
+        //Corpo del test
+        const input = NEGATIVE_RULE_TEST.test2;
+        const tokens = trasformText(input);
+        const constructs = (0, parsing_2.tokenize)(tokens);
+        const result = (0, parsing_1.checkIsRule)(constructs);
+        const expected_result = false;
+        (0, chai_1.expect)(result).deep.equal(expected_result);
+    });
+    it("Tests3 if there is not a rule", () => {
+        //Corpo del test
+        const input = NEGATIVE_RULE_TEST.test3;
+        const tokens = trasformText(input);
+        const constructs = (0, parsing_2.tokenize)(tokens);
+        const result = (0, parsing_1.checkIsRule)(constructs);
+        const expected_result = false;
+        (0, chai_1.expect)(result).deep.equal(expected_result);
+    });
+    it("Tests4 if there is not a rule", () => {
+        //Corpo del test
+        const input = NEGATIVE_RULE_TEST.test4;
+        const tokens = trasformText(input);
+        const constructs = (0, parsing_2.tokenize)(tokens);
+        const result = (0, parsing_1.checkIsRule)(constructs);
         const expected_result = false;
         (0, chai_1.expect)(result).deep.equal(expected_result);
     });

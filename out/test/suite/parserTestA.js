@@ -5,6 +5,7 @@ exports.trasformText = exports.dummy = void 0;
 //import { ... } from '../../src/parsing'; //Funzioni da testare
 const chai_1 = require("chai");
 require("mocha");
+const fs = require("fs");
 const antlr4ts_1 = require("antlr4ts");
 const ANTLRInputStream_1 = require("antlr4ts/ANTLRInputStream");
 const ASPCore2Lexer_1 = require("../../src/parser/ASPCore2Lexer");
@@ -90,10 +91,9 @@ describe('tokenize positive tests', () => {
     });
     it('Tests if multiple facts on multiple lines are tokenized correctly', () => {
         //Corpo del test
-        const input = "node(1).node(2).\nnode(3).";
+        const input = fs.readFileSync('./test/suite/test.asp', 'utf-8');
         const tokens = trasformText(input);
         const result = (0, parsing_1.tokenize)(tokens); //Risultato della funzione da testare
-        console.log(result);
         const expected_result = [
             ['node', 2, 1],
             ['(', 21, 1],
@@ -105,7 +105,6 @@ describe('tokenize positive tests', () => {
             ['2', 5, 1],
             [')', 22, 1],
             ['.', 7, 1],
-            ['<EOF>', -1, 1],
             ['node', 2, 2],
             ['(', 21, 2],
             ['3', 5, 2],
@@ -116,7 +115,35 @@ describe('tokenize positive tests', () => {
         //expect(result).to.equal(expected_result); //Asserzione
         (0, chai_1.expect)(result).deep.equal(expected_result); //Asserzione per controllare se due array sono uguali
     });
+    /*it('Tests if a simple rule is tokenized correctly', () => {
+      //Corpo del test
+        const input = "gatto(X):-animale(X),felino(X).";
+        const tokens = trasformText(input);
+  
+        const result: [string, number, number][] = tokenize(tokens); //Risultato della funzione da testare
+        console.log(result);
+        const expected_result: [string, number, number][] = [ //TODO inserire expected_result corretto.
+          [ 'node', 2, 1 ],
+          ['(', 21, 1 ],
+          ['1', 5, 1],
+          [')', 22, 1],
+          ['.', 7, 1],
+          [ 'node', 2, 1 ] ,
+          ['(', 21, 1 ],
+          ['2', 5, 1],
+          [')', 22, 1],
+          ['.', 7, 1],
+          [ 'node', 2, 1 ],
+          ['(', 21, 1 ],
+          ['3', 5, 1],
+          [')', 22, 1],
+          ['.', 7, 1],
+          ['<EOF>', -1, 1]
+  
+        ]; //Risultato atteso
+        //expect(result).to.equal(expected_result); //Asserzione
+        expect(result).deep.equal(expected_result); //Asserzione per controllare se due array sono uguali
+    }); */
 });
-//TODO Testing tokenize : multiple facts on a multiple lines of text, simple rule, 
-//more rules on a simple line of text, complex program.
+//TODO complex program.
 //# sourceMappingURL=parserTestA.js.map
