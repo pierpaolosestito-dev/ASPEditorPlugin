@@ -19,6 +19,9 @@ export function check_comment_or_test(doc: vscode.TextDocument, line: number) {
 	const startTest = '%**';
 	const endTest = '**%';
 	const single_comment = '%';
+	let line_start = -1;
+	let line_end = -1;
+
 
 	for (let lineIndex = 0; lineIndex < doc.lineCount; lineIndex++) {
 		let single = false;
@@ -27,23 +30,28 @@ export function check_comment_or_test(doc: vscode.TextDocument, line: number) {
 
 		if (lineOfText.text.includes(startComment) && !check) {
 			index_start = lineOfText.text.indexOf(startComment);
+			line_start = lineIndex;
 			index_end = -1;
 			check = true;
 		}
 		if (lineOfText.text.includes(endComment)) {
 			index_end = lineOfText.text.indexOf(endComment);
+			line_end = lineIndex;
 			check = false;
 		}
 
 		if (lineOfText.text.includes(startTest) && !check) {
 			index_end = -1;
 			index_start = lineOfText.text.indexOf(startTest);
+			line_start = lineIndex;
 			check = true;
 
 		}
 
 		if (lineOfText.text.includes(endTest)) {
 			index_end = lineOfText.text.indexOf(endTest);
+			line_end = lineIndex;
+
 			check = false;
 
 		}
@@ -64,19 +72,18 @@ export function check_comment_or_test(doc: vscode.TextDocument, line: number) {
 			if (single) {
 				temp_check = true;
 			}
-			// modifica di GABRIEL
 			// FATTO PER AVERE LA SAFETY DI UNA REGOLA SCRITTA SULLA STESSA RIGA DI UN INIZIO-FINE COMMENTO O TEST.
-			/*
 			if( (lineOfText.text.includes(startComment) && !lineOfText.text.startsWith(startComment)) || (lineOfText.text.includes(startTest) && !lineOfText.text.startsWith(startTest))
 			|| (lineOfText.text.includes(endComment) && !lineOfText.text.endsWith(endComment)) || (lineOfText.text.includes(endTest) && !lineOfText.text.endsWith(endTest))
 			) {
 				temp_check = false;
-			}*/
+			}
 			return {
 				'check': temp_check,
 				'index_start': index_start,
 				'index_end': index_end,
-				'line': line
+				'line_start': line_start,
+				'line_end': line_end
 			};
 		}
 
@@ -85,7 +92,9 @@ export function check_comment_or_test(doc: vscode.TextDocument, line: number) {
 		'check': check,
 		'line': line,
 		'index_start': index_start,
-		'index_end': index_end
+		'index_end': index_end,
+		'line_start': line_start,
+		'line_end': line_end
 	};
 }
 
@@ -112,21 +121,24 @@ export function countElem(doc: vscode.TextDocument, token: string) {
 		if (count_iter !== 0 && skip_match_builtins === 0) {
 			const index_of_token = text_line.search(regex_for_token);
 			
-			if ((result?.check === false && !text_line.includes("not") ) && result.index_start === -1 && result.index_end === -1) {  // Non ci sono commenti e ho trovato il token
+			if ((result?.check === false && !text_line.includes("not") )) {  // Non ci sono commenti e ho trovato il token
 				found_at_line = lineIndex;
 				count += count_iter;
 			}
-			else if (result?.check === true || (result.index_end != -1 || result.index_end !=-1)) { // Ci sono commenti
+			else if (result?.check === true || (result.index_end !== -1 || result.index_end !==-1)) { // Ci sono commenti
 				if (result.index_end == -1) { // caso del single_comment % o aperture senza chiusura
-					if (index_of_token < result.index_start && lineIndex <= result.line) {
+					
+
+					if (index_of_token < result.index_start && lineIndex <= result.line_start && result.line_start!==-1) {
+						
 						count += count_iter;
 						found_at_line = lineIndex;
 					}
 				}
 				else if ((
-					index_of_token < result.index_start && result.line >= lineIndex)
-					|| (index_of_token > result.index_end && (lineIndex >= result.line))) { // nel caso sia prima o dopo un blocco di commenti/test multiline
-					count += count_iter;
+					index_of_token < result.index_start && result.line_start >= lineIndex)
+					|| (index_of_token > result.index_end && (lineIndex >= result.line_end && result.line_end !==-1))) { // nel caso sia prima o dopo un blocco di commenti/test multiline
+						count += count_iter;
 					if (found_at_line < lineIndex) {
 						found_at_line = lineIndex;
 					}
