@@ -1,9 +1,0 @@
-% STRATEGIC COMPANIES
-% ----------------------------------------------------------------------------------------------
-% There are various products, each one is produced by several companies.
-% We now have to sell some companies. What are the minimal sets of strategic companies,
-% such that all products can still be produced? A company also belong to the set, if all its
-% controlling companies belong to it.
-
-strategic(Y) | strategic(Z) :- produced_by(X, Y, Z).
-strategic(W) :- controlled_by(W, X, Y, Z), strategic(X), strategic(Y), strategic(Z).
