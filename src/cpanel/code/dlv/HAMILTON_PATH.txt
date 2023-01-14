@@ -18,3 +18,7 @@ reached(X) :- reached(Y), inPath(Y,X).
 :- inPath(X,Y), inPath(X1,Y), X <> X1. 
 :- node(X), not reached(X).
 :- inPath(X,Y), start(Y).
+:- inPath(X,Y), inPath(X,Y1), Y <> Y1.
+:- inPath(X,Y), inPath(X1,Y), X <> X1. 
+:- node(X), not reached(X).
+:- inPath(X,Y), start(Y).

@@ -10,71 +10,127 @@ const ANTLRInputStream_1 = require("antlr4ts/ANTLRInputStream");
 const vscode = require("vscode");
 const ASPCore2Lexer_1 = require("./parser/ASPCore2Lexer");
 const ASPCore2Parser_1 = require("./parser/ASPCore2Parser");
+const parsing_1 = require("./parsing");
 /** String to detect in the text document. */
-const END_CHARACTER_OF_A_RULE = '.';
-exports.CODE_ERROR = 'Errore 104';
-const aggregatesRegex = new RegExp(/^#(?:count|sum|times|min|max){\s*(?:\w+|_)\s*(,\s*(?:\w+|_))*\s*:\s*\w+\(\s*(?:\w+|_)(\s*(?:,\s*(?:\w+|_)*\s*|\s*\))*\s*)\s*(?:,\s*\w+\(\s*(?:\w+|_)(\s*,\s*(?:\w+|_)*\s*)*\)\s*)*\s*}$/g);
-const builtInRegex = new RegExp(/^&\w+\s*\(\s*\w+\s*(\s*,\s*\w+\s*)*(\s*;\s*\w+\s*)\)$/g);
+exports.CODE_ERROR = "Errore 104";
 /**
  * Analyzes the text document for problems.
  * This demo diagnostic problem provider finds all mentions of 'emoji'.
  * @param doc text document to analyze
- * @param emojiDiagnostics diagnostic collection
+ * @param errorDiagnostics diagnostic collection
  */
-function refreshDiagnostics(doc, emojiDiagnostics) {
-    const diagnostics = [];
-    for (let lineIndex = 0; lineIndex < doc.lineCount; lineIndex++) {
-        const lineOfText = doc.lineAt(lineIndex);
-        if (lineOfText.text.endsWith(END_CHARACTER_OF_A_RULE) || (lineIndex != (doc.lineCount) - 1 && doc.lineAt(lineIndex + 1).text.length == 0 && !lineOfText.text.endsWith("."))) {
+let opened = false;
+function refreshDiagnostics(doc, errorDiagnostics) {
+    const regex = /\.(asp|lp|dlv)$/g;
+    const atoms = [];
+    if (regex.test(doc.fileName)) {
+        let diagnostics = [];
+        for (let lineIndex = 0; lineIndex < doc.lineCount; lineIndex++) {
+            const lineOfText = doc.lineAt(lineIndex);
             const input = new ANTLRInputStream_1.ANTLRInputStream(lineOfText.text);
             const aspLexer = new ASPCore2Lexer_1.ASPCore2Lexer(input);
             const tokens = new antlr4ts_1.CommonTokenStream(aspLexer);
             tokens.fill();
             const aspParser = new ASPCore2Parser_1.ASPCore2Parser(tokens);
-            const tree = aspParser.program();
-            console.log(tree.toStringTree(aspParser));
-            const constructs = [];
-            for (let i = 0; i < tokens.getTokens().length; i++) {
-                constructs.push([tokens.get(i).text, tokens.get(i).type]);
+            aspParser.removeErrorListeners();
+            if (lineOfText.text.includes("%/") || lineOfText.text.includes("%**")) {
+                opened = true;
             }
-            const constructsFiltered = [];
-            for (let i = 0; i < constructs.length; i++) {
-                constructsFiltered.push(constructs[i]);
+            if (lineOfText.text.includes("/%") || lineOfText.text.includes("**%")) {
+                opened = false;
+                // continue;
             }
-            console.log(constructsFiltered.join("  "));
+            if (!opened) {
+                aspParser.addErrorListener({
+                    syntaxError(recognizer, offendingSymbol, line, charPositionInLine, msg, e) {
+                        diagnostics.push(createDiagnosticForFacts(doc, lineOfText, lineIndex, charPositionInLine, msg, vscode.DiagnosticSeverity.Error));
+                    },
+                });
+            }
+            aspParser.program();
+            const constructs = (0, parsing_1.tokenize)(tokens);
+            const [heads, tails, tails_negative, tails_in_symbols] = (0, parsing_1.tokenize_head_tail)(constructs, atoms);
+            const msg = `The rule at line ${lineIndex + 1} is not safe`;
+            if (!(0, parsing_1.checkSafe)(heads, tails, tails_negative, tails_in_symbols) && (0, parsing_1.checkIsRule)(constructs) && !(0, parsing_1.check_comment_or_test)(doc, lineIndex).check) {
+                diagnostics.push(createDiagnostic(doc, lineOfText, lineIndex, msg, vscode.DiagnosticSeverity.Warning));
+            }
+            else {
+                diagnostics = diagnostics.filter(obj => {
+                    return !obj.message.includes(msg);
+                });
+            }
+            diagnostics = addWarningProbablyWrongName(diagnostics, atoms, doc);
         }
+        errorDiagnostics.set(doc.uri, diagnostics);
     }
-    emojiDiagnostics.set(doc.uri, diagnostics);
 }
 exports.refreshDiagnostics = refreshDiagnostics;
+function addWarningProbablyWrongName(diagnostics, atoms, doc) {
+    atoms.map(atom => {
+        const elem = (0, parsing_1.countElem)(doc, atom);
+        if (elem.count === 1) { // una sola occorrenza
+            if (elem.line !== -1) { // se non si trova in un commento
+                const msg = `${elem.token} is used only once`;
+                const tmp_diagnostic = diagnostics.find(obj => {
+                    return obj.message == msg;
+                });
+                if (tmp_diagnostic === undefined) {
+                    diagnostics.push(createDiagnosticForAtoms(doc, doc.lineAt(elem.line), elem.line, elem.token, msg, vscode.DiagnosticSeverity.Warning));
+                }
+            }
+        }
+        else {
+            diagnostics = diagnostics.filter(obj => {
+                return !obj.message.includes(`${elem.token} is used only once`);
+            });
+        }
+    });
+    return diagnostics;
+}
 //Crea una diagnostica, ovvero un oggetto di vscode che indica che errore c'è stato
-function createDiagnostic(doc, lineOfText, lineIndex, codeError) {
-    const index = lineOfText.text.indexOf(END_CHARACTER_OF_A_RULE);
+function createDiagnostic(doc, lineOfText, lineIndex, codeError, severity) {
+    // const index = lineOfText.text.indexOf(END_CHARACTER_OF_A_RULE);
     const range = new vscode.Range(lineIndex, 0, lineIndex, 0 + lineOfText.text.length);
-    const diagnostic = new vscode.Diagnostic(range, "Format incorrect.", vscode.DiagnosticSeverity.Error);
-    //In questa sezione di codice si inferisce qual'è la causa dell'errore
-    //Modifica il messaggio d'errore in base alla causa dell'errore
-    if (codeError == "001") {
-        diagnostic.message = "The format of the aggregate is incorrect.";
-        diagnostic.code = "001";
-    }
-    else if (codeError == "010") {
-        diagnostic.message = "The format of the built-in is incorrect";
-        diagnostic.code = "010";
-    }
+    const diagnostic = new vscode.Diagnostic(range, codeError, severity);
     return diagnostic;
 }
-function subscribeToDocumentChanges(context, emojiDiagnostics) {
-    if (vscode.window.activeTextEditor) {
-        refreshDiagnostics(vscode.window.activeTextEditor.document, emojiDiagnostics);
+function createDiagnosticForFacts(doc, lineOfText, lineIndex, endCharacter, codeError, severity) {
+    let range = undefined;
+    if (codeError.includes("no viable alternative at input") && !lineOfText.text.includes("/%")) {
+        const error = codeError.split("'");
+        const startCharacter = lineOfText.text.indexOf(error[1]);
+        if (startCharacter >= 0) {
+            range = new vscode.Range(lineIndex, startCharacter, lineIndex, 0 + (endCharacter + 1));
+        }
+        else {
+            return createDiagnostic(doc, lineOfText, lineIndex, codeError, severity);
+        }
     }
-    context.subscriptions.push(vscode.window.onDidChangeActiveTextEditor(editor => {
+    else {
+        return createDiagnostic(doc, lineOfText, lineIndex, codeError, severity);
+    }
+    const diagnostic = new vscode.Diagnostic(range, codeError, severity);
+    return diagnostic;
+}
+function createDiagnosticForAtoms(doc, lineOfText, lineIndex, atom, codeError, severity) {
+    const regex_for_token = new RegExp(`${atom}\\b`, "g");
+    const startCharacter = lineOfText.text.search(regex_for_token);
+    const endCharacter = startCharacter + (atom.length - 1);
+    const range = new vscode.Range(lineIndex, startCharacter, lineIndex, 0 + (endCharacter + 1));
+    const diagnostic = new vscode.Diagnostic(range, codeError, severity);
+    return diagnostic;
+}
+function subscribeToDocumentChanges(context, errorDiagnostics) {
+    if (vscode.window.activeTextEditor) {
+        refreshDiagnostics(vscode.window.activeTextEditor.document, errorDiagnostics);
+    }
+    context.subscriptions.push(vscode.window.onDidChangeActiveTextEditor((editor) => {
         if (editor) {
-            refreshDiagnostics(editor.document, emojiDiagnostics);
+            refreshDiagnostics(editor.document, errorDiagnostics);
         }
     }));
-    context.subscriptions.push(vscode.workspace.onDidChangeTextDocument(e => refreshDiagnostics(e.document, emojiDiagnostics)));
-    context.subscriptions.push(vscode.workspace.onDidCloseTextDocument(doc => emojiDiagnostics.delete(doc.uri)));
+    context.subscriptions.push(vscode.workspace.onDidChangeTextDocument((e) => refreshDiagnostics(e.document, errorDiagnostics)));
+    context.subscriptions.push(vscode.workspace.onDidCloseTextDocument((doc) => errorDiagnostics.delete(doc.uri)));
 }
 exports.subscribeToDocumentChanges = subscribeToDocumentChanges;
 //# sourceMappingURL=diagnostics.js.map
