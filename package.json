@@ -86,7 +86,7 @@
 		"compile": "tsc -p ./",
 		"watch": "tsc -watch -p ./",
 		"lint": "eslint src --ext ts",
-		"build": "tsc && mkdir ./out/src/cpanel/code/ && mkdir ./out/src/cpanel/code/dlv && cp -R ./src/cpanel/code/dlv/* ./out/src/cpanel/code/dlv/",
+		"build": "tsc",
 		"test": "mocha --require ts-node/register test/**/*.spec.ts",
 		"antlr4ts": "antlr4ts -visitor ./src/parser/ASPCore2.g4"
 	},

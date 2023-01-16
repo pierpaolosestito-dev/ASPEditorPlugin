@@ -24,7 +24,10 @@ export class Code implements CodeInterface {
     dlv(code_type: string) {
         let code = '';
 
-        if (fs.existsSync(this.path('dlv', code_type))) code = fs.readFileSync(this.path('dlv', code_type), 'utf-8');
+        if (fs.existsSync(this.path('dlv', code_type))) {
+            console.log("File exists.");
+            code = fs.readFileSync(this.path('dlv', code_type), 'utf-8');
+        }
 
         return code;
     }

@@ -164,10 +164,9 @@ export function getASPIntellisenseHoverProvider(context: vscode.ExtensionContext
 }
 
 function readDictionariesandMergeIt(context: vscode.ExtensionContext): any{
-
-    const languages_constants = dictionarizer(context.asAbsolutePath('constants.json'));
-    const builtins = dictionarizer(context.asAbsolutePath('builtins.json'));
-    const aggregates = dictionarizer(context.asAbsolutePath('aggregates.json'));
+    const languages_constants = dictionarizer(context.asAbsolutePath('assets/constants.json'));
+    const builtins = dictionarizer(context.asAbsolutePath('assets/builtins.json'));
+    const aggregates = dictionarizer(context.asAbsolutePath('assets/aggregates.json'));
 
     const completeDictionary = Object.assign(aggregates,builtins,languages_constants);
     return completeDictionary;
