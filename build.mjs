@@ -25,14 +25,17 @@ function puts(error, stdout, stderr) {
 if (os.type() === 'Linux') {
 	console.log('Linux Build');
 	exec(linux_command, puts);
+	console.log('Linux Build done!');
 }
 else if (os.type() === 'Darwin') {
 	console.log('Mac Build');
 	exec(mac_command, puts);
+	console.log('Mac Build done!');
 }
 else if (os.type() === 'Windows_NT') {
 	console.log('Windows Build');
 	exec(windows_command, puts);
+	console.log('Windows Build done!');
 }
 else
 	throw new Error("Unsupported OS found: " + os.type());
