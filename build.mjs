@@ -1,3 +1,7 @@
+/*
+	Questo file permette di eseguire build diversi in base al sistema operativo.
+*/
+
 import console from 'console';
 import { exec } from 'child_process';
 import * as os from 'os';
