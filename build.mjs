@@ -20,11 +20,17 @@ function puts(error, stdout, stderr) {
 }
 
 // Run command depending on the OS
-if (os.type() === 'Linux')
+if (os.type() === 'Linux') {
+	console.log('Linux Build');
 	exec(linux_command, puts);
-else if (os.type() === 'Darwin')
-	exec(windows_command, puts);
-else if (os.type() === 'Windows_NT')
+}
+else if (os.type() === 'Darwin') {
+	console.log('Mac Build');
 	exec(mac_command, puts);
+}
+else if (os.type() === 'Windows_NT') {
+	console.log('Windows Build');
+	exec(windows_command, puts);
+}
 else
 	throw new Error("Unsupported OS found: " + os.type());
