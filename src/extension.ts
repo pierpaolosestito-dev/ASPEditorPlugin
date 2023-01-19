@@ -11,7 +11,7 @@ const COMMAND = 'code-actions-sample.command';
 	
 	//Cookbook
 
-	const provider = new CodePanelViewProvider(context.extensionUri);
+	const provider = new CodePanelViewProvider(context);
 	context.subscriptions.push(
 		vscode.window.registerWebviewViewProvider(CodePanelViewProvider.viewType, provider));
 	vscode.commands.registerCommand('asp-panel.ASPCookbook', () => {
@@ -64,7 +64,7 @@ class CodePanelViewProvider implements vscode.WebviewViewProvider {
 	public static readonly viewType = 'asp-panel.ASPCookbook';
 
 	constructor(
-		private readonly _extensionUri: vscode.Uri,
+		private readonly _extension: vscode.ExtensionContext,
 	) { }
 
 	public resolveWebviewView(
@@ -80,7 +80,7 @@ class CodePanelViewProvider implements vscode.WebviewViewProvider {
 			enableCommandUris:true,
 
 			localResourceRoots: [
-				this._extensionUri
+				this._extension.extensionUri
 			]
 		};
 
@@ -98,50 +98,50 @@ class CodePanelViewProvider implements vscode.WebviewViewProvider {
 				// DLV
                 case 'ADVANCED_KNAPSACK_PROBLEM':
                     active.edit(editBuilder => {
-                        const code = new cpanel.Code(this._extensionUri);
-                        editBuilder.replace(selection, code.dlv('ADVANCED_KNAPSACK_PROBLEM'));
+                        const code = new cpanel.Code(this._extension.extensionUri);
+                        editBuilder.replace(selection, code.dlv(this._extension.asAbsolutePath('assets/code/dlv/ADVANCED_KNAPSACK_PROBLEM.txt')));
                     });
                     break;
                 case 'KNAPSACK_PROBLEM':
                     active.edit(editBuilder => {
-                        const code = new cpanel.Code(this._extensionUri);
-                        editBuilder.replace(selection, code.dlv('KNAPSACK_PROBLEM'));
+                        const code = new cpanel.Code(this._extension.extensionUri);
+                        editBuilder.replace(selection, code.dlv(this._extension.asAbsolutePath('assets/code/dlv/KNAPSACK_PROBLEM.txt')));
                     });
                     break;
                 case '3_COLORABILITY':
                     active.edit(editBuilder => {
-                        const code = new cpanel.Code(this._extensionUri);
-                        editBuilder.replace(selection, code.dlv('3_COLORABILITY'));
+                        const code = new cpanel.Code(this._extension.extensionUri);
+                        editBuilder.replace(selection, code.dlv(this._extension.asAbsolutePath('assets/code/dlv/3_COLORABILITY.txt')));
                     });
                     break;
                 case 'HAMILTON_PATH':
                     active.edit(editBuilder => {
-                        const code = new cpanel.Code(this._extensionUri);
-                        editBuilder.replace(selection, code.dlv('HAMILTON_PATH'));
+                        const code = new cpanel.Code(this._extension.extensionUri);
+                        editBuilder.replace(selection, code.dlv(this._extension.asAbsolutePath('assets/code/dlv/HAMILTON_PATH.txt')));
                     });
                     break;
                 case 'MINIMUM_SPANNING_TREE':
                     active.edit(editBuilder => {
-                        const code = new cpanel.Code(this._extensionUri);
-                        editBuilder.replace(selection, code.dlv('MINIMUM_SPANNING_TREE'));
+                        const code = new cpanel.Code(this._extension.extensionUri);
+                        editBuilder.replace(selection, code.dlv(this._extension.asAbsolutePath('assets/code/dlv/MINIMUM_SPANNING_TREE.txt')));
                     });
                     break;
                 case 'SEATING':
                     active.edit(editBuilder => {
-                        const code = new cpanel.Code(this._extensionUri);
-                        editBuilder.replace(selection, code.dlv('SEATING'));
+                        const code = new cpanel.Code(this._extension.extensionUri);
+                        editBuilder.replace(selection, code.dlv(this._extension.asAbsolutePath('assets/code/dlv/SEATING.txt')));
                     });
                     break;
                 case 'STRATEGIC_COMPANIES':
                 active.edit(editBuilder => {
-                    const code = new cpanel.Code(this._extensionUri);
-                    editBuilder.replace(selection, code.dlv('STRATEGIC_COMPANIES'));
+                    const code = new cpanel.Code(this._extension.extensionUri);
+                    editBuilder.replace(selection, code.dlv(this._extension.asAbsolutePath('assets/code/dlv/STRATEGIC_COMPANIES.txt')));
                 });
                 break;
                 case 'VERTEX_COVER':
                 active.edit(editBuilder => {
-                    const code = new cpanel.Code(this._extensionUri);
-                    editBuilder.replace(selection, code.dlv('VERTEX_COVER'));
+                    const code = new cpanel.Code(this._extension.extensionUri);
+                    editBuilder.replace(selection, code.dlv(this._extension.asAbsolutePath('assets/code/dlv/VERTEX_COVER.txt')));
                 });
                 break;
                 // showPanel
@@ -158,13 +158,13 @@ class CodePanelViewProvider implements vscode.WebviewViewProvider {
 
 	private _getHtmlForWebview(webview: vscode.Webview) {
 		// Do the same for the stylesheet.
-		const styleBootStrapUri = webview.asWebviewUri(vscode.Uri.joinPath(this._extensionUri, 'media', 'css', 'bootstrap.min.css'));
+		const styleBootStrapUri = webview.asWebviewUri(vscode.Uri.joinPath(this._extension.extensionUri, 'media', 'css', 'bootstrap.min.css'));
 		// const styleBootStrapIconUri = webview.asWebviewUri(vscode.Uri.joinPath(this._extensionUri, 'media', 'bootstrap-icon', 'bootstrap-icons.css'));
-		const styleMainUri = webview.asWebviewUri(vscode.Uri.joinPath(this._extensionUri, 'media', 'css', 'main.css'));
+		const styleMainUri = webview.asWebviewUri(vscode.Uri.joinPath(this._extension.extensionUri, 'media', 'css', 'main.css'));
 
 		// Get the local path to main script run in the webview, then convert it to a uri we can use in the webview.
-		const scriptBootStrapUri = webview.asWebviewUri(vscode.Uri.joinPath(this._extensionUri, 'media', 'js', 'bootstrap.min.js'));
-		const scriptMainUri = webview.asWebviewUri(vscode.Uri.joinPath(this._extensionUri, 'media', 'js', 'main.js'));
+		const scriptBootStrapUri = webview.asWebviewUri(vscode.Uri.joinPath(this._extension.extensionUri, 'media', 'js', 'bootstrap.min.js'));
+		const scriptMainUri = webview.asWebviewUri(vscode.Uri.joinPath(this._extension.extensionUri, 'media', 'js', 'main.js'));
 
 
 		// Use a nonce to only allow a specific script to be run.
