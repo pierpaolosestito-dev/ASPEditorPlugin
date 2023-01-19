@@ -1,10 +1,10 @@
 import * as vscode from 'vscode';
 import * as path from 'path';
 import { dictionarizer } from './utils/dictionarizer';
-import { DynamicPredicateDictionary } from './utils/dynamic_predicate_dictionary';
-import { DynamicTermsDictionary } from './utils/dynamic_terms_dictionary';
-import { IntelliDetail } from './utils/intelli_detail';
-import { PATH_TO_JSON_DICTIONARY, DYNAMIC_PREDICATE_REGEXS, DYNAMIC_TERMS_REGEXS } from '../assets/consts/consts';
+import { DynamicPredicateDictionary } from './intellisense/dynamic_predicate_dictionary';
+import { DynamicTermsDictionary } from './intellisense/dynamic_terms_dictionary';
+import { IntelliDetail } from './intellisense/intelli_detail';
+import { PATH_TO_JSON_DICTIONARY, DYNAMIC_PREDICATE_REGEXS, DYNAMIC_TERMS_REGEXS } from "./utils/consts";
 
 
 

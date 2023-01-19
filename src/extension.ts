@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
 import { subscribeToDocumentChanges } from './diagnostics';
 import * as cpanel from './cpanel/run';
-import { getASPIntellisenseProvider,getASPIntellisenseHoverProvider,fillDictionaryWithDynamicPredicates,fillDictionaryWithDynamicTerms} from './autocomplete';
+import { getASPIntellisenseProvider,getASPIntellisenseHoverProvider,fillDictionaryWithDynamicPredicates,fillDictionaryWithDynamicTerms} from './intellisense';
 import { BuiltinAggregateFixer,	BuiltinAggregateInfo } from './prompter';
 
 

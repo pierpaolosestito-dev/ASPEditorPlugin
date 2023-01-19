@@ -1,6 +1,6 @@
 import { dictionarizer } from '../../../src/utils/dictionarizer';
 import * as assert from 'assert';
-import { PATH_TO_JSON_DICTIONARY } from '../../../assets/consts/consts';
+import { PATH_TO_JSON_DICTIONARY } from '../../../src/utils/consts';
 
 
 
