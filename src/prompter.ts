@@ -1,7 +1,7 @@
 import { CODE_ERROR} from './diagnostics';
 import { similarity } from './utils/similarity';
 import { dictionarizer } from './utils/dictionarizer';
-import { DynamicPredicateDictionary } from './utils/dynamic_predicate_dictionary';
+import { DynamicPredicateDictionary } from './intellisense/dynamic_predicate_dictionary';
 import * as path from 'path';
 import * as vscode from 'vscode';
 

@@ -1,9 +1,13 @@
 import * as vscode from 'vscode';
 import * as path from 'path';
 import { dictionarizer } from './utils/dictionarizer';
-import { DynamicPredicateDictionary } from './utils/dynamic_predicate_dictionary';
-import { DynamicTermsDictionary } from './utils/dynamic_terms_dictionary';
-import { IntelliDetail } from './utils/intelli_detail';
+import { DynamicPredicateDictionary } from './intellisense/dynamic_predicate_dictionary';
+import { DynamicTermsDictionary } from './intellisense/dynamic_terms_dictionary';
+import { IntelliDetail } from './intellisense/intelli_detail';
+import { PATH_TO_JSON_DICTIONARY, DYNAMIC_PREDICATE_REGEXS, DYNAMIC_TERMS_REGEXS } from "./utils/consts";
+
+
+
 
 //Returns a provider that manages intellisense for directives, aggregates, default and custom external atoms
 export function getASPIntellisenseProvider(context: vscode.ExtensionContext): vscode.CompletionItemProvider<vscode.CompletionItem> {
@@ -164,10 +168,9 @@ export function getASPIntellisenseHoverProvider(context: vscode.ExtensionContext
 }
 
 function readDictionariesandMergeIt(context: vscode.ExtensionContext): any{
-
-    const languages_constants = dictionarizer(context.asAbsolutePath('constants.json'));
-    const builtins = dictionarizer(context.asAbsolutePath('builtins.json'));
-    const aggregates = dictionarizer(context.asAbsolutePath('aggregates.json'));
+    const languages_constants = dictionarizer(context.asAbsolutePath(PATH_TO_JSON_DICTIONARY.CONSTANTS));
+    const builtins = dictionarizer(context.asAbsolutePath(PATH_TO_JSON_DICTIONARY.BUILTINS));
+    const aggregates = dictionarizer(context.asAbsolutePath(PATH_TO_JSON_DICTIONARY.AGGREGATES));
 
     const completeDictionary = Object.assign(aggregates,builtins,languages_constants);
     return completeDictionary;
@@ -176,8 +179,7 @@ function readDictionariesandMergeIt(context: vscode.ExtensionContext): any{
 export function fillDictionaryWithDynamicPredicates(){
     const dd = DynamicPredicateDictionary.getInstance();
 	// eslint-disable-next-line no-useless-escape
-	const regexp = /(\w+\s*\(\s*\w+(?:\s*\,\s*\w+\s*)*\s*\))\s*(?:\:\-|\||\.|,)/g;
-	const regexp2 = /(\w+)\s*\(/g;
+	
 
 	vscode.workspace.onDidChangeTextDocument(document => {
 		const chiave = path.basename(document.document.fileName);
@@ -189,7 +191,7 @@ export function fillDictionaryWithDynamicPredicates(){
 		const array_valori: IntelliDetail[] = [];
 		for(let i=0;i<splitted_text.length;i++){
 			
-			const matches = splitted_text[i].matchAll(regexp);
+			const matches = splitted_text[i].matchAll(DYNAMIC_PREDICATE_REGEXS.FULL_REGEX);
 			for (const match of matches) {
 				
 				let virgole = -1;
@@ -203,7 +205,7 @@ export function fillDictionaryWithDynamicPredicates(){
 					}
 				}
 				if(virgole < 0){
-					const matches2 = match[1].matchAll(regexp2);
+					const matches2 = match[1].matchAll(DYNAMIC_PREDICATE_REGEXS.AUX_REGEX);
 					let label = "";
 					let snippet = "";
 					for(const match2 of matches2){
@@ -224,7 +226,7 @@ export function fillDictionaryWithDynamicPredicates(){
 				}
 				snippetTag += ")";
 				parenthesis += ")";
-				const matches2 = match[1].matchAll(regexp2);
+				const matches2 = match[1].matchAll(DYNAMIC_PREDICATE_REGEXS.AUX_REGEX);
 				let label = "";
 				let snippet = "";
 				for(const match2 of matches2){
@@ -253,7 +255,7 @@ function onlyUnique(value:string, index:number, self:string[]) {
   }
 
 export function fillDictionaryWithDynamicTerms(){
-    const terms_regex = /\w+\s*\(\s*\w+(?:\s*,\s*\w+\s*)*\s*\)\s*(?::-|\||\.|,)/g;
+    
     const dd = DynamicTermsDictionary.getInstance();
 
     vscode.workspace.onDidChangeTextDocument(document => {
@@ -265,7 +267,7 @@ export function fillDictionaryWithDynamicTerms(){
             if(rows[i].startsWith('%')){
                 continue;
             }
-            const matches = rows[i].match(terms_regex);
+            const matches = rows[i].match(DYNAMIC_TERMS_REGEXS.FULL_REGEX);
             if(matches){
                 for(let i=0;i<matches.length;i++){
                     const matches_predicate = matches[i].match(/\w+/);

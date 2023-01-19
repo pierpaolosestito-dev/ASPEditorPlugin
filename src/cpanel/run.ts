@@ -1,19 +1,23 @@
+
 import * as fs from 'fs';
-import { Uri } from 'vscode';
+import * as vscode from 'vscode';
 
 export interface CodeInterface {
-    _extensionUri: Uri;
+    _extensionUri: vscode.Uri;
     dlv(code_type: string): string;
 }
 
 export class Code implements CodeInterface {
-    constructor(readonly _extensionUri: Uri) { }
+    constructor(readonly _extensionUri: vscode.Uri) { }
+    
+    
+    
     private path(type: string, file: string) {
         switch (type) {
             case 'dlv':
-                return __dirname + '/code/' + type + '/' + file + '.txt';
+                return './assets/code/' + type + '/' + file + '.txt';
         }
-        return __dirname + '/code/dlv/example.txt';
+        return './assets/code/dlv/example.txt';
     }
 
     // Path conditions
@@ -23,8 +27,12 @@ export class Code implements CodeInterface {
 
     dlv(code_type: string) {
         let code = '';
-
-        if (fs.existsSync(this.path('dlv', code_type))) code = fs.readFileSync(this.path('dlv', code_type), 'utf-8');
+        
+        
+        if (fs.existsSync(code_type)) {
+        
+            code = fs.readFileSync(code_type,'utf-8');
+        }
 
         return code;
     }

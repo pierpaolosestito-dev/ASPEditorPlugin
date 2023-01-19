@@ -1,5 +1,5 @@
 import * as assert from 'assert';
-import { DynamicTermsDictionary } from '../../../src/utils/dynamic_terms_dictionary';
+import { DynamicTermsDictionary } from '../../../src/intellisense/dynamic_terms_dictionary';
 
 describe('Dynamic Terms Dictionary Test Suite', () => {
 	it("Dynamic Terms Dictionary is singleton",()=>{

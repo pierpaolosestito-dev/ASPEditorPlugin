@@ -23,30 +23,25 @@ jobs:
     - run: eslint src --ext ts
     - run: npm test
 
- # TODO Eliminare mkdir in package.json
- # Quando toglieremo mkdir dal package-json aggiungiamo quest'altra macchina virtuale che manda lo stesso workflow per vedere se funziona in entrambe le piattaforme.
- # In questo modo evitiamo l'errore dell'altra volta che su Linux andava e su Windows no.
+  build-on-windows:
+    name : Node setup and testing on Windows
+    runs-on: windows-latest
 
-
- # build-on-windows:
- #   name : Node setup and testing on Windows
- #   runs-on: windows-latest
-
- #   strategy:
- #     matrix:
- #       node-version: [16.x]
- #   steps:
- #   - uses: actions/checkout@v3
- #   - run: npm install eslint --global
- #   - name: Use Node.js ${{ matrix.node-version }}
- #     uses: actions/setup-node@v3
- #     with:
- #       node-version: ${{ matrix.node-version }}
- #       cache: 'npm'
- #   - run: npm ci
- #   - run: npm run build --if-present
- #   - run: eslint src --ext ts
- #   - run: npm test
+    strategy:
+      matrix:
+        node-version: [16.x]
+    steps:
+    - uses: actions/checkout@v3
+    - run: npm install eslint --global
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v3
+      with:
+        node-version: ${{ matrix.node-version }}
+        cache: 'npm'
+    - run: npm ci
+    - run: npm run build --if-present
+    - run: eslint src --ext ts
+    - run: npm test
 
 
 

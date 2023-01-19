@@ -1,5 +1,5 @@
 import * as assert from 'assert';
-import { DynamicPredicateDictionary } from '../../../src/utils/dynamic_predicate_dictionary';
+import { DynamicPredicateDictionary } from '../../../src/intellisense/dynamic_predicate_dictionary';
 
 
 
