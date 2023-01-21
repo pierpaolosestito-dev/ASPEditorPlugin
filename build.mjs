@@ -6,8 +6,6 @@ import console from 'console';
 import { exec } from 'child_process';
 import * as os from 'os';
 
-
-
 const linux_command = "tsc && mkdir ./out/src/cpanel/code/ && mkdir ./out/src/cpanel/code/dlv\
 && cp -R ./src/cpanel/code/dlv/* ./out/src/cpanel/code/dlv/";
 

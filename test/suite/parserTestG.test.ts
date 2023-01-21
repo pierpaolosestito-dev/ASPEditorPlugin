@@ -7,26 +7,13 @@ import { ANTLRInputStream } from "antlr4ts/ANTLRInputStream";
 import { ASPCore2Lexer } from "../../src/parser/ASPCore2Lexer";
 import { ASPCore2Parser } from "../../src/parser/ASPCore2Parser";
 import * as fs from 'fs';
-import { expect } from 'chai';
+import * as assert from 'assert';
 import 'mocha';
-import * as vscode from "vscode";
 
-//Test
-describe('Dummy test G',
+suite('Errors to show to the user',
   () => {
     //Descrizione del risultato del test
-    it('should return true', () => {
-      //Corpo del test
-      const result = dummy(); //Risultato della funzione da testare
-      const expected_result = true; //Risultato atteso
-      expect(result).to.equal(expected_result); //Asserzione
-    });
-  });
-
-describe('Errors to show to the user',
-  () => {
-    //Descrizione del risultato del test
-    it('should show the errors on the document', () => {
+    test('should show the errors on the document', () => {
       const input = "arc(1,).\narc(2)";
       let diagnostic = 0;
       input.split(/\r?\n/).forEach((line) => {
@@ -47,11 +34,11 @@ describe('Errors to show to the user',
         });
         aspParser.program();
       });
-      expect(diagnostic).to.equal(2); //Asserzione
+      assert.strictEqual(diagnostic,2); //Asserzione
     });
 
     //Descrizione del risultato del test
-    it('should show the errors on the document', () => {
+    test('should show the errors on the document', () => {
       const input = "reached(X) :- start(X)";
       let diagnostic = 0;
       input.split(/\r?\n/).forEach((line) => {
@@ -72,11 +59,11 @@ describe('Errors to show to the user',
         });
         aspParser.program();
       });
-      expect(diagnostic).to.equal(1); //Asserzione
+      assert.strictEqual(diagnostic,1); //Asserzione
     });
 
     //Descrizione del risultato del test
-    it('should show the errors on the document', () => {
+    test('should show the errors on the document', () => {
       const input = "start(0). arc(3,2,).\ninPath(X,Y) | outPath(X,Y) : arc(X,Y).\nreached(X) :- start(X)";
       let diagnostic = 0;
       input.split(/\r?\n/).forEach((line) => {
@@ -97,14 +84,14 @@ describe('Errors to show to the user',
         });
         aspParser.program();
       });
-      expect(diagnostic).to.equal(3); //Asserzione
+      assert.strictEqual(diagnostic,3); //Asserzione
     });
   });
 
-describe('Warning for rule not safe',
+suite('Warning for rule not safe',
   () => {
     //Descrizione del risultato del test
-    it('should show a warning if a rule is not safe', () => {
+    test('should show a warning if a rule is not safe', () => {
       let warning = false;
       const input = "s(X) :- body";
       const tokens = trasformText(input);
@@ -114,10 +101,10 @@ describe('Warning for rule not safe',
       if (!checkSafe(heads, tails, tails_negative, tails_in_symbols) && checkIsRule(constructs)) {
         warning = true;
       }
-      expect(warning).to.equal(true); //Asserzione
+      assert.strictEqual(warning,true); //Asserzione
     });
 
-    it('should show a warning if a rule is not safe', () => {
+    test('should show a warning if a rule is not safe', () => {
       let warning = false;
       const input = "s(Y) :- b(X), not r(X).";
       const tokens = trasformText(input);
@@ -127,10 +114,10 @@ describe('Warning for rule not safe',
       if (!checkSafe(heads, tails, tails_negative, tails_in_symbols) && checkIsRule(constructs)) {
         warning = true;
       }
-      expect(warning).to.equal(true); //Asserzione
+      assert.strictEqual(warning,true); //Asserzione
     });
 
-    it('should show a warning if a rule is not safe', () => {
+    test('should show a warning if a rule is not safe', () => {
       let warning = false;
       const input = "s(Y) :- b(X), X<Y.";
       const tokens = trasformText(input);
@@ -140,15 +127,15 @@ describe('Warning for rule not safe',
       if (!checkSafe(heads, tails, tails_negative, tails_in_symbols) && checkIsRule(constructs)) {
         warning = true;
       }
-      expect(warning).to.equal(true); //Asserzione
+      assert.strictEqual(warning,true); //Asserzione
     });
   });
 
 //Test
-describe('Warning for atoms used only once',
+suite('Warning for atoms used only once',
   () => {
     //Descrizione del risultato del test
-    it('should show a warning if an atom is used only once', () => {
+    test('should show a warning if an atom is used only once', () => {
       const input = "node(1).\nprova(1). ciao(2).";
       const tokens = trasformText(input);
       const constructs: [string, number, number][] = tokenize(tokens);
@@ -163,10 +150,10 @@ describe('Warning for atoms used only once',
           }
         }
       });
-      expect(warning).to.equal(3); //Asserzione
+      assert.strictEqual(warning,3); //Asserzione
     });
 
-    it('should show a warning if an atom is used only once', () => {
+    test('should show a warning if an atom is used only once', () => {
       const input = `strategic(Y) | strategic(Z) :- produced_by(X, Y, Z).
 strategic(W) :- controlled_by(W, X, Y, Z), strategic(X), strategic(Y), strategic(Z).`;
       const tokens = trasformText(input);
@@ -182,10 +169,10 @@ strategic(W) :- controlled_by(W, X, Y, Z), strategic(X), strategic(Y), strategic
           }
         }
       });
-      expect(warning).to.equal(2); //Asserzione
+      assert.strictEqual(warning,2); //Asserzione
     });
 
-    it('should show a warning if an atom is used only once', () => {
+    test('should show a warning if an atom is used only once', () => {
       const input = fs.readFileSync("./test/suite/testAtoms.asp", "utf-8");
       const tokens = trasformText(input);
       const constructs: [string, number, number][] = tokenize(tokens);
@@ -200,7 +187,7 @@ strategic(W) :- controlled_by(W, X, Y, Z), strategic(X), strategic(Y), strategic
           }
         }
       });
-      expect(warning).to.equal(2); //Asserzione
+      assert.strictEqual(warning,2); //Asserzione
     });
   });
 
