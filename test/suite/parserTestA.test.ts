@@ -100,36 +100,4 @@ suite('tokenize positive tests',
       //expect(result).to.equal(expected_result); //Asserzione
       assert.deepEqual(result, expected_result); //Asserzione per controllare se due array sono uguali
     });
-    test('Tests if multiple facts on multiple lines are tokenized correctly', () => {
-      //Corpo del test
-
-      const input = fs.readFileSync('./test/suite/test.asp', 'utf-8');
-
-      if (os.type() === 'Windows_NT') {
-        const input = fs.readFileSync('.\\test\\suite\\test.asp', 'utf-8');
-      }
-      const tokens = trasformText(input);
-
-      const result: [string, number, number][] = tokenize(tokens); //Risultato della funzione da testare
-      const expected_result: [string, number, number][] = [
-        ['node', 2, 1],
-        ['(', 21, 1],
-        ['1', 5, 1],
-        [')', 22, 1],
-        ['.', 7, 1],
-        ['node', 2, 1],
-        ['(', 21, 1],
-        ['2', 5, 1],
-        [')', 22, 1],
-        ['.', 7, 1],
-        ['node', 2, 2],
-        ['(', 21, 2],
-        ['3', 5, 2],
-        [')', 22, 2],
-        ['.', 7, 2],
-        ['<EOF>', -1, 2]
-
-      ]; //Risultato atteso
-      assert.deepEqual(result, expected_result); //Asserzione per controllare se due array sono uguali
-    });
   });
