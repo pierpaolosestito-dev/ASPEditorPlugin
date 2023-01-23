@@ -1,8 +1,8 @@
 import * as vscode from 'vscode';
-import { subscribeToDocumentChanges } from '.
+import { subscribeToDocumentChanges } from './diagnostics';
 import { getASPIntellisenseProvider,getASPIntellisenseHoverProvider,fillDictionaryWithDynamicPredicates,fillDictionaryWithDynamicTerms} from './intellisense';
 import { BuiltinAggregateFixer,	BuiltinAggregateInfo } from './prompter';
-import { CodePanelViewProvider } from './cpanel/CodePanelProvider';
+import { CodePanelViewProvider } from './cpanel/code_panel_view_provider';
 
 
 const COMMAND = 'code-actions-sample.command';
