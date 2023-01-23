@@ -3,6 +3,7 @@ import { subscribeToDocumentChanges } from './diagnostics';
 import * as cpanel from './cpanel/run';
 import { getASPIntellisenseProvider,getASPIntellisenseHoverProvider,fillDictionaryWithDynamicPredicates,fillDictionaryWithDynamicTerms} from './intellisense';
 import { BuiltinAggregateFixer,	BuiltinAggregateInfo } from './prompter';
+import { PATH_TO_COOKBOOK_EXAMPLES } from './utils/consts';
 
 
 const COMMAND = 'code-actions-sample.command';
@@ -99,49 +100,49 @@ class CodePanelViewProvider implements vscode.WebviewViewProvider {
                 case 'ADVANCED_KNAPSACK_PROBLEM':
                     active.edit(editBuilder => {
                         const code = new cpanel.Code(this._extension.extensionUri);
-                        editBuilder.replace(selection, code.dlv(this._extension.asAbsolutePath('assets/code/dlv/ADVANCED_KNAPSACK_PROBLEM.txt')));
+                        editBuilder.replace(selection, code.dlv(this._extension.asAbsolutePath(PATH_TO_COOKBOOK_EXAMPLES.ADVANCED_KNAPSACK_PROBLEM))); 
                     });
                     break;
                 case 'KNAPSACK_PROBLEM':
                     active.edit(editBuilder => {
                         const code = new cpanel.Code(this._extension.extensionUri);
-                        editBuilder.replace(selection, code.dlv(this._extension.asAbsolutePath('assets/code/dlv/KNAPSACK_PROBLEM.txt')));
+                        editBuilder.replace(selection, code.dlv(this._extension.asAbsolutePath(PATH_TO_COOKBOOK_EXAMPLES.KNAPSACK_PROBLEM)));
                     });
                     break;
                 case '3_COLORABILITY':
                     active.edit(editBuilder => {
                         const code = new cpanel.Code(this._extension.extensionUri);
-                        editBuilder.replace(selection, code.dlv(this._extension.asAbsolutePath('assets/code/dlv/3_COLORABILITY.txt')));
+                        editBuilder.replace(selection, code.dlv(this._extension.asAbsolutePath(PATH_TO_COOKBOOK_EXAMPLES.THREE_COLORABILITY)));
                     });
                     break;
                 case 'HAMILTON_PATH':
                     active.edit(editBuilder => {
                         const code = new cpanel.Code(this._extension.extensionUri);
-                        editBuilder.replace(selection, code.dlv(this._extension.asAbsolutePath('assets/code/dlv/HAMILTON_PATH.txt')));
+                        editBuilder.replace(selection, code.dlv(this._extension.asAbsolutePath(PATH_TO_COOKBOOK_EXAMPLES.HAMILTON_PATH)));
                     });
                     break;
                 case 'MINIMUM_SPANNING_TREE':
                     active.edit(editBuilder => {
                         const code = new cpanel.Code(this._extension.extensionUri);
-                        editBuilder.replace(selection, code.dlv(this._extension.asAbsolutePath('assets/code/dlv/MINIMUM_SPANNING_TREE.txt')));
+                        editBuilder.replace(selection, code.dlv(this._extension.asAbsolutePath(PATH_TO_COOKBOOK_EXAMPLES.MINIMUM_SPANNING_TREE)));
                     });
                     break;
                 case 'SEATING':
                     active.edit(editBuilder => {
                         const code = new cpanel.Code(this._extension.extensionUri);
-                        editBuilder.replace(selection, code.dlv(this._extension.asAbsolutePath('assets/code/dlv/SEATING.txt')));
+                        editBuilder.replace(selection, code.dlv(this._extension.asAbsolutePath(PATH_TO_COOKBOOK_EXAMPLES.SEATING)));
                     });
                     break;
                 case 'STRATEGIC_COMPANIES':
                 active.edit(editBuilder => {
                     const code = new cpanel.Code(this._extension.extensionUri);
-                    editBuilder.replace(selection, code.dlv(this._extension.asAbsolutePath('assets/code/dlv/STRATEGIC_COMPANIES.txt')));
+                    editBuilder.replace(selection, code.dlv(this._extension.asAbsolutePath(PATH_TO_COOKBOOK_EXAMPLES.STRATEGIC_COMPANIES)));
                 });
                 break;
                 case 'VERTEX_COVER':
                 active.edit(editBuilder => {
                     const code = new cpanel.Code(this._extension.extensionUri);
-                    editBuilder.replace(selection, code.dlv(this._extension.asAbsolutePath('assets/code/dlv/VERTEX_COVER.txt')));
+                    editBuilder.replace(selection, code.dlv(this._extension.asAbsolutePath(PATH_TO_COOKBOOK_EXAMPLES.VERTEX_COVER)));
                 });
                 break;
                 // showPanel
