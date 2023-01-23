@@ -87,7 +87,7 @@
 		"watch": "tsc -watch -p ./",
 		"lint": "eslint src --ext ts",
 		"build": "tsc",
-		"test": "mocha --require ts-node/register test/**/*.spec.ts",
+		"test": "node ./out/test/runTest.js",
 		"antlr4ts": "antlr4ts -visitor ./src/parser/ASPCore2.g4"
 	},
 	"devDependencies": {
