@@ -2,15 +2,12 @@
 
 //import { ... } from '../../src/parsing'; //Funzioni da testare
 import 'mocha';
-import * as fs from 'fs';
 import * as assert from 'assert';
-import * as os from 'os';
 
 import { CommonTokenStream } from "antlr4ts";
 import { ANTLRInputStream } from "antlr4ts/ANTLRInputStream";
 import { ASPCore2Lexer } from '../../src/parser/ASPCore2Lexer';
 import { tokenize } from '../../src/parsing';
-import { openStdin } from 'process';
 
 //Test
 suite('Dummy test',
