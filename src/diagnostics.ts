@@ -9,7 +9,7 @@ import * as vscode from "vscode";
 import { ASPCore2Lexer } from "./parser/ASPCore2Lexer";
 import { ASPCore2Parser } from "./parser/ASPCore2Parser";
 
-import { check_comment_or_test, countElem, checkIsRule, checkSafe, tokenize, tokenize_head_tail, /*inputText*/ } from "./parsing";
+import { check_comment_or_test, countElem, checkIsRule, checkSafe, tokenize, tokenize_head_tail, input_text, /*inputText*/ } from "./parsing";
 
 /** String to detect in the text document. */
 export const CODE_ERROR = "Errore 104";
@@ -27,14 +27,14 @@ export function refreshDiagnostics(
 ): void {
 	const regex = /\.(asp|lp|dlv)$/g;
 	const atoms: string[] = [];
-	let runDiagnostic = false;
+	//let runDiagnostic = false;
 	if (regex.test(doc.fileName)) {
 		let diagnostics: vscode.Diagnostic[] = [];
 
 		for (let lineIndex = 0; lineIndex < doc.lineCount; lineIndex++) {
 			const lineOfText = doc.lineAt(lineIndex);
-			//const [input, runDiagnostic] = inputText(lineOfText);
-			
+			const [input, runDiagnostic] = input_text(lineOfText);
+			/*
 			let input = undefined;
 			if((lineOfText.text.includes("%/") && !lineOfText.text.startsWith("%/")) || (lineOfText.text.includes("%**") && !lineOfText.text.startsWith("%**"))) {
 				runDiagnostic = true;
@@ -61,7 +61,7 @@ export function refreshDiagnostics(
 			else {
 				runDiagnostic = false;
 				input = new ANTLRInputStream(lineOfText.text);
-			}
+			}*/
 			const aspLexer = new ASPCore2Lexer(input);
 			const tokens = new CommonTokenStream(aspLexer);
 			tokens.fill();
@@ -86,7 +86,7 @@ export function refreshDiagnostics(
 						msg: string,
 						e: Error | undefined
 					): void {
-						if(lineOfText.text.includes("/%") || lineOfText.text.includes("**%")) {
+						if((lineOfText.text.includes("/%") && !lineOfText.text.includes("%/")) || (lineOfText.text.includes("**%") && !lineOfText.text.includes("%**"))) {
 							diagnostics.push(createDiagnosticForEndCommentsAndTests(doc, lineOfText, lineIndex, msg, vscode.DiagnosticSeverity.Error));
 						}
 						else {

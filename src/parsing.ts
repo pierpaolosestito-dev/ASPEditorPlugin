@@ -121,7 +121,7 @@ export function countElem(doc: vscode.TextDocument, token: string) {
 		if (count_iter !== 0 && skip_match_builtins === 0) {
 			const index_of_token = text_line.search(regex_for_token);
 			
-			if ((result?.check === false && !text_line.includes("not") )) {  // Non ci sono commenti e ho trovato il token
+			if (result?.check === false /*&& !text_line.includes("not") )*/) {  // Non ci sono commenti e ho trovato il token
 				found_at_line = lineIndex;
 				count += count_iter;
 			}
@@ -282,8 +282,12 @@ export function tokenize_head_tail(constructs: [string, number, number][], atoms
 	return [heads, tails, tails_negative, tails_in_symbols] as const;
 
 }
+
 /*
-export function inputText(lineOfText: vscode.TextLine) {
+	This method returns the correct input to pass to the parser. If something is written before the start of a multiline comment/test 
+	or after the end of a multiline comment/test, this is taken and sent to the parser.
+*/
+export function input_text(lineOfText: vscode.TextLine) {
 	if((lineOfText.text.includes("%/") && !lineOfText.text.startsWith("%/")) || (lineOfText.text.includes("%**") && !lineOfText.text.startsWith("%**"))) {
 		let splitText = undefined;
 		if(lineOfText.text.includes("%/")) {
@@ -305,4 +309,4 @@ export function inputText(lineOfText: vscode.TextLine) {
 		return [new ANTLRInputStream(splitText[1]), true] as const;
 	}
 	return [new ANTLRInputStream(lineOfText.text), false] as const;
-}*/
+}
