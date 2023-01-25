@@ -22,13 +22,13 @@
 		],
 		"description": "Vertex Cover template"
 	},
-	"Indipendent set": {
-		"prefix": "indi",
+	"Independent set": {
+		"prefix": "inde",
 		"body": [
 			"inIS($1) | outIS($1) :- $2($1).", 
 			":- inIS($3), inIS($4), $3 != $4, edge($3,$4)."
 		],
-		"description": "Indipendent set template"
+		"description": "Independent set template"
 	},
 	"Kernel": {
 		"prefix": "ker",

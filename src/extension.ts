@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
 import { subscribeToDocumentChanges } from './diagnostics';
 import { getASPIntellisenseProvider,getASPIntellisenseHoverProvider,fillDictionaryWithDynamicPredicates,fillDictionaryWithDynamicTerms} from './intellisense';
-import { BuiltinAggregateFixer,	BuiltinAggregateInfo } from './prompter';
+import { Prompter,	BuiltinAggregateInfo } from './prompter';
 import { CodePanelViewProvider } from './cpanel/code_panel_view_provider';
 
 
@@ -23,8 +23,8 @@ const COMMAND = 'code-actions-sample.command';
 	context.subscriptions.push(
 		
 		
-		vscode.languages.registerCodeActionsProvider('asp', new BuiltinAggregateFixer(context), {
-			providedCodeActionKinds: BuiltinAggregateFixer.providedCodeActionKinds
+		vscode.languages.registerCodeActionsProvider('asp', new Prompter(context), {
+			providedCodeActionKinds: Prompter.providedCodeActionKinds
 		}));
 
 	const emojiDiagnostics = vscode.languages.createDiagnosticCollection("emoji");

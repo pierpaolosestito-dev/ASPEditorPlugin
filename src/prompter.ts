@@ -8,7 +8,7 @@ import { PATH_TO_JSON_DICTIONARY } from './utils/consts';
 
 const COMMAND = 'code-actions-sample.command';
 
-export class BuiltinAggregateFixer implements vscode.CodeActionProvider {
+export class Prompter implements vscode.CodeActionProvider {
 
 	context : vscode.ExtensionContext;
 
@@ -20,7 +20,7 @@ export class BuiltinAggregateFixer implements vscode.CodeActionProvider {
 		vscode.CodeActionKind.QuickFix
 	];
 
-	private addFixer(match:string,dictionary : any, document:vscode.TextDocument,range:vscode.Range, prefix:string, otherPrefix = "", result :any[]){
+	private addFixers(match:string,dictionary : any, document:vscode.TextDocument,range:vscode.Range, prefix:string, otherPrefix = "", result :any[]){
 		if(otherPrefix == ""){
 		for(const elem of Object.values<any>(dictionary[prefix])) {
 			if(similarity(match,prefix+elem.label+"{")>=0.5 && similarity(match,prefix+elem.label+"{")<1.00){
@@ -89,30 +89,12 @@ export class BuiltinAggregateFixer implements vscode.CodeActionProvider {
 		for(const match of matches){
 			const m1 = match[1];			
 			if(m1){
-				this.addFixer(m1,builtinsDict,document,range,"&","",result);
-				/*for(const elem of Object.values<any>(builtinsDict['&'])) {
-					if(similarity(m1,"&"+elem.label+"{")>=0.5 && similarity(m1,"&"+elem.label+"{")<1.00){
-						const replaceWithRightBuiltin = this.createFix(document,range,"&"+elem.label+"{",("&"+elem.label+"{").length);
-						const commandAction = this.createCommand();
-						result.push(replaceWithRightBuiltin);
-						result.push(commandAction);
-					}
-
-                }*/
+				this.addFixers(m1,builtinsDict,document,range,"&","",result);
 				
 				if(result.length == 0){
 
 					builtinsDict = dictionarizer(this.context.asAbsolutePath(PATH_TO_JSON_DICTIONARY.AGGREGATES));
-					this.addFixer(m1,builtinsDict,document,range,"#","&",result);
-					/*for(const elem of Object.values<any>(builtinsDict['#'])) {
-						if(similarity(m1,"&"+elem.label+"{")>=0.5 && similarity(m1,"&"+elem.label+"{")<1.00){
-							const replaceWithRightAggregate = this.createFix(document,range,"#"+elem.label+"{",("#"+elem.label+"{").length);
-							const commandAction = this.createCommand();
-							result.push(replaceWithRightAggregate);
-							result.push(commandAction);
-						}
-	
-					}*/
+					this.addFixers(m1,builtinsDict,document,range,"#","&",result);
 				}
 			}
 		}
@@ -130,29 +112,11 @@ export class BuiltinAggregateFixer implements vscode.CodeActionProvider {
 		for(const match of matches){
 			const m1 = match[1];			
 			if(m1){
-				this.addFixer(m1,aggregatesDict,document,range,"#","",result); //#coutn
-				/*for(const elem of Object.values<any>(aggregatesDict['#'])) {
-					if(similarity(m1,"#"+elem.label+"{")>=0.5 && similarity(m1,"#"+elem.label+"{")<1.00){
-						const replaceWithRightAggregate = this.createFix(document,range,"#"+elem.label+"{",("#"+elem.label+"{").length);
-						const commandAction = this.createCommand();
-						result.push(replaceWithRightAggregate);
-						result.push(commandAction);
-					}
-
-                }*/
+				this.addFixers(m1,aggregatesDict,document,range,"#","",result); //#coutn
 				//&coutn
 				if(result.length == 0){
 					aggregatesDict = dictionarizer(this.context.asAbsolutePath(PATH_TO_JSON_DICTIONARY.BUILTINS));
-					this.addFixer(m1,aggregatesDict,document,range,"&","#",result); //#coutn
-					/*for(const elem of Object.values<any>(aggregatesDict['&'])) {
-						if(similarity(m1,"#"+elem.label+"{")>=0.5 && similarity(m1,"#"+elem.label+"{")<1.00){
-							const replaceWithRightAggregate = this.createFix(document,range,"&"+elem.label+"{",("&"+elem.label+"{").length);
-							const commandAction = this.createCommand();
-							result.push(replaceWithRightAggregate);
-							result.push(commandAction);
-						}
-	
-					}*/
+					this.addFixers(m1,aggregatesDict,document,range,"&","#",result); //#coutn
 				}
 			}
 		}
@@ -170,20 +134,6 @@ export class BuiltinAggregateFixer implements vscode.CodeActionProvider {
 				const m1 = match[0];			
 				if(m1){
 					this.addConstantFixer(m1,constantsDict,document,range,result);
-					/*for(const elem of Object.values<any>(constantsDict['language-constants'])) {
-						
-						if(similarity(m1,elem) == 1.00){
-							return;
-						}
-						if(similarity(m1,elem)>=0.5 && similarity(m1,elem)<1.00){
-							const replaceWithRightConstant = this.createFix(document,range,elem,elem.length);
-							const commandAction = this.createCommand();
-							result.push(replaceWithRightConstant);
-							result.push(commandAction);
-						}
-	
-					}*/
-
 				}
 			}
 		}
@@ -201,17 +151,7 @@ export class BuiltinAggregateFixer implements vscode.CodeActionProvider {
 			for(const match of matches){
 				const m1 = match[1];			
 				if(m1){
-					this.addDynamicPredicateFixer(m1,dd,chiave,document,range,result);
-					/*for(const elem of Object.values<any>(dd.get_field(chiave))) {
-						const indexOf = elem.label.indexOf("(");
-						const substringToCompare = elem.label.substring(0,indexOf);
-						if(similarity(m1,substringToCompare)>=0.5 && similarity(m1,substringToCompare)<1.00){
-							const replaceWithRightAggregate = this.createFix(document,range,substringToCompare,substringToCompare.length);
-							const commandAction = this.createCommand();
-							result.push(replaceWithRightAggregate);
-							result.push(commandAction);
-						}
-					}	*/			
+					this.addDynamicPredicateFixer(m1,dd,chiave,document,range,result);			
 				}
 			}
 		}
