@@ -188,10 +188,10 @@ export class Prompter implements vscode.CodeActionProvider {
 	}
 
 
-	private createFix(document: vscode.TextDocument, range: vscode.Range, emoji: string, endstring=2): vscode.CodeAction {
-		const fix = new vscode.CodeAction(`Convert to ${emoji}`, vscode.CodeActionKind.QuickFix);
+	private createFix(document: vscode.TextDocument, range: vscode.Range, expected_string: string, endstring=2): vscode.CodeAction {
+		const fix = new vscode.CodeAction(`Convert to ${expected_string}`, vscode.CodeActionKind.QuickFix);
 		fix.edit = new vscode.WorkspaceEdit();
-		fix.edit.replace(document.uri, new vscode.Range(range.start, range.start.translate(0, endstring)), emoji);
+		fix.edit.replace(document.uri, new vscode.Range(range.start, range.start.translate(0, endstring)), expected_string);
 		return fix;
 	}
 

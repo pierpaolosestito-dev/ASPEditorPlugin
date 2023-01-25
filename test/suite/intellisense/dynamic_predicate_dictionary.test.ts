@@ -1,16 +1,17 @@
+import 'mocha';
 import * as assert from 'assert';
-import { DynamicPredicateDictionary } from '../../../src/intellisense/dynamic_predicate_dictionary';
+import { DynamicPredicateDictionary } from '../../intellisense/dynamic_predicate_dictionary';
 
 
 
-describe('Dynamic Predicate Dictionary Test Suite', () => {
-	it("Dynamic Predicate Dictionary is singleton",()=>{
+suite('Dynamic Predicate Dictionary Test Suite', () => {
+	test("Dynamic Predicate Dictionary is singleton",()=>{
 		const dynamicdictionary= DynamicPredicateDictionary.getInstance();
 		const dynamicdictionary2= DynamicPredicateDictionary.getInstance();
 		assert.equal(dynamicdictionary,dynamicdictionary2);
 	});
 
-	it("Dynamic Predicate add field",()=>{
+	test("Dynamic Predicate add field",()=>{
 		const dynamicdictionary= DynamicPredicateDictionary.getInstance();
 		dynamicdictionary.add_field("test_key",[{label:"test(_,_)",documentation:"doc1",detail:"det1",snippet:"sni1"},{label:"test2(_,_)",documentation:"doc2",detail:"det2",snippet:"sni2"}]);
 		
@@ -19,7 +20,7 @@ describe('Dynamic Predicate Dictionary Test Suite', () => {
 		assert.equal(dynamicdictionary.get_field("test_key")[1].label,"test2(_,_)");
 	});
 
-	it("Dynamic Predicate add field on same key subscribe older records",()=>{
+	test("Dynamic Predicate add field on same key subscribe older records",()=>{
 		const dynamicdictionary= DynamicPredicateDictionary.getInstance();
 		dynamicdictionary.add_field("test_key",[{label:"test(_,_)",documentation:"doc1",detail:"det1",snippet:"sni1"},{label:"test2(_,_)",documentation:"doc2",detail:"det2",snippet:"sni2"}]);
 		
@@ -33,7 +34,7 @@ describe('Dynamic Predicate Dictionary Test Suite', () => {
 		assert.equal(dynamicdictionary.get_field("test_key")[1].label,"test4(_,_)");
 	});
 
-	it("Dynamic Predicate remove duplicates based on label",()=>{
+	test("Dynamic Predicate remove duplicates based on label",()=>{
 		const dynamicdictionary= DynamicPredicateDictionary.getInstance();
 		dynamicdictionary.add_field("test_key",[{label:"test(_,_)",documentation:"doc1",detail:"det1",snippet:"sni1"},{label:"test(_,_)",documentation:"doc2",detail:"det2",snippet:"sni2"}]);
 		assert.equal(dynamicdictionary.get_field("test_key").length,1);
