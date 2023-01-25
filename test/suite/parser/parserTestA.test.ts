@@ -3,7 +3,7 @@ import * as assert from 'assert';
 
 import { CommonTokenStream } from "antlr4ts";
 import { ANTLRInputStream } from "antlr4ts/ANTLRInputStream";
-import { ASPCore2Lexer } from '../../parser/ASPCore2Lexer';
+import { ASPCore2Lexer } from "../../../src/parser/ASPCore2Lexer";
 import { tokenize } from '../../parsing';
 
 //Test
