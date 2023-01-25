@@ -118,7 +118,7 @@ export function getASPIntellisenseProvider(context: vscode.ExtensionContext): vs
 	};
 }
 
-function addEntryInAutocompleteItems(completionItems : vscode.CompletionItem[], elem: any, completionItemKind : vscode.CompletionItemKind ){
+export function addEntryInAutocompleteItems(completionItems : vscode.CompletionItem[], elem: any, completionItemKind : vscode.CompletionItemKind ){
                     completionItems.push(new vscode.CompletionItem(elem.label, completionItemKind));
                     completionItems[completionItems.length - 1].insertText = new vscode.SnippetString(elem.snippet);
                     completionItems[completionItems.length - 1].detail = elem.detail;
@@ -164,7 +164,7 @@ export function getASPIntellisenseHoverProvider(context: vscode.ExtensionContext
     };
 }
 
-function readDictionariesandMergeIt(context: vscode.ExtensionContext): any{
+export function readDictionariesandMergeIt(context: vscode.ExtensionContext): any{
     const languages_constants = dictionarizer(context.asAbsolutePath(PATH_TO_JSON_DICTIONARY.CONSTANTS));
     const builtins = dictionarizer(context.asAbsolutePath(PATH_TO_JSON_DICTIONARY.BUILTINS));
     const aggregates = dictionarizer(context.asAbsolutePath(PATH_TO_JSON_DICTIONARY.AGGREGATES));
@@ -174,12 +174,14 @@ function readDictionariesandMergeIt(context: vscode.ExtensionContext): any{
 }
 
 
-function isASPorDLVorLP(filename:string){
+export function isASPorDLVorLP(filename:string){
     return filename.endsWith(".asp") || filename.endsWith(".dlv") || filename.endsWith(".lp");
 }
-function buildPredicates(commaOccurrences:number,match:RegExpMatchArray,arrayPredicates:IntelliDetail[]){
-    if(commaOccurrences < 0){
-        const matches2 = match[1].matchAll(DYNAMIC_PREDICATE_REGEXS.AUX_REGEX);
+export function buildPredicates(commaOccurrences:number,match:string,arrayPredicates:IntelliDetail[]){
+    if(commaOccurrences <= 0){
+        //ciao(X):-
+        //expected : {'label':ciao(_),'snippet':ciao(${1}),'detail':"(previous written predicates) "+label,"documentation": "**PREVIOUS PREDICATES**\n\n"+label+"\n\n---"}
+        const matches2 = match.matchAll(DYNAMIC_PREDICATE_REGEXS.AUX_REGEX);
 					let label = "";
                     let snippet = "";
 					for(const match2 of matches2){
@@ -200,7 +202,7 @@ function buildPredicates(commaOccurrences:number,match:RegExpMatchArray,arrayPre
 				}
 				snippetTag += ")";
 				parenthesis += ")";
-				const matches2 = match[1].matchAll(DYNAMIC_PREDICATE_REGEXS.AUX_REGEX);
+				const matches2 = match.matchAll(DYNAMIC_PREDICATE_REGEXS.AUX_REGEX);
 				let label = "";
 				let snippet = "";
 				for(const match2 of matches2){
@@ -243,7 +245,7 @@ export function fillDictionaryWithDynamicPredicates(){
 					}
 				}
 				if(commaOccurrences < 0){
-                    buildPredicates(commaOccurrences,match,arrayPredicates);
+                    buildPredicates(commaOccurrences,match[1],arrayPredicates);
 					continue;
 				}
 				let parenthesis = "(_";
@@ -254,7 +256,7 @@ export function fillDictionaryWithDynamicPredicates(){
 					parenthesis = parenthesis + ",_";
 					snippetTag = snippetTag + ",${"+counter+"}";
 				}
-				buildPredicates(commaOccurrences,match,arrayPredicates);
+				buildPredicates(commaOccurrences,match[1],arrayPredicates);
 			}
 			//Noi dobbiamo aggiungere questi valori trovati, alla chiave, senza sovrascrivere quelli precedenti
 			dd.add_field(fileNameKey,arrayPredicates); 
@@ -265,12 +267,18 @@ export function fillDictionaryWithDynamicPredicates(){
 }
 
 
-function sanitizeTerms(terms:string){
-    terms = terms.replace(" ","").replace(/\w+\(/,"").replace(").","").replace(/\w+\(/,"").replace(")|","").replace(/\w+\(/,"").replace("):-","").replace("),","");
+export function sanitizeTerms(terms:string){
+    terms = terms.replace(" ","")
+    .replace(/\w+\(/,"")
+    .replace(").","").
+    replace(")|","").
+    replace("):-","").
+    replace("),","").
+    replace(")","");
      return terms;
 }
 
-function onlyUnique(value:string, index:number, self:string[]) {
+export function onlyUnique(value:string, index:number, self:string[]) {
     return self.indexOf(value) === index;
   }
 

@@ -20,8 +20,8 @@ export class Prompter implements vscode.CodeActionProvider {
 		vscode.CodeActionKind.QuickFix
 	];
 
-	private addFixers(match:string,dictionary : any, document:vscode.TextDocument,range:vscode.Range, prefix:string, otherPrefix = "", result :any[]){
-		if(otherPrefix == ""){
+	public addFixers(match:string,dictionary : any, document:vscode.TextDocument,range:vscode.Range, prefix:string, otherPrefix = "", result :any[]){
+		if(otherPrefix == ""){ 
 		for(const elem of Object.values<any>(dictionary[prefix])) {
 			if(similarity(match,prefix+elem.label+"{")>=0.5 && similarity(match,prefix+elem.label+"{")<1.00){
 				const replaceWithRightBuiltin = this.createFix(document,range,prefix+elem.label+"{",(prefix+elem.label+"{").length);
@@ -44,7 +44,7 @@ export class Prompter implements vscode.CodeActionProvider {
 	}
 	}
 
-	private addConstantFixer(m1:string,constantsDict:any,document:vscode.TextDocument,range:vscode.Range,result:any[]){
+	public addConstantFixer(m1:string,constantsDict:any,document:vscode.TextDocument,range:vscode.Range,result:any[]){
 		for(const elem of Object.values<any>(constantsDict['language-constants'])) {
 						
 			if(similarity(m1,elem) == 1.00){
@@ -60,7 +60,7 @@ export class Prompter implements vscode.CodeActionProvider {
 		}
 	}
 
-	private addDynamicPredicateFixer(m1:string,dd:DynamicPredicateDictionary,key:string,document:vscode.TextDocument,range:vscode.Range,result:any[]){
+	public addDynamicPredicateFixer(m1:string,dd:DynamicPredicateDictionary,key:string,document:vscode.TextDocument,range:vscode.Range,result:any[]){
 		for(const elem of Object.values<any>(dd.get_field(key))) {
 			const indexOf = elem.label.indexOf("(");
 			const substringToCompare = elem.label.substring(0,indexOf);
@@ -75,8 +75,8 @@ export class Prompter implements vscode.CodeActionProvider {
 
 
 	public provideCodeActions(document: vscode.TextDocument, range: vscode.Range): vscode.CodeAction[] | undefined {
-	
 	const result : any[]= [];
+
 	if (this.isAtStartOfBuiltins(document, range)) {
 		
 		let builtinsDict = dictionarizer(this.context.asAbsolutePath(PATH_TO_JSON_DICTIONARY.BUILTINS)); //La dobbiamo leggere da aggregates.json
@@ -106,13 +106,13 @@ export class Prompter implements vscode.CodeActionProvider {
 		let aggregatesDict = dictionarizer(this.context.asAbsolutePath(PATH_TO_JSON_DICTIONARY.AGGREGATES)); //La dobbiamo leggere da aggregates.json
 		const start = range.start;
 		const line = document.lineAt(start.line).text;
-		const aggregateRegex = /(#\w+)\{/gm; //#count{}
+		const aggregateRegex = /(#\w+)\{/gm; 
 		const matches = line.matchAll(aggregateRegex);
 		if(matches){
 		for(const match of matches){
 			const m1 = match[1];			
 			if(m1){
-				this.addFixers(m1,aggregatesDict,document,range,"#","",result); //#coutn
+				this.addFixers(m1,aggregatesDict,document,range,"#","",result);
 				//&coutn
 				if(result.length == 0){
 					aggregatesDict = dictionarizer(this.context.asAbsolutePath(PATH_TO_JSON_DICTIONARY.BUILTINS));
@@ -158,51 +158,49 @@ export class Prompter implements vscode.CodeActionProvider {
 		
 	}
 
-	
-	
 	return result;
 	}
 
-	private isAtStartOfAggregate(document:vscode.TextDocument,range:vscode.Range){
+	public isAtStartOfAggregate(document:vscode.TextDocument,range:vscode.Range){
 		const start = range.start;
 		const line = document.lineAt(start.line);
 		return line.text[start.character] === "#";
 	}
 
-	private isAtStartOfBuiltins(document:vscode.TextDocument,range:vscode.Range){
+	public isAtStartOfBuiltins(document:vscode.TextDocument,range:vscode.Range){
 		const start = range.start;
 		const line = document.lineAt(start.line);
 		return line.text[start.character] === "&";
 	}
 
-	private isAtStartOfDynamicPredicates(document:vscode.TextDocument,range:vscode.Range){
+	public isAtStartOfDynamicPredicates(document:vscode.TextDocument,range:vscode.Range){
 		const start = range.start;
 		const line = document.lineAt(start.line);
 		return line.text[start.character].match(/[a-zA-Z]/gm);
 	}
 
-	private isAtStartOfConstants(document:vscode.TextDocument,range:vscode.Range){
+	public isAtStartOfConstants(document:vscode.TextDocument,range:vscode.Range){
 		const start = range.start;
 		const line = document.lineAt(start.line);
 		return line.text[start.character].match(/[A-Z_]/gm);
 	}
 
 
-	private createFix(document: vscode.TextDocument, range: vscode.Range, expected_string: string, endstring=2): vscode.CodeAction {
+	public createFix(document: vscode.TextDocument, range: vscode.Range, expected_string: string, endstring=2): vscode.CodeAction {
 		const fix = new vscode.CodeAction(`Convert to ${expected_string}`, vscode.CodeActionKind.QuickFix);
 		fix.edit = new vscode.WorkspaceEdit();
 		fix.edit.replace(document.uri, new vscode.Range(range.start, range.start.translate(0, endstring)), expected_string);
 		return fix;
 	}
 
-	private createCommand(): vscode.CodeAction {
+	public createCommand(): vscode.CodeAction {
 		const action = new vscode.CodeAction('Learn more about ASP', vscode.CodeActionKind.Empty);
 		action.command = { command: COMMAND, title: 'Learn more about ASP', tooltip: 'This will open the ASP documentation.' };
 		return action;
 	}
 }
 
-export class BuiltinAggregateInfo implements vscode.CodeActionProvider {
+export class PrompterInfo implements vscode.CodeActionProvider {
 
 	public static readonly providedCodeActionKinds = [
 		vscode.CodeActionKind.QuickFix
@@ -215,7 +213,7 @@ export class BuiltinAggregateInfo implements vscode.CodeActionProvider {
 			.map(diagnostic => this.createCommandCodeAction(diagnostic));
 	}
 
-	private createCommandCodeAction(diagnostic: vscode.Diagnostic): vscode.CodeAction {
+	public createCommandCodeAction(diagnostic: vscode.Diagnostic): vscode.CodeAction {
 		const action = new vscode.CodeAction('Fix rule', vscode.CodeActionKind.QuickFix);
 		action.command = { command: COMMAND, title: 'Fix rule.', tooltip: 'Fix rule' };
 		

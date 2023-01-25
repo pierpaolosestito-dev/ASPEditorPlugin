@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
 import { subscribeToDocumentChanges } from './diagnostics';
 import { getASPIntellisenseProvider,getASPIntellisenseHoverProvider,fillDictionaryWithDynamicPredicates,fillDictionaryWithDynamicTerms} from './intellisense';
-import { Prompter,	BuiltinAggregateInfo } from './prompter';
+import { Prompter,	PrompterInfo } from './prompter';
 import { CodePanelViewProvider } from './cpanel/code_panel_view_provider';
 
 
@@ -33,8 +33,8 @@ const COMMAND = 'code-actions-sample.command';
 	subscribeToDocumentChanges(context, emojiDiagnostics);
 
 	context.subscriptions.push(
-		vscode.languages.registerCodeActionsProvider('asp', new BuiltinAggregateInfo(), {
-			providedCodeActionKinds: BuiltinAggregateInfo.providedCodeActionKinds
+		vscode.languages.registerCodeActionsProvider('asp', new PrompterInfo(), {
+			providedCodeActionKinds: PrompterInfo.providedCodeActionKinds
 		})
 	);
 
