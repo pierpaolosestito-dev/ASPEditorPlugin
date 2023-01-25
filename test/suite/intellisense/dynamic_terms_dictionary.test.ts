@@ -1,6 +1,6 @@
 import 'mocha';
 import * as assert from 'assert';
-import { DynamicTermsDictionary } from '../../intellisense/dynamic_terms_dictionary';
+import { DynamicTermsDictionary } from '../../../src/intellisense/dynamic_terms_dictionary';
 
 suite('Dynamic Terms Dictionary Test Suite', () => {
 	test("Dynamic Terms Dictionary is singleton",()=>{

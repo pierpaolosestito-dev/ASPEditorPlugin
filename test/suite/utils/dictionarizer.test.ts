@@ -1,6 +1,6 @@
 import 'mocha';
 import * as assert from 'assert';
-import { dictionarizer } from '../../utils/dictionarizer';
+import { dictionarizer } from '../../../src/utils/dictionarizer';
 import { PATH_TO_JSON_DICTIONARY } from '../../utils/consts';
 
 

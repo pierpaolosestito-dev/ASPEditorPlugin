@@ -1,6 +1,6 @@
 import 'mocha';
 import * as assert from 'assert';
-import { similarity } from '../../utils/similarity';
+import { similarity } from '../../../src/utils/similarity';
 
 suite('Similarity Test Suite', () => {
 	
