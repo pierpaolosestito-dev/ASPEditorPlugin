@@ -10,7 +10,8 @@
 #count{_,_:ciao(x,y),prova(_,_)}.
 
 %/ commento
-multilinea /%
+multilinea 
+/%
 
 #count{ _ , _ : ciao( x , y ) }. %commento
 #count{ X , _ : ciao( x , y ) }.
