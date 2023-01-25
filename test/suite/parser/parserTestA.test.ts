@@ -4,7 +4,7 @@ import * as assert from 'assert';
 import { CommonTokenStream } from "antlr4ts";
 import { ANTLRInputStream } from "antlr4ts/ANTLRInputStream";
 import { ASPCore2Lexer } from "../../../src/parser/ASPCore2Lexer";
-import { tokenize } from '../../parsing';
+import { tokenize } from "../../../src/parsing";
 
 //Test
 suite('Dummy test',
