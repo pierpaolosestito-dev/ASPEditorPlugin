@@ -1,4 +1,7 @@
-<img src="/images/icon.png" alt="Paris" style="width:50%;display:block;margin-left:auto;margin-right:auto;">
+<div align="center">
+	<img src="/images/icon.png">
+</div>
+
 # ASP Editor Plugin
 
 Brief description.
