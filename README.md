@@ -56,3 +56,57 @@ Adding to this list It also helps in <b>Predicates</b> written before in the cod
 [GIF]
 [Brief description]
 
+
+# Contributors
+
+<ul style="display: inline-block;">
+
+<li style="display: inline-block;" class="mb-2 mr-2">
+      <a href="https://github.com/pierpaolosestito-dev" class="" data-hovercard-type="user" data-hovercard-url="/users/pierpaolosestito-dev/hovercard" data-octo-click="hovercard-link-click" data-octo-dimensions="link_type:self">
+        <img src="https://avatars.githubusercontent.com/u/112246529?s=64&amp;v=4" alt="@pierpaolosestito-dev" style="border-radius:50%" size="32" height="32" width="32" data-view-component="true" class="avatar circle">
+      </a>
+    </li>
+
+<li style="display: inline-block;" class="mb-2 mr-2">
+      <a href="https://github.com/gioiannu" class="" data-hovercard-type="user" data-hovercard-url="/users/gioiannu/hovercard" data-octo-click="hovercard-link-click" data-octo-dimensions="link_type:self">
+        <img src="https://avatars.githubusercontent.com/u/43842097?s=64&amp;v=4" alt="@gioiannu" style="border-radius:50%" size="32" height="32" width="32" data-view-component="true" class="avatar circle">
+      </a>
+    </li>
+
+<li style="display: inline-block;" class="mb-2 mr-2">
+      <a href="https://github.com/FrancescaMurano" class="" data-hovercard-type="user" data-hovercard-url="/users/FrancescaMurano/hovercard" data-octo-click="hovercard-link-click" data-octo-dimensions="link_type:self">
+        <img src="https://avatars.githubusercontent.com/u/72566115?s=64&amp;v=4" alt="@FrancescaMurano" style="border-radius:50%" size="32" height="32" width="32" data-view-component="true" class="avatar circle">
+      </a>
+    </li>
+
+<li style="display: inline-block;" class="mb-2 mr-2">
+      <a href="https://github.com/aleff-github" class="" data-hovercard-type="user" data-hovercard-url="/users/aleff-github/hovercard" data-octo-click="hovercard-link-click" data-octo-dimensions="link_type:self">
+        <img src="https://avatars.githubusercontent.com/u/58374531?s=64&amp;v=4" alt="@aleff-github" style="border-radius:50%" size="32" height="32" width="32" data-view-component="true" class="avatar circle">
+      </a>
+    </li>
+
+<li style="display: inline-block;" class="mb-2 mr-2">
+      <a href="https://github.com/whyskeey" class="" data-hovercard-type="user" data-hovercard-url="/users/whyskeey/hovercard" data-octo-click="hovercard-link-click" data-octo-dimensions="link_type:self">
+        <img src="https://avatars.githubusercontent.com/u/73330893?v=4" alt="@whyskeey" style="border-radius:50%" size="32" height="32" width="32" data-view-component="true" class="avatar circle">
+      </a>
+    </li>
+
+<li style="display: inline-block;" class="mb-2 mr-2">
+      <a href="https://github.com/AleandroPresta" class="" data-hovercard-type="user" data-hovercard-url="/users/AleandroPresta/hovercard" data-octo-click="hovercard-link-click" data-octo-dimensions="link_type:self">
+        <img src="https://avatars.githubusercontent.com/u/37838171?s=64&amp;v=4" alt="@AleandroPresta" style="border-radius:50%" size="32" height="32" width="32" data-view-component="true" class="avatar circle">
+      </a>
+    </li>
+
+<li style="display: inline-block;" class="mb-2 mr-2">
+      <a href="https://github.com/GabrielTripodi" class="" data-hovercard-type="user" data-hovercard-url="/users/GabrielTripodi/hovercard" data-octo-click="hovercard-link-click" data-octo-dimensions="link_type:self">
+        <img src="https://avatars.githubusercontent.com/u/73585557?s=64&amp;v=4" alt="@GabrielTripodi" style="border-radius:50%" size="32" height="32" width="32" data-view-component="true" class="avatar circle">
+      </a>
+    </li>
+
+<li style="display: inline-block;" class="mb-2 mr-2">
+      <a href="https://github.com/Cris23-prog" class="" data-hovercard-type="user" data-hovercard-url="/users/Cris23-prog/hovercard" data-octo-click="hovercard-link-click" data-octo-dimensions="link_type:self">
+        <img src="https://avatars.githubusercontent.com/u/73585475?v=4" alt="@Cris23-prog" style="border-radius:50%" size="32" height="32" width="32" data-view-component="true" class="avatar circle">
+      </a>
+    </li>
+
+</ul>
