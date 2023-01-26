@@ -1,4 +1,4 @@
-![DLV Logo](/images/icon.png){ width="800" height="600" style="display: block; margin: 0 auto" }
+<img src="/images/icon.png" alt="Paris" style="width:50%;display:block;margin-left:auto;margin-right:auto;">
 # ASP Editor Plugin
 
 Brief description.
