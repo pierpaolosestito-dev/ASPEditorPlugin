@@ -308,14 +308,9 @@ export function fillDictionaryWithDynamicPredicates(){
 
 
 export function sanitizeTerms(terms:string){
-    terms = terms.replace(" ","")
-    .replace(/\w+\(/,"")
-    .replace(").","").
-    replace(")|","").
-    replace("):-","").
-    replace("),","").
-    replace(")","");
+    terms = terms.replaceAll(" ","").replace(/\w+\(/,"").replace(").","").replace(/\w+\(/,"").replace(")|","").replace(/\w+\(/,"").replace("):-","").replace("),","");
      return terms;
+    
 }
 
 export function onlyUnique(value:string, index:number, self:string[]) {

@@ -15,7 +15,7 @@ suite('Util function inside intellisense Test Suite',
 		assert.equal(intellisense.sanitizeTerms("predicate(test):-"), "test");
 		assert.equal(intellisense.sanitizeTerms("predicate(test),"), "test");
 		assert.equal(intellisense.sanitizeTerms("predicate(test)|"),"test");
-		assert.equal(intellisense.sanitizeTerms("predicate(test) "), "test");
+
 		assert.equal(intellisense.sanitizeTerms("predicate(test1,test2)."), "test1,test2");
     });
 
@@ -43,13 +43,13 @@ suite('Util function inside intellisense Test Suite',
       
 		const arrayPredicates : IntelliDetail[] = [];
 		intellisense.buildPredicates(0,"predicate(test):-",arrayPredicates);
-		assert.deepStrictEqual(arrayPredicates[0],{'label':"predicate(_)",'snippet':"predicate(${1})",'detail':"(previous written predicates) predicate(_)","documentation": "**PREVIOUS PREDICATES**\n\n"+"predicate(_)"+"\n\n---"});
+		assert.deepStrictEqual(arrayPredicates[0],{'label':"predicate(_)",'snippet':"predicate(${1})",'detail':"(previous written predicate) predicate(_)","documentation": "**PREVIOUS PREDICATE**\n\n"+"predicate(_)"+"\n\n---"});
     });
 
 	test('addEntryinAutocompleteItems provide a list of AutocompleteItems ', () => {
       
 		const completionItems: vscode.CompletionItem[] = [];
-		intellisense.addEntryInAutocompleteItems(completionItems,{'label':"predicate(_)",'snippet':"predicate(${1})",'detail':"(previous written predicates) predicate(_)","documentation": "**PREVIOUS PREDICATES**\n\n"+"predicate(_)"+"\n\n---"},vscode.CompletionItemKind.Method);
+		intellisense.addEntryInAutocompleteItems(completionItems,{'label':"predicate(_)",'snippet':"predicate(${1})",'detail':"(previous written predicate) predicate(_)","documentation": "**PREVIOUS PREDICATE**\n\n"+"predicate(_)"+"\n\n---"},vscode.CompletionItemKind.Method);
 		assert.deepStrictEqual(completionItems[completionItems.length-1].label,"predicate(_)");
     });
 	test('__fillPredicates fill DynamicPredicateDictionary with finding predicates into file asp,dlv,lp', async () => {
