@@ -16,7 +16,21 @@ Brief description.
 # Intellisense
 
 [GIF]
-[Brief description]
+
+<p>This extension provides a <b>code completion tool</b>.
+<b>IntelliSense</b> attempts to guess what the developer to type in order to complete and helps him in the line of code.
+Using this tool may reduce typographical and synctactical errors.</p>
+
+<p><b>In particular, it provides:</b></p>
+	<ul>
+		<li>Builtins</li>
+		<li>Aggregates</li>
+		<li>Constants</li>
+		<li>Predicates (written by developer)</li>
+		<li>Terms (for each Predicates, written by developer)</li>
+	</ul>
+
+<p><b>Code completions.</b></p>
 
 # CodeDiagnostics
 
@@ -26,7 +40,15 @@ Brief description.
 # Prompter
 
 [GIF]
-[Brief description]
+
+<p>This extension provides a <b>code prompter tool.</b>
+Prompter will <b>helps</b> developer <b>to fix</b> line of code that contains </b>error</b> in:
+<ul>
+	<li>Builtins</li>
+	<li>Aggregates</li>
+	<li>Constants</li>
+</ul>
+Adding to this list It also helps in <b>Predicates</b> written before in the code.</p>
 
 # CodeCookbook
 
