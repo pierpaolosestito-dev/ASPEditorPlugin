@@ -120,15 +120,20 @@ export function createDiagnostic(
 	lineIndex: number,
 	codeError: string,
 	severity: vscode.DiagnosticSeverity,
-	//endCharacter?: number 
 ): vscode.Diagnostic {
-
+	let endCharacter = undefined;
+	if(lineOfText.text.includes("%/")) {
+		endCharacter = lineOfText.text.search("%");
+	}
+	else {
+		endCharacter = lineOfText.text.length;
+	}
 	// const index = lineOfText.text.indexOf(END_CHARACTER_OF_A_RULE);
 	const range = new vscode.Range(
 		lineIndex,
 		0,
 		lineIndex,
-		0 + lineOfText.text.length
+		0 + endCharacter
 	);
 
 	const diagnostic = new vscode.Diagnostic(

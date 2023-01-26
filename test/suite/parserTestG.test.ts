@@ -7,20 +7,20 @@ import { ASPCore2Lexer } from "../../src/parser/ASPCore2Lexer";
 import { ASPCore2Parser } from "../../src/parser/ASPCore2Parser";
 import { Interval } from "antlr4ts/misc/Interval";
 import * as assert from 'assert';
-import * as path from 'path';
 import * as vscode from "vscode";
 import 'mocha';
 
 
 suite('Error for syntax errors',
   () => {
-    const path_file = "../../../test/suite/testSyntaxErrors.asp";
     //Descrizione del risultato del test
     test('should show an error if there are syntax errors', async () => {
-      await vscode.workspace.openTextDocument(path.resolve(__dirname, path_file)).then(doc => {
+      await vscode.workspace.openTextDocument({
+        content: 'node(1)\narc(1,). arc(2,1). arc(3,).\narc(1,). arc(2,1). arc(3,). %/ COMMENTO\nMULTILINEA /% node(1)'
+      }).then(doc => {
         const startCharacters: number[] = [0, 0, 19, 0, 19, 13];
         const diagnostics: vscode.Diagnostic[] = [];
-        for (let lineIndex = 0; lineIndex < 4; lineIndex++) {
+        for (let lineIndex = 0; lineIndex < doc.lineCount; lineIndex++) {
           const lineOfText = doc.lineAt(lineIndex);
           const tokens = trasformText(lineOfText.text);
           const aspParser = new ASPCore2Parser(tokens);
@@ -51,15 +51,17 @@ suite('Error for syntax errors',
           });
           aspParser.program();
         }
-        assert.strictEqual(diagnostics.length, 6); //Asserzione
+        assert.strictEqual(diagnostics.length, 6);
       });
     });
 
     //Descrizione del risultato del test
     test('should show an error if there are syntax errors', async () => {
-      await vscode.workspace.openTextDocument(path.resolve(__dirname, path_file)).then(doc => {
+      await vscode.workspace.openTextDocument({
+        content: 'reached(X) :- start(X)'
+      }).then(doc => {
         const diagnostics: vscode.Diagnostic[] = [];
-        const lineOfText = doc.lineAt(5);
+        const lineOfText = doc.lineAt(0);
         const tokens = trasformText(lineOfText.text);
         const aspParser = new ASPCore2Parser(tokens);
         aspParser.removeErrorListeners();
@@ -74,29 +76,31 @@ suite('Error for syntax errors',
           ): void {
             if ((lineOfText.text.includes("/%") && lineOfText.text.search(new RegExp(`/%\\s*.+`)) != -1)
               || (lineOfText.text.includes("**%") && lineOfText.text.search(new RegExp(`\\*\\*%\\s*.+`)) != -1)) {
-              const diagnostic = createDiagnosticForEndCommentsAndTests(doc, lineOfText, 5, msg, vscode.DiagnosticSeverity.Error);
+              const diagnostic = createDiagnosticForEndCommentsAndTests(doc, lineOfText, 0, msg, vscode.DiagnosticSeverity.Error);
               diagnostics.push(diagnostic);
               const line = diagnostic.range.start.line;
-              assert.strictEqual(line, 5);
+              assert.strictEqual(line, 0);
             }
             else {
-              const diagnostic = createDiagnosticForFacts(doc, lineOfText, 5, charPositionInLine, msg, vscode.DiagnosticSeverity.Error);
+              const diagnostic = createDiagnosticForFacts(doc, lineOfText, 0, charPositionInLine, msg, vscode.DiagnosticSeverity.Error);
               diagnostics.push(diagnostic);
               const line = diagnostic.range.start.line;
-              assert.strictEqual(line, 5);
+              assert.strictEqual(line, 0);
             }
           },
         });
         aspParser.program();
-        assert.strictEqual(diagnostics.length, 1); //Asserzione
+        assert.strictEqual(diagnostics.length, 1);
       });
     });
 
     //Descrizione del risultato del test
     test('should show an error if there are syntax errors', async () => {
-      await vscode.workspace.openTextDocument(path.resolve(__dirname, path_file)).then(doc => {
+      await vscode.workspace.openTextDocument({
+        content: 'start(0). arc(3,2,).\ninPath(X,Y) | outPath(X,Y) : arc(X,Y).\nreached(X) :- start(X)'
+      }).then(doc => {
         const diagnostics: vscode.Diagnostic[] = [];
-        for (let lineIndex = 7; lineIndex < doc.lineCount; lineIndex++) {
+        for (let lineIndex = 0; lineIndex < doc.lineCount; lineIndex++) {
           const lineOfText = doc.lineAt(lineIndex);
           const tokens = trasformText(lineOfText.text);
           const aspParser = new ASPCore2Parser(tokens);
@@ -127,17 +131,18 @@ suite('Error for syntax errors',
           });
           aspParser.program();
         }
-        assert.strictEqual(diagnostics.length, 3); //Asserzione
+        assert.strictEqual(diagnostics.length, 3);
       });
     });
   });
 
 suite('Warning for rule not safe',
   () => {
-    const path_file = "../../../test/suite/testRuleNotSafe.asp";
     //Descrizione del risultato del test
     test('should show a warning if a rule is not safe', async () => {
-      await vscode.workspace.openTextDocument(path.resolve(__dirname, path_file)).then(doc => {
+      await vscode.workspace.openTextDocument({
+        content: 's(X) :- body.'
+      }).then(doc => {
         const diagnostics: vscode.Diagnostic[] = [];
         const lineOfText = doc.lineAt(0);
         const tokens = trasformText(lineOfText.text);
@@ -156,38 +161,42 @@ suite('Warning for rule not safe',
     });
 
     test('should show a warning if a rule is not safe', async () => {
-      await vscode.workspace.openTextDocument(path.resolve(__dirname, path_file)).then(doc => {
+      await vscode.workspace.openTextDocument({
+        content: 's(Y) :- b(X), not r(X).'
+      }).then(doc => {
         const diagnostics: vscode.Diagnostic[] = [];
-        const lineOfText = doc.lineAt(2);
+        const lineOfText = doc.lineAt(0);
         const tokens = trasformText(lineOfText.text);
         const constructs: [string, number, number][] = tokenize(tokens);
         const atoms: string[] = [];
         const [heads, tails, tails_negative, tails_in_symbols] = tokenize_head_tail(constructs, atoms);
-        const msg = `The rule at line 3 is not safe`;
+        const msg = `The rule at line 0 is not safe`;
         if (!checkSafe(heads, tails, tails_negative, tails_in_symbols) && checkIsRule(constructs)) {
-          const diagnostic = createDiagnostic(doc, lineOfText, 2, msg, vscode.DiagnosticSeverity.Warning);
+          const diagnostic = createDiagnostic(doc, lineOfText, 0, msg, vscode.DiagnosticSeverity.Warning);
           diagnostics.push(diagnostic);
           const line = diagnostic.range.start.line;
-          assert.strictEqual(line, 2);
+          assert.strictEqual(line, 0);
         }
         assert.strictEqual(diagnostics.length, 1); //Asserzione
       });
     });
 
     test('should show a warning if a rule is not safe', async () => {
-      await vscode.workspace.openTextDocument(path.resolve(__dirname, path_file)).then(doc => {
+      await vscode.workspace.openTextDocument({
+        content: 's(Y) :- b(X), X<Y.'
+      }).then(doc => {
         const diagnostics: vscode.Diagnostic[] = [];
-        const lineOfText = doc.lineAt(4);
+        const lineOfText = doc.lineAt(0);
         const tokens = trasformText(lineOfText.text);
         const constructs: [string, number, number][] = tokenize(tokens);
         const atoms: string[] = [];
         const [heads, tails, tails_negative, tails_in_symbols] = tokenize_head_tail(constructs, atoms);
-        const msg = `The rule at line 5 is not safe`;
+        const msg = `The rule at line 0 is not safe`;
         if (!checkSafe(heads, tails, tails_negative, tails_in_symbols) && checkIsRule(constructs)) {
-          const diagnostic = createDiagnostic(doc, lineOfText, 4, msg, vscode.DiagnosticSeverity.Warning);
+          const diagnostic = createDiagnostic(doc, lineOfText, 0, msg, vscode.DiagnosticSeverity.Warning);
           diagnostics.push(diagnostic);
           const line = diagnostic.range.start.line;
-          assert.strictEqual(line, 4);
+          assert.strictEqual(line, 0);
         }
         assert.strictEqual(diagnostics.length, 1); //Asserzione
       });
@@ -197,12 +206,13 @@ suite('Warning for rule not safe',
 //Test
 suite('Warning for atoms used only once',
   () => {
-    const path_file = "../../../test/suite/testAtoms.asp";
     //Descrizione del risultato del test
     test('should show a warning if an atom is used only once', async () => {
-      await vscode.workspace.openTextDocument(path.resolve(__dirname, path_file)).then(doc => {
+      await vscode.workspace.openTextDocument({
+        content: 'node(1).\nstart(0). arc(1,2).'
+      }).then(doc => {
         const diagnostics: vscode.Diagnostic[] = [];
-        for (let lineIndex = 0; lineIndex < 2; lineIndex++) {
+        for (let lineIndex = 0; lineIndex < doc.lineCount; lineIndex++) {
           const lineOfText = doc.lineAt(lineIndex);
           const tokens = trasformText(lineOfText.text);
           const constructs: [string, number, number][] = tokenize(tokens);
@@ -228,10 +238,12 @@ suite('Warning for atoms used only once',
     });
 
     test('should show a warning if an atom is used only once', async () => {
-      await vscode.workspace.openTextDocument(path.resolve(__dirname, path_file)).then(doc => {
-        //let warning = 0;
+      await vscode.workspace.openTextDocument({
+        content: 'strategic(Y) | strategic(Z) :- produced_by(X, Y, Z).\n' +
+          'strategic(W) :- controlled_by(W, X, Y, Z), strategic(X), strategic(Y), strategic(Z).'
+      }).then(doc => {
         const diagnostics: vscode.Diagnostic[] = [];
-        for (let lineIndex = 3; lineIndex < 5; lineIndex++) {
+        for (let lineIndex = 0; lineIndex < doc.lineCount; lineIndex++) {
           const lineOfText = doc.lineAt(lineIndex);
           const tokens = trasformText(lineOfText.text);
           const constructs: [string, number, number][] = tokenize(tokens);
@@ -256,11 +268,15 @@ suite('Warning for atoms used only once',
       });
     });
 
-
     test('should show a warning if an atom is used only once', async () => {
-      await vscode.workspace.openTextDocument(path.resolve(__dirname, path_file)).then(doc => {
+      await vscode.workspace.openTextDocument({
+        content: '%/\nVERTEX COVER\nGiven a graph, select a subset S of the vertices so that all edges are\n' +
+          'covered (i.e., every edge has at least one of the two vertices in S)\n/%\n' +
+          'node(1). node(2). node(3). edge(1,2). edge(1,3).\ninS(X) | outS(X) :- node(X).\n' +
+          ':- edge(X,Y), not inS(X), not inS(Y).'
+      }).then(doc => {
         const diagnostics: vscode.Diagnostic[] = [];
-        for (let lineIndex = 6; lineIndex < doc.lineCount; lineIndex++) {
+        for (let lineIndex = 0; lineIndex < doc.lineCount; lineIndex++) {
           const lineOfText = doc.lineAt(lineIndex);
           const tokens = trasformText(lineOfText.text);
           const constructs: [string, number, number][] = tokenize(tokens);
@@ -289,10 +305,11 @@ suite('Warning for atoms used only once',
 
 suite('Input to pass to the parser',
   () => {
-    const path_file = "../../../test/suite/testInputText.asp";
     //Descrizione del risultato del test
     test('checks the input if something is written before a start of multiline comment/test', async () => {
-      await vscode.workspace.openTextDocument(path.resolve(__dirname, path_file)).then(doc => {
+      await vscode.workspace.openTextDocument({
+        content: 'inTree(X,Y) | outTree(X,Y) :- edge(X,Y,C). %/ Guess the edges that are part of the tree /%'
+      }).then(doc => {
         const lineOfText = doc.lineAt(0);
         const [input, runDiagnostic] = input_text(lineOfText);
         const line = input.getText(new Interval(0, input.size - 2));
@@ -302,8 +319,11 @@ suite('Input to pass to the parser',
     });
 
     test('checks the input if something is written after the end of a multiline comment/test', async () => {
-      await vscode.workspace.openTextDocument(path.resolve(__dirname, path_file)).then(doc => {
-        const lineOfText = doc.lineAt(3);
+      await vscode.workspace.openTextDocument({
+        content: '%/ A DIRECTED GRAPH REPRESENTED BY NODE(_) AND ARC(_,_),AND A STARTING NODE START(_)\n' +
+          'FIND A PATH BEGINNING AT THE STARTING NODE WHICH CONTAINS ALL NODES OF THE PATH. /% node(1). node(2). node(3). node(4).'
+      }).then(doc => {
+        const lineOfText = doc.lineAt(1);
         const [input, runDiagnostic] = input_text(lineOfText);
         const line = input.getText(new Interval(1, input.size - 1));
         assert.strictEqual(line, "node(1). node(2). node(3). node(4).");
@@ -312,8 +332,12 @@ suite('Input to pass to the parser',
     });
 
     test('checks if the input taken is correct', async () => {
-      await vscode.workspace.openTextDocument(path.resolve(__dirname, path_file)).then(doc => {
-        for (let lineIndex = 5; lineIndex < doc.lineCount; lineIndex++) {
+      await vscode.workspace.openTextDocument({
+        content: 'node(1). node(2). node(3). edge(1,2). edge(1,3).\n' +
+          'inS(X) | outS(X) :- node(X).\n' +
+          ':- edge(X,Y), not inS(X), not inS(Y).'
+      }).then(doc => {
+        for (let lineIndex = 0; lineIndex < doc.lineCount; lineIndex++) {
           const lineOfText = doc.lineAt(lineIndex);
           const [input, runDiagnostic] = input_text(lineOfText);
           const line = input.getText(new Interval(0, input.size - 1));
@@ -322,7 +346,6 @@ suite('Input to pass to the parser',
         }
       });
     });
-
   });
 
 //Trasforma un input testuale in un CommonTokenStream, utilizzato nei test
