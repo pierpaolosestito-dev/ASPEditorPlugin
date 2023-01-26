@@ -1,7 +1,14 @@
+![DLV Logo](/images/icon.png){ width="800" height="600" style="display: block; margin: 0 auto" }
 # ASP Editor Plugin
 
 Brief description.
+# Syntax Highlighting
+[GIF]
+[Brief description]
 
+# Dark Theme and Light Theme
+[GIF]
+[Brief Description]
 
 # Intellisense
 
