@@ -34,34 +34,6 @@ export function refreshDiagnostics(
 		for (let lineIndex = 0; lineIndex < doc.lineCount; lineIndex++) {
 			const lineOfText = doc.lineAt(lineIndex);
 			const [input, runDiagnostic] = input_text(lineOfText);
-			/*
-			let input = undefined;
-			if((lineOfText.text.includes("%/") && !lineOfText.text.startsWith("%/")) || (lineOfText.text.includes("%**") && !lineOfText.text.startsWith("%**"))) {
-				runDiagnostic = true;
-				let splitText = undefined;
-				if(lineOfText.text.includes("%/")) {
-					splitText = lineOfText.text.split("%/");
-				}
-				else {
-					splitText = lineOfText.text.split("%**");
-				}
-				input = new ANTLRInputStream(splitText[0]);
-			}
-			else if((lineOfText.text.includes("/%") && !lineOfText.text.endsWith("/%")) || (lineOfText.text.includes("**%") && !lineOfText.text.endsWith("**%"))) {
-				runDiagnostic = true;
-				let split = undefined;
-				if(lineOfText.text.includes("/%")) {
-					split = lineOfText.text.split("/%");
-				}
-				else {
-					split = lineOfText.text.split("**%");
-				}
-				input = new ANTLRInputStream(split[1]);
-			}
-			else {
-				runDiagnostic = false;
-				input = new ANTLRInputStream(lineOfText.text);
-			}*/
 			const aspLexer = new ASPCore2Lexer(input);
 			const tokens = new CommonTokenStream(aspLexer);
 			tokens.fill();
@@ -72,11 +44,11 @@ export function refreshDiagnostics(
 			}
 			if (lineOfText.text.includes("/%") || lineOfText.text.includes("**%")) {
 				opened = false;
-				if(!runDiagnostic) {
+				if (!runDiagnostic) {
 					continue;
 				}
 			}
-			if (!opened  || runDiagnostic) {
+			if (!opened || runDiagnostic) {
 				aspParser.addErrorListener({
 					syntaxError<T>(
 						recognizer: Recognizer<T, any>,
@@ -86,7 +58,8 @@ export function refreshDiagnostics(
 						msg: string,
 						e: Error | undefined
 					): void {
-						if((lineOfText.text.includes("/%") && !lineOfText.text.includes("%/")) || (lineOfText.text.includes("**%") && !lineOfText.text.includes("%**"))) {
+						if ((lineOfText.text.includes("/%") && lineOfText.text.search(new RegExp(`/%\\s*.+`)) != -1)
+							|| (lineOfText.text.includes("**%") && lineOfText.text.search(new RegExp(`\\*\\*%\\s*.+`)) != -1)) {
 							diagnostics.push(createDiagnosticForEndCommentsAndTests(doc, lineOfText, lineIndex, msg, vscode.DiagnosticSeverity.Error));
 						}
 						else {
@@ -141,13 +114,15 @@ function addWarningProbablyWrongName(diagnostics: vscode.Diagnostic[], atoms: st
 }
 
 //Crea una diagnostica, ovvero un oggetto di vscode che indica che errore c'è stato
-function createDiagnostic(
+export function createDiagnostic(
 	doc: vscode.TextDocument,
 	lineOfText: vscode.TextLine,
 	lineIndex: number,
 	codeError: string,
-	severity: vscode.DiagnosticSeverity
+	severity: vscode.DiagnosticSeverity,
+	//endCharacter?: number 
 ): vscode.Diagnostic {
+
 	// const index = lineOfText.text.indexOf(END_CHARACTER_OF_A_RULE);
 	const range = new vscode.Range(
 		lineIndex,
@@ -163,7 +138,7 @@ function createDiagnostic(
 	);
 	return diagnostic;
 }
-function createDiagnosticForEndCommentsAndTests(
+export function createDiagnosticForEndCommentsAndTests(
 	doc: vscode.TextDocument,
 	lineOfText: vscode.TextLine,
 	lineIndex: number,
@@ -172,7 +147,7 @@ function createDiagnosticForEndCommentsAndTests(
 ): vscode.Diagnostic {
 	let regex = undefined;
 	let startCharacter = 0;
-	if(lineOfText.text.includes("/%")) {
+	if (lineOfText.text.includes("/%")) {
 		regex = new RegExp(`/%\\s*.+`);
 		startCharacter += 2;
 	}
@@ -181,7 +156,7 @@ function createDiagnosticForEndCommentsAndTests(
 		startCharacter += 3;
 	}
 	startCharacter += lineOfText.text.search(regex);
-	const endCharacter = lineOfText.text.length - 1; 
+	const endCharacter = lineOfText.text.length - 1;
 	const range = new vscode.Range(
 		lineIndex,
 		startCharacter,
@@ -195,7 +170,7 @@ function createDiagnosticForEndCommentsAndTests(
 	);
 	return diagnostic;
 }
-function createDiagnosticForFacts(
+export function createDiagnosticForFacts(
 	doc: vscode.TextDocument,
 	lineOfText: vscode.TextLine,
 	lineIndex: number,
@@ -224,7 +199,7 @@ function createDiagnosticForFacts(
 	}
 	return createDiagnostic(doc, lineOfText, lineIndex, codeError, severity);
 }
-function createDiagnosticForAtoms(
+export function createDiagnosticForAtoms(
 	doc: vscode.TextDocument,
 	lineOfText: vscode.TextLine,
 	lineIndex: number,
