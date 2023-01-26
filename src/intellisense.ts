@@ -213,6 +213,45 @@ export function buildPredicates(commaOccurrences:number,match:string,arrayPredic
 				arrayPredicates.push(obj);
     }
 }
+export function __fillPredicates(fileContent:string,fileNameKey:string,dictionary:DynamicPredicateDictionary){
+    const splittedFileContent = fileContent.split("\n");
+		const arrayPredicates: IntelliDetail[] = [];
+        
+		for(let i=0;i<splittedFileContent.length;i++){
+			if(splittedFileContent[i].startsWith('%')){
+                continue;
+            }
+			const matches = splittedFileContent[i].matchAll(DYNAMIC_PREDICATE_REGEXS.FULL_REGEX);
+			for (const match of matches) {
+				
+				let commaOccurrences = -1;
+				if(match[1].includes(",")){
+					const m1 = match[1];
+					if(m1){
+						const m2 = m1.match(/,/g);
+						if(m2){
+							commaOccurrences = m2.length;
+						}
+					}
+				}
+				if(commaOccurrences < 0){
+                    buildPredicates(commaOccurrences,match[1],arrayPredicates);
+					continue;
+				}
+				let parenthesis = "(_";
+				let counter=1;
+				let snippetTag = "(${"+counter+"}";
+				for(let i=0;i<commaOccurrences;i++){
+					counter+=1;
+					parenthesis = parenthesis + ",_";
+					snippetTag = snippetTag + ",${"+counter+"}";
+				}
+				buildPredicates(commaOccurrences,match[1],arrayPredicates);
+			}
+			//Noi dobbiamo aggiungere questi valori trovati, alla chiave, senza sovrascrivere quelli precedenti
+			dictionary.add_field(fileNameKey,arrayPredicates);
+}
+}
 export function fillDictionaryWithDynamicPredicates(){
     const dd = DynamicPredicateDictionary.getInstance();
 	// eslint-disable-next-line no-useless-escape
@@ -223,8 +262,8 @@ export function fillDictionaryWithDynamicPredicates(){
 		if(isASPorDLVorLP(fileNameKey)){
 			
 		const fileContent = document.document.getText();
-
-		const splittedFileContent = fileContent.split("\n");
+        __fillPredicates(fileContent,fileNameKey,dd);   
+		/*const splittedFileContent = fileContent.split("\n");
 		const arrayPredicates: IntelliDetail[] = [];
         
 		for(let i=0;i<splittedFileContent.length;i++){
@@ -260,7 +299,8 @@ export function fillDictionaryWithDynamicPredicates(){
 			}
 			//Noi dobbiamo aggiungere questi valori trovati, alla chiave, senza sovrascrivere quelli precedenti
 			dd.add_field(fileNameKey,arrayPredicates); 
-		}                
+		}*/
+                     
 
 	}
 	});
@@ -281,6 +321,42 @@ export function sanitizeTerms(terms:string){
 export function onlyUnique(value:string, index:number, self:string[]) {
     return self.indexOf(value) === index;
   }
+export function __fillTerms(fileContent:string,fileNameKey:string,dictionary: DynamicTermsDictionary){
+    const splittedFileContent = fileContent.split("\n");
+    const predicatesMap = new Map<string,string[]>;
+    
+    for(let i=0;i<splittedFileContent.length;i++){
+        if(splittedFileContent[i].startsWith('%')){
+            continue;
+        }
+        const matches = splittedFileContent[i].match(DYNAMIC_TERMS_REGEXS.FULL_REGEX);
+        if(matches){
+            for(let i=0;i<matches.length;i++){
+                const matches_predicate = matches[i].match(/\w+/);
+                if(matches_predicate){
+                
+                const sanitized = sanitizeTerms(matches[i]);
+                if(sanitized){
+                    if(predicatesMap.has(matches_predicate[0])){
+                        let terms = sanitized.split(",");
+                        const previousTerms = predicatesMap.get(matches_predicate[0]);
+                        if(previousTerms !== undefined){
+                            terms = terms.concat(previousTerms);
+                        }
+                        predicatesMap.set(matches_predicate[0], terms.filter(onlyUnique));
+                    }
+                    else{
+                        predicatesMap.set(matches_predicate[0],sanitized.split(",").filter(onlyUnique));
+                    }
+                }
+                
+                }
+                
+            }
+        } 
+    }
+    dictionary.add_field(fileNameKey,predicatesMap);  
+}
 
 export function fillDictionaryWithDynamicTerms(){
     
@@ -293,7 +369,7 @@ export function fillDictionaryWithDynamicTerms(){
         if(isASPorDLVorLP(fileNameKey)){
         
         const fileContent = document.document.getText();
-        const splittedFileContent = fileContent.split("\n");
+        /*const splittedFileContent = fileContent.split("\n");
         const predicatesMap = new Map<string,string[]>;
         
         for(let i=0;i<splittedFileContent.length;i++){
@@ -326,7 +402,8 @@ export function fillDictionaryWithDynamicTerms(){
                 }
             } 
         }
-        dd.add_field(fileNameKey,predicatesMap);  
+        dd.add_field(fileNameKey,predicatesMap);  */
+        __fillTerms(fileContent,fileNameKey,dd);
     } 
     });
     

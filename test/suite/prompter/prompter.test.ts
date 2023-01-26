@@ -3,9 +3,14 @@ import * as vscode from 'vscode';
 import * as assert from 'assert';
 suite('Prompter Test Suite',
   () => {
+
+
+      const ext = vscode.extensions.getExtension("VSCodeEditor.asp-language-support-dlv2");
+    
+	
     //Descrizione del risultato del test
     test('isAtStartOfAggregates return True if triggerCharacter is #', async () => {
-		const ext = vscode.extensions.getExtension("VSCodeEditor.asp-language-support-dlv2");
+		
 		const myExtensionContext = await ext?.activate();
 		await vscode.workspace.openTextDocument({
 			language: 'asp',
@@ -16,7 +21,7 @@ suite('Prompter Test Suite',
 			});
     });
 	test('isAtStartOfBuiltins return True if triggerCharacter is &', async () => {
-		const ext = vscode.extensions.getExtension("VSCodeEditor.asp-language-support-dlv2");
+		
 		const myExtensionContext = await ext?.activate();
 		await vscode.workspace.openTextDocument({
 			language: 'asp',
@@ -27,7 +32,7 @@ suite('Prompter Test Suite',
 			});
     });
 	test('isAtStartOfDynamicPredicates return the triggerCharacter if triggerCharacter is a letter', async () => {
-		const ext = vscode.extensions.getExtension("VSCodeEditor.asp-language-support-dlv2");
+		
 		const myExtensionContext = await ext?.activate();
 		await vscode.workspace.openTextDocument({
 			language: 'asp',
@@ -38,7 +43,7 @@ suite('Prompter Test Suite',
 			});
     });
 	test('isAtStartOfConstants return triggerCharacter if triggerCharacter is a letter or _', async () => {
-		const ext = vscode.extensions.getExtension("VSCodeEditor.asp-language-support-dlv2");
+		
 		const myExtensionContext = await ext?.activate();
 		await vscode.workspace.openTextDocument({
 			language: 'asp',
@@ -48,4 +53,6 @@ suite('Prompter Test Suite',
 				assert.equal(prompter.isAtStartOfConstants(doc,new vscode.Range(new vscode.Position(0,0),new vscode.Position(0,0))),'_');
 			});
     });
+
+	
   });
