@@ -183,22 +183,24 @@ suite('Warning for rule not safe',
 
     test('should show a warning if a rule is not safe', async () => {
       await vscode.workspace.openTextDocument({
-        content: 's(Y) :- b(X), X<Y.'
+        content: 's(Y) :- b(X), X<Y.\ns(X) :- not r(X).'
       }).then(doc => {
         const diagnostics: vscode.Diagnostic[] = [];
-        const lineOfText = doc.lineAt(0);
-        const tokens = trasformText(lineOfText.text);
-        const constructs: [string, number, number][] = tokenize(tokens);
-        const atoms: string[] = [];
-        const [heads, tails, tails_negative, tails_in_symbols] = tokenize_head_tail(constructs, atoms);
-        const msg = `The rule at line 0 is not safe`;
-        if (!checkSafe(heads, tails, tails_negative, tails_in_symbols) && checkIsRule(constructs)) {
-          const diagnostic = createDiagnostic(doc, lineOfText, 0, msg, vscode.DiagnosticSeverity.Warning);
-          diagnostics.push(diagnostic);
-          const line = diagnostic.range.start.line;
-          assert.strictEqual(line, 0);
+        for (let lineIndex = 0; lineIndex < doc.lineCount; lineIndex++) {
+          const lineOfText = doc.lineAt(lineIndex);
+          const tokens = trasformText(lineOfText.text);
+          const constructs: [string, number, number][] = tokenize(tokens);
+          const atoms: string[] = [];
+          const [heads, tails, tails_negative, tails_in_symbols] = tokenize_head_tail(constructs, atoms);
+          const msg = `The rule at line ${lineIndex + 1} is not safe`;
+          if (!checkSafe(heads, tails, tails_negative, tails_in_symbols) && checkIsRule(constructs)) {
+            const diagnostic = createDiagnostic(doc, lineOfText, lineIndex, msg, vscode.DiagnosticSeverity.Warning);
+            diagnostics.push(diagnostic);
+            const line = diagnostic.range.start.line;
+            assert.strictEqual(line, lineIndex);
+          }
         }
-        assert.strictEqual(diagnostics.length, 1); //Asserzione
+        assert.strictEqual(diagnostics.length, 2); //Asserzione
       });
     });
   });
