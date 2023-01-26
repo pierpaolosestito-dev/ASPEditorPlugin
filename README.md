@@ -13,9 +13,12 @@ Brief description.
 [GIF]
 [Brief Description]
 
-# Intellisense
+# IntelliSense
 
-[GIF]
+<div align="center">
+	<img src="/images/intellisense1.gif">
+	<img src="/images/intellisense2.gif">
+</div>
 
 <p>This extension provides a <b>code completion tool</b>.
 <b>IntelliSense</b> attempts to guess what the developer to type in order to complete and helps him in the line of code.
@@ -39,7 +42,9 @@ Using this tool may reduce typographical and synctactical errors.</p>
 
 # Prompter
 
-[GIF]
+<div align="center">
+	<img src="/images/prompter.gif">
+</div>
 
 <p>This extension provides a <b>code prompter tool.</b>
 Prompter will <b>helps</b> developer <b>to fix</b> line of code that contains </b>error</b> in:
@@ -52,12 +57,16 @@ Adding to this list It also helps in <b>Predicates</b> written before in the cod
 
 # CodeCookbook
 
+[GIF]
+[Brief description]
+
+# TemplateSnippets
 
 [GIF]
 [Brief description]
 
 
-# Contributors
+## Contributors
 
 <ul style="display: inline-block;">
 

@@ -20,29 +20,7 @@ export class Prompter implements vscode.CodeActionProvider {
 		vscode.CodeActionKind.QuickFix
 	];
 
-	public addFixers(match:string,dictionary : any, document:vscode.TextDocument,range:vscode.Range, prefix:string, otherPrefix = "", result :any[]){
-		if(otherPrefix == ""){ 
-		for(const elem of Object.values<any>(dictionary[prefix])) {
-			if(similarity(match,prefix+elem.label+"{")>=0.5 && similarity(match,prefix+elem.label+"{")<1.00){
-				const replaceWithRightBuiltin = this.createFix(document,range,prefix+elem.label+"{",(prefix+elem.label+"{").length);
-				const commandAction = this.createCommand();
-				result.push(replaceWithRightBuiltin);
-				result.push(commandAction);
-			}
-
-		}
-	}else{
-		for(const elem of Object.values<any>(dictionary[prefix])) {
-			if(similarity(match,otherPrefix+elem.label+"{")>=0.5 && similarity(match,otherPrefix+elem.label+"{")<1.00){
-				const replaceWithRightBuiltin = this.createFix(document,range,otherPrefix+elem.label+"{",(otherPrefix+elem.label+"{").length);
-				const commandAction = this.createCommand();
-				result.push(replaceWithRightBuiltin);
-				result.push(commandAction);
-			}
-
-		}
-	}
-	}
+	
 
 	public addConstantFixer(m1:string,constantsDict:any,document:vscode.TextDocument,range:vscode.Range,result:any[]){
 		for(const elem of Object.values<any>(constantsDict['language-constants'])) {
@@ -72,11 +50,54 @@ export class Prompter implements vscode.CodeActionProvider {
 			}
 		}
 	}
+	public addFixers(match:string,dictionary : any, document:vscode.TextDocument,range:vscode.Range, prefix:string, otherPrefix = "", result :any[]){
+		if(otherPrefix == ""){ 
+		for(const elem of Object.values<any>(dictionary[prefix])) {
+			if(similarity(match,prefix+elem.label+"{")>=0.5 && similarity(match,prefix+elem.label+"{")<1.00){
+				const replaceWithRightBuiltin = this.createFix(document,range,prefix+elem.label+"{",(prefix+elem.label+"{").length);
+				const commandAction = this.createCommand();
+				result.push(replaceWithRightBuiltin);
+				result.push(commandAction);
+			}
 
+		}
+	}else{
+		for(const elem of Object.values<any>(dictionary[prefix])) {
+			if(similarity(match,otherPrefix+elem.label+"{")>=0.5 && similarity(match,otherPrefix+elem.label+"{")<1.00){
+				const replaceWithRightBuiltin = this.createFix(document,range,prefix+elem.label+"{",(prefix+elem.label+"{").length);
+				const commandAction = this.createCommand();
+				result.push(replaceWithRightBuiltin);
+				result.push(commandAction);
+			}
+
+		}
+	}
+	}
 
 	public provideCodeActions(document: vscode.TextDocument, range: vscode.Range): vscode.CodeAction[] | undefined {
 	const result : any[]= [];
-
+	if (this.isAtStartOfAggregate(document, range)) {
+		
+		let aggregatesDict = dictionarizer(this.context.asAbsolutePath(PATH_TO_JSON_DICTIONARY.AGGREGATES)); //La dobbiamo leggere da aggregates.json
+		const start = range.start;
+		const line = document.lineAt(start.line).text;
+		const aggregateRegex = /(#\w+)\{/gm; 
+		const matches = line.matchAll(aggregateRegex);
+		if(matches){
+		for(const match of matches){
+			const m1 = match[1];			
+			if(m1){
+				this.addFixers(m1,aggregatesDict,document,range,"#","",result);
+				//&coutn
+				if(result.length == 0){
+					aggregatesDict = dictionarizer(this.context.asAbsolutePath(PATH_TO_JSON_DICTIONARY.BUILTINS));
+					this.addFixers(m1,aggregatesDict,document,range,"&","#",result); //#coutn
+				}
+			}
+		}
+	}
+	
+	}
 	if (this.isAtStartOfBuiltins(document, range)) {
 		
 		let builtinsDict = dictionarizer(this.context.asAbsolutePath(PATH_TO_JSON_DICTIONARY.BUILTINS)); //La dobbiamo leggere da aggregates.json
@@ -101,28 +122,7 @@ export class Prompter implements vscode.CodeActionProvider {
 	}
 	
 	}
-	if (this.isAtStartOfAggregate(document, range)) {
-		
-		let aggregatesDict = dictionarizer(this.context.asAbsolutePath(PATH_TO_JSON_DICTIONARY.AGGREGATES)); //La dobbiamo leggere da aggregates.json
-		const start = range.start;
-		const line = document.lineAt(start.line).text;
-		const aggregateRegex = /(#\w+)\{/gm; 
-		const matches = line.matchAll(aggregateRegex);
-		if(matches){
-		for(const match of matches){
-			const m1 = match[1];			
-			if(m1){
-				this.addFixers(m1,aggregatesDict,document,range,"#","",result);
-				//&coutn
-				if(result.length == 0){
-					aggregatesDict = dictionarizer(this.context.asAbsolutePath(PATH_TO_JSON_DICTIONARY.BUILTINS));
-					this.addFixers(m1,aggregatesDict,document,range,"&","#",result); //#coutn
-				}
-			}
-		}
-	}
 	
-	}
 	if(this.isAtStartOfConstants(document,range)){
 		const constantsDict = dictionarizer(this.context.asAbsolutePath(PATH_TO_JSON_DICTIONARY.CONSTANTS)); //La dobbiamo leggere da aggregates.json
 		const start = range.start;

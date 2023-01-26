@@ -188,7 +188,7 @@ export function buildPredicates(commaOccurrences:number,match:string,arrayPredic
 					label = match2[1]+"(_)";
 					snippet = match2[1]+"(${1})";
 					}
-					const obj: IntelliDetail = {"label":label,"snippet":snippet,"detail": "(previous written predicates) "+label,"documentation": "**PREVIOUS PREDICATES**\n\n"+label+"\n\n---"};
+					const obj: IntelliDetail = {"label":label,"snippet":snippet,"detail": "(previous written predicate) "+label,"documentation": "**PREVIOUS PREDICATE**\n\n"+label+"\n\n---"};
 					arrayPredicates.push(obj);
                     return;
     }else{
@@ -209,7 +209,7 @@ export function buildPredicates(commaOccurrences:number,match:string,arrayPredic
 					label = match2[1]+parenthesis;
 					snippet = match2[1]+snippetTag;
 				}
-				const obj: IntelliDetail = {"label":label,"snippet":snippet,"detail": "(previous written predicates) "+label,"documentation": "**PREVIOUS PREDICATES**\n\n"+label+"\n\n---"};
+				const obj: IntelliDetail = {"label":label,"snippet":snippet,"detail": "(previous written predicate) "+label,"documentation": "**PREVIOUS PREDICATE**\n\n"+label+"\n\n---"};
 				arrayPredicates.push(obj);
     }
 }
