@@ -17,7 +17,7 @@ export const DYNAMIC_PREDICATE_REGEXS = {
 };
 
 export const DYNAMIC_TERMS_REGEXS = {
-	FULL_REGEX:/\w+\s*\(\s*\w+(?:\s*,\s*\w+\s*)*\s*\)\s*(?::-|\||\.|,)/g
+	FULL_REGEX:/\w+\s*\(\s*"*\w+"*(?:\s*,\s*"*\w+"*\s*)*\s*\)\s*(?::-|\||\.|,)/g
 };
 
 export const PATH_TO_COOKBOOK_EXAMPLES = {
