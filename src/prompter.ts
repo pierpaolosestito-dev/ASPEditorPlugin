@@ -23,6 +23,7 @@ export class Prompter implements vscode.CodeActionProvider {
 	
 
 	public addConstantFixer(m1:string,constantsDict:any,document:vscode.TextDocument,range:vscode.Range,result:any[]){
+		let commandAction = null;
 		for(const elem of Object.values<any>(constantsDict['language-constants'])) {
 						
 			if(similarity(m1,elem) == 1.00){
@@ -30,47 +31,52 @@ export class Prompter implements vscode.CodeActionProvider {
 			}
 			if(similarity(m1,elem)>=0.5 && similarity(m1,elem)<1.00){
 				const replaceWithRightConstant = this.createFix(document,range,elem,elem.length);
-				const commandAction = this.createCommand();
+				commandAction = this.createCommand();
 				result.push(replaceWithRightConstant);
-				result.push(commandAction);
+				
+				
 			}
 
+		}
+		if(commandAction){
+			result.push(commandAction);
 		}
 	}
 
 	public addDynamicPredicateFixer(m1:string,dd:DynamicPredicateDictionary,key:string,document:vscode.TextDocument,range:vscode.Range,result:any[]){
+		let commandAction = null;
 		for(const elem of Object.values<any>(dd.get_field(key))) {
 			const indexOf = elem.label.indexOf("(");
 			const substringToCompare = elem.label.substring(0,indexOf);
 			if(similarity(m1,substringToCompare)>=0.5 && similarity(m1,substringToCompare)<1.00){
 				const replaceWithRightAggregate = this.createFix(document,range,substringToCompare,substringToCompare.length);
-				const commandAction = this.createCommand();
+				commandAction = this.createCommand();
 				result.push(replaceWithRightAggregate);
-				result.push(commandAction);
 			}
 		}
 	}
 	public addFixers(match:string,dictionary : any, document:vscode.TextDocument,range:vscode.Range, prefix:string, otherPrefix = "", result :any[]){
+		let commandAction = null;
 		if(otherPrefix == ""){ 
-		for(const elem of Object.values<any>(dictionary[prefix])) {
+			for(const elem of Object.values<any>(dictionary[prefix])) {
 			if(similarity(match,prefix+elem.label+"{")>=0.5 && similarity(match,prefix+elem.label+"{")<1.00){
 				const replaceWithRightBuiltin = this.createFix(document,range,prefix+elem.label+"{",(prefix+elem.label+"{").length);
-				const commandAction = this.createCommand();
+				commandAction = this.createCommand();
 				result.push(replaceWithRightBuiltin);
-				result.push(commandAction);
 			}
-
 		}
 	}else{
 		for(const elem of Object.values<any>(dictionary[prefix])) {
 			if(similarity(match,otherPrefix+elem.label+"{")>=0.5 && similarity(match,otherPrefix+elem.label+"{")<1.00){
 				const replaceWithRightBuiltin = this.createFix(document,range,prefix+elem.label+"{",(prefix+elem.label+"{").length);
-				const commandAction = this.createCommand();
+				commandAction = this.createCommand();
 				result.push(replaceWithRightBuiltin);
-				result.push(commandAction);
 			}
-
 		}
+		
+	}
+	if(commandAction){
+		result.push(commandAction);
 	}
 	}
 
