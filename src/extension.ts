@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
 import { subscribeToDocumentChanges } from './diagnostics';
 import { getASPIntellisenseProvider,getASPIntellisenseHoverProvider,fillDictionaryWithDynamicPredicates,fillDictionaryWithDynamicTerms} from './intellisense';
-import { Prompter,	PrompterInfo } from './prompter';
+import { Prompter/*,	PrompterInfo */} from './prompter';
 import { CodePanelViewProvider } from './cpanel/code_panel_view_provider';
 
 
@@ -32,11 +32,11 @@ const COMMAND = 'code-actions-sample.command';
 
 	subscribeToDocumentChanges(context, emojiDiagnostics);
 
-	context.subscriptions.push(
+	/*context.subscriptions.push(
 		vscode.languages.registerCodeActionsProvider('asp', new PrompterInfo(), {
 			providedCodeActionKinds: PrompterInfo.providedCodeActionKinds
 		})
-	);
+	);*/
 
 	context.subscriptions.push(
 		vscode.commands.registerCommand(COMMAND, () => vscode.env.openExternal(vscode.Uri.parse('https://www.dlvsystem.it/dlvsite/it/home_it/')))

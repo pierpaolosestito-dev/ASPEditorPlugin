@@ -201,12 +201,12 @@ export class Prompter implements vscode.CodeActionProvider {
 
 	public createCommand(): vscode.CodeAction {
 		const action = new vscode.CodeAction('Learn more about ASP', vscode.CodeActionKind.Empty);
-		action.command = { command: COMMAND, title: 'Learn more about ASP', tooltip: 'This will open the ASP documentation.' };
+		action.command = { command: COMMAND, title: 'Learn more about ASP. (Documentation)', tooltip: 'This will open the ASP documentation.' };
 		return action;
 	}
 }
 
-export class PrompterInfo implements vscode.CodeActionProvider {
+/*export class PrompterInfo implements vscode.CodeActionProvider {
 
 	public static readonly providedCodeActionKinds = [
 		vscode.CodeActionKind.QuickFix
@@ -228,4 +228,4 @@ export class PrompterInfo implements vscode.CodeActionProvider {
 		return action;
 	}
 	
-}
+}*/
