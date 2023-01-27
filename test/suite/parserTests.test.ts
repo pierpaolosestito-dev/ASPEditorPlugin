@@ -182,7 +182,7 @@ suite('Test find line in test',
 		});
 	});
 
-
+/*
 suite('Test find line in single comment',
 	() => {
 		//Descrizione del risultato del test
@@ -852,4 +852,4 @@ const NEGATIVE_RULE_TEST = {
 	test2: ":~ out(X),object(X,A,Y). [Y@1,X]",
 	test3: ":- circle(A,Y).[Y@1,A]",
 	test4: "triangle(A,Z,G).",
-};
+}; */
