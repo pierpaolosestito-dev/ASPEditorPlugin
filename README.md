@@ -67,7 +67,9 @@ Adding to this list It also helps in <b>Predicates</b> written before in the cod
 
 # TemplateSnippets
 
-[GIF]
+<div align="center">
+	<img src="/images/snippet.gif">
+</div>
 [Brief description]
 
 
