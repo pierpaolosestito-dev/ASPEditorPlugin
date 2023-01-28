@@ -60,7 +60,9 @@ Adding to this list It also helps in <b>Predicates</b> written before in the cod
 
 # CodeCookbook
 
-[GIF]
+<div align="center">
+	<img src="/images/cookbook.gif">
+</div>
 [Brief description]
 
 # TemplateSnippets
