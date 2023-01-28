@@ -6,7 +6,10 @@
 
 Brief description.
 # Syntax Highlighting
-[GIF]
+<div align="center">
+	<img src="/images/dark-synthax.png">
+	<img src="/images/light-synthax.png">
+</div>
 [Brief description]
 
 # Dark Theme and Light Theme
