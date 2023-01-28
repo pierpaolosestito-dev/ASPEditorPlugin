@@ -101,6 +101,50 @@ suite('tokenize positive tests',
 			//expect(result).to.equal(expected_result); //Asserzione
 			assert.deepEqual(result, expected_result); //Asserzione per controllare se due array sono uguali
 		});
+		test('Tests if arguments are tokenized in head and tail correctly', () => {
+			//Corpo del test
+			const input = "node(D):-tail(X).";
+			const tokens = trasformText(input);
+
+			const tokens_result: [string, number, number][] = tokenize(tokens); //Risultato della funzione da testare
+			const result = tokenize_head_tail(tokens_result, []); //Risultato della funzione da testare
+			const expected_result: [string[], string[], string[], string[]] = [
+				[
+					'D'
+				],
+				[
+					'X'
+				],
+				[],
+				[]
+			];
+
+			assert.deepEqual(result, expected_result); //Asserzione per controllare se due array sono uguali
+		});
+		test('Tests if arguments are tokenized in head and tail, tail negative and symbols correctly', () => {
+			//Corpo del test
+			const input = "shop(D):-art(X), X>10, not sell(X).";
+			const tokens = trasformText(input);
+
+			const tokens_result: [string, number, number][] = tokenize(tokens); //Risultato della funzione da testare
+			const result = tokenize_head_tail(tokens_result, []); //Risultato della funzione da testare
+			const expected_result: [string[], string[], string[], string[]] = [
+				[
+					'D'
+				],
+				[
+					'X'
+				],
+				[
+					'X'
+				],
+				[
+					'X'
+				]
+			];
+
+			assert.deepEqual(result, expected_result); //Asserzione per controllare se due array sono uguali
+		});
 	});
 
 suite('Test find line in comment',
