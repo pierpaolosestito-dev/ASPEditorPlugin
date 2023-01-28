@@ -66,7 +66,8 @@ export function getASPIntellisenseProvider(context: vscode.ExtensionContext): vs
                 }
                 if(match_open_bracket){
                     const dictionary = terms_dd.get_field(fileName);
-                    const dic2 = dictionary?.get(predicato.split("").reverse().join("").split('(')[0].trim());
+                    const dic2 = dictionary?.get(reversePredicate(predicato));
+                
                     if(dic2){
                         for(const suggest of dic2){
                             //if(!line.text.includes(suggest))
@@ -93,7 +94,8 @@ export function getASPIntellisenseProvider(context: vscode.ExtensionContext): vs
                 }
                 
                 const dictionary = terms_dd.get_field(fileName);
-                const dic2 = dictionary?.get(predicato.split("").reverse().join(""));
+                const dic2 = dictionary?.get(reversePredicate(predicato));
+              
                 if(dic2){
                     for(const suggest of dic2){
                         completionItems.push(new vscode.CompletionItem(suggest, vscode.CompletionItemKind.Constant));
@@ -117,7 +119,9 @@ export function getASPIntellisenseProvider(context: vscode.ExtensionContext): vs
 		}
 	};
 }
-
+export function reversePredicate(reversedPredicate:string) : string {
+    return reversedPredicate.split("").reverse().join("").split('(')[0].trim();
+}
 export function addEntryInAutocompleteItems(completionItems : vscode.CompletionItem[], elem: any, completionItemKind : vscode.CompletionItemKind ){
                     completionItems.push(new vscode.CompletionItem(elem.label, completionItemKind));
                     completionItems[completionItems.length - 1].insertText = new vscode.SnippetString(elem.snippet);
