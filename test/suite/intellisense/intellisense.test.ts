@@ -85,9 +85,11 @@ suite('Util function inside intellisense Test Suite',
 	
     });
 
-	test('reversePredicate takes in input a reversedPredicate and returns it in order.', async () => {
+	test('reversePredicate takes in input a reversedPredicate and returns it in order.',  () => {
 		assert.equal(intellisense.reversePredicate("etaciderp"),"predicate");
 		assert.equal(intellisense.reversePredicate("tset"),"test");
     });
+
+
 	
   });
