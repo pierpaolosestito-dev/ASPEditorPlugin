@@ -70,7 +70,7 @@ export function getASPIntellisenseProvider(context: vscode.ExtensionContext): vs
                 
                     if(dic2){
                         for(const suggest of dic2){
-                            //if(!line.text.includes(suggest))
+                            if(suggest!="_")
                             completionItems.push(new vscode.CompletionItem(suggest, vscode.CompletionItemKind.Constant));
                         }
                     }
@@ -98,6 +98,7 @@ export function getASPIntellisenseProvider(context: vscode.ExtensionContext): vs
               
                 if(dic2){
                     for(const suggest of dic2){
+                        if(suggest != "_")
                         completionItems.push(new vscode.CompletionItem(suggest, vscode.CompletionItemKind.Constant));
                     }
                 }
