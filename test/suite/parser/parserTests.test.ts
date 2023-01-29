@@ -6,10 +6,10 @@ import * as assert from 'assert';
 import * as vscode from 'vscode';
 import { CommonTokenStream, Recognizer } from "antlr4ts";
 import { ANTLRInputStream } from "antlr4ts/ANTLRInputStream";
-import { ASPCore2Lexer } from '../../src/parser/ASPCore2Lexer';
-import { checkIsRule, checkSafe, check_comment_or_test, countElem, input_text, tokenize, tokenize_head_tail } from '../../src/parsing';
-import { ASPCore2Parser } from '../../src/parser/ASPCore2Parser';
-import { createDiagnostic, createDiagnosticForAtoms, createDiagnosticForFacts, createDiagnosticForEndCommentsAndTests } from "../../src/diagnostics";
+import { ASPCore2Lexer } from '../../../src/parser/ASPCore2Lexer';
+import { checkIsRule, checkSafe, check_comment_or_test, countElem, input_text, tokenize, tokenize_head_tail } from '../../../src/parsing';
+import { ASPCore2Parser } from '../../../src/parser/ASPCore2Parser';
+import { createDiagnostic, createDiagnosticForAtoms, createDiagnosticForFacts, createDiagnosticForEndCommentsAndTests } from "../../../src/diagnostics";
 import { Interval } from 'antlr4ts/misc/Interval';
 
 
