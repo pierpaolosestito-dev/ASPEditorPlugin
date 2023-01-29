@@ -3,12 +3,12 @@
 	"displayName": "ASP Language Support for DLV2 System",
 	"description": "An extension for Answer Set Programming using the DLV2 System",
 	"version": "0.1.0",
-	"publisher": "VSCodeEditor",
+	"publisher": "aspeditor",
 	"engines": {
 		"vscode": "^1.74.3"
 	},
 	"author": {
-		"name": "VSCodeEditor"
+		"name": "aspeditor"
 	},
 	"categories": [
 		"Programming Languages",

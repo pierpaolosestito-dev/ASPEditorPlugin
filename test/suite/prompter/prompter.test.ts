@@ -5,7 +5,7 @@ suite('Prompter Test Suite',
   () => {
 
 
-      const ext = vscode.extensions.getExtension("VSCodeEditor.asp-language-support-dlv2");
+      const ext = vscode.extensions.getExtension("aspeditor.asp-language-support-dlv2");
     
 	
     //Descrizione del risultato del test

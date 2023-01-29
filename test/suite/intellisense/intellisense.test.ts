@@ -75,7 +75,7 @@ suite('Util function inside intellisense Test Suite',
 			});
     });
 	test('readDictionariesandMergeIt reads constants,builtins,aggregates JSON dictionary and merge into only one dictionary', async () => {
-		const ext = vscode.extensions.getExtension("VSCodeEditor.asp-language-support-dlv2");
+		const ext = vscode.extensions.getExtension("aspeditor.asp-language-support-dlv2");
 		const myExtensionContext = await ext?.activate() as vscode.ExtensionContext;
 		const autocompleteDict = intellisense.readDictionariesandMergeIt(myExtensionContext);
 		
