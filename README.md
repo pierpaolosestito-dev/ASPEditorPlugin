@@ -4,26 +4,15 @@
 
 # ASP Editor Plugin
 
-<<<<<<< Updated upstream
-Brief description.
-=======
 
 
->>>>>>> Stashed changes
 # Syntax Highlighting
 <div align="center">
 	<img src="/images/dark-synthax.png">
 	<img src="/images/light-synthax.png">
 </div>
-<<<<<<< Updated upstream
-[Brief description]
-=======
 <p>The extension provide <b>synthax-highliting-feature</b> that changes the <b>color</b> and <b>font</b> of the code <b>based on</b> particular <b>synthax rules.</b></p>
->>>>>>> Stashed changes
 
-# Dark Theme and Light Theme
-[GIF]
-[Brief Description]
 
 # IntelliSense
 
@@ -49,10 +38,6 @@ Using this tool may reduce typographical and synctactical errors.</p>
 
 # CodeDiagnostics
 
-<<<<<<< Updated upstream
-[GIF]
-[Brief description]
-=======
 <div align="center">
 	<img src="/images/code_diagnostics.gif">
 	<img src="/images/code_diagnostics2.gif">
@@ -65,7 +50,6 @@ This extension provides a <b>code-diagnostic-tool</b> that helps the user by <b>
   <li>it shows a warning if a rule is unsafe;</li> 
   <li>it shows a warning if an atom is used only once;</li>
 </ul></p>
->>>>>>> Stashed changes
 
 # Prompter
 
@@ -87,22 +71,14 @@ Adding to this list It also helps in <b>Predicates</b> written before in the cod
 <div align="center">
 	<img src="/images/cookbook.gif">
 </div>
-<<<<<<< Updated upstream
-[Brief description]
-=======
 </p>The extension provides a </b>code-recipes-list</b> that gives examples of working code.</p>
->>>>>>> Stashed changes
 
 # TemplateSnippets
 
 <div align="center">
 	<img src="/images/snippet.gif">
 </div>
-<<<<<<< Updated upstream
-[Brief description]
-=======
 <p>The extension provides </b>snippets</b> that gives templates to <b>help</b> the user when <b>writing code</b></p>
->>>>>>> Stashed changes
 
 
 ## Contributors
@@ -157,8 +133,4 @@ Adding to this list It also helps in <b>Predicates</b> written before in the cod
       </a>
     </li>
 
-<<<<<<< Updated upstream
 </ul>
-=======
-</ul>
->>>>>>> Stashed changes
