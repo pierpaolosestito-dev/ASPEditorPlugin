@@ -122,7 +122,7 @@
 		"url": "https://github.com/pierpaolosestito-dev/ASPEditorPlugin.git"
 	},
 	"homepage": "https://github.com/pierpaolosestito-dev/ASPEditorPlugin/blob/main/README.md",
-	"icon": "./images/icon.png",
+	"icon": "images/icon.png",
 	"dependencies": {
 		"@types/vscode": "^1.69.0",
 		"antlr4ts": "^0.5.0-alpha.4",
