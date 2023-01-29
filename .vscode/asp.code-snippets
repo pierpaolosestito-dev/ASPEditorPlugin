@@ -13,5 +13,32 @@
 			"in($1)|out($1) :- $2($3)."
 		],
 		"description": "Guess template"
+	},
+	"Vertex": {
+		"prefix": "ver",
+		"body": [
+			"inVC($1) | outVC($1) :- $2($1).", 
+			":- outVC($3), #count{$4: $5($3,$4), inVC($4)} = 0."
+		],
+		"description": "Vertex Cover template"
+	},
+	"Independent set": {
+		"prefix": "inde",
+		"body": [
+			"inIS($1) | outIS($1) :- $2($1).", 
+			":- inIS($3), inIS($4), $3 != $4, edge($3,$4)."
+		],
+		"description": "Independent set template"
+	},
+	"Kernel": {
+		"prefix": "ker",
+		"body": [
+			"inKernel($1) | outKernel($1) :- $2($1).", 
+			":- inKernel($1), inKernel($4), $3($1,$4).",
+			":- outKernel($1), #count{$4: $3($1,$4), inKernel($4)} = 0."
+		],
+		"description": "Kernel template"
 	}
+	
+
 }

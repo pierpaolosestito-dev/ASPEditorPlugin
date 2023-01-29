@@ -1,4 +1,3 @@
-
 import * as fs from 'fs';
 import * as vscode from 'vscode';
 
@@ -27,13 +26,9 @@ export class Code implements CodeInterface {
 
     dlv(code_type: string) {
         let code = '';
-        
-        
         if (fs.existsSync(code_type)) {
-        
             code = fs.readFileSync(code_type,'utf-8');
         }
-
         return code;
     }
 }

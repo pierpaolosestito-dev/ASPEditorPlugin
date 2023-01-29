@@ -8,13 +8,13 @@
 % - People disliking each other should not sit at the same table.
 
 % INPUT facts
-table(T,NC) % the set of available tables with corresponding seats
-guest(P) % the set of guests to be accommodated
-like(P1,P2) % couples of guests who are friends
-dislike(P1,P2) % couples of guests disliking each other
+table(T,NC). % the set of available tables with corresponding seats
+guest(P). % the set of guests to be accommodated
+like(P1,P2). % couples of guests who are friends
+dislike(P1,P2). % couples of guests disliking each other
 
 % OUTPUT predicates
-at(P,T)  guest P is accommodated to table T
+at(P,T). %guest P is accommodated to table T
 
 % Given some tables of nc chairs each, generate a sitting
 % arrangement for a number of given guests.
