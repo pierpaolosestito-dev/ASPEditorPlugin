@@ -12,7 +12,8 @@
 	},
 	"categories": [
 		"Programming Languages",
-		"Themes"
+		"Themes",
+		"Snippets"
 	],
 	"activationEvents": [
 		"onLanguage:asp",
@@ -83,7 +84,13 @@
 					"name": "ASP Cookbook"
 				}
 			]
-		}
+		},
+		"snippets": [
+			{
+				"language": "asp",
+				"path": "./.vscode/asp.code-snippets"
+			}
+		]
 	},
 	"scripts": {
 		"vscode:prepublish": "npm run compile",
