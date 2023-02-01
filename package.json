@@ -2,7 +2,7 @@
 	"name": "asp-language-editor-dlv2",
 	"displayName": "ASP Editor",
 	"description": "An extension for Answer Set Programming that provides feature as Intellisense, CodeDiagnostics, Syntax Highliting and soon",
-	"version": "0.1.3",
+	"version": "0.1.4",
 	"publisher": "aspeditor",
 	"engines": {
 		"vscode": "^1.74.3"
@@ -88,7 +88,7 @@
 		"snippets": [
 			{
 				"language": "asp",
-				"path": "./.vscode/asp.code-snippets"
+				"path": "./snippets/snippets.json"
 			}
 		]
 	},
@@ -136,5 +136,11 @@
 		"sys": "^0.0.1",
 		"util": "^0.12.5",
 		"vscode-test": "^1.6.1"
+	},
+	"__metadata": {
+		"id": "849ae603-6959-49c0-ae4c-a7c187456436",
+		"publisherDisplayName": "aspeditor",
+		"publisherId": "44531327-6e3d-43b9-a672-aadcfd084dc5",
+		"isPreReleaseVersion": false
 	}
 }
