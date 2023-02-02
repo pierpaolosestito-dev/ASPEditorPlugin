@@ -2,7 +2,7 @@
 	"name": "asp-language-editor-dlv2",
 	"displayName": "ASP Editor",
 	"description": "An extension for Answer Set Programming that provides feature as Intellisense, CodeDiagnostics, Syntax Highliting and soon",
-	"version": "0.1.4",
+	"version": "0.1.5",
 	"publisher": "aspeditor",
 	"engines": {
 		"vscode": "^1.74.3"
