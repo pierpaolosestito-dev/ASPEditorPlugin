@@ -252,12 +252,11 @@ export function tokenize_head_tail(constructs: [string, number, number][], atoms
 		if (constructs[i][1] >= 29 && constructs[i][1] <= 34 && !skip) { // Se sono presenti simboli inserisco il valore prima del simbolo
 			if (constructs[i - 1][1] === ASPCore2Lexer.VARIABLE) {
 				tails_in_symbols.push(constructs[i - 1][0]);
-				continue;
 			}
 			if (constructs[i + 1][1] === ASPCore2Lexer.VARIABLE) {  // ... e quello dopo 
 				tails_in_symbols.push(constructs[i - 1][0]);
-				continue;
 			}
+			continue;
 		}
 
 		else if (constructs[i][1] === ASPCore2Lexer.VARIABLE && !skip) {
