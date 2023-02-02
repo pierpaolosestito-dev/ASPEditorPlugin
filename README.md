@@ -11,7 +11,7 @@
 	<img src="/images/dark-synthax.png">
 	<img src="/images/light-synthax.png">
 </div>
-<p>The extension provide <b>synthax-highliting-feature</b> that changes the <b>color</b> and <b>font</b> of the code <b>based on</b> particular <b>synthax rules.</b></p>
+<p>The extension provides <b>syntax-highliting-feature</b> that changes the <b>color</b> and <b>font</b> of the code <b>based on</b> particular <b>syntax rules.</b></p>
 
 
 # IntelliSense
