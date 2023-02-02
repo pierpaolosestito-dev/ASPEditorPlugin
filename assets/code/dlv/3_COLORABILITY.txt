@@ -1,3 +1,9 @@
+% 3 COLORABILITY
+% ----------------------------------------------------
+% Assign one color out of 3 colors to each starting
+% such that two linked starting have always different
+% colors.
+
 starting(A). starting(B).
 starting(C). starting(D).
 starting(E). starting(F).
