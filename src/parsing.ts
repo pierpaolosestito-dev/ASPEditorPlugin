@@ -125,7 +125,7 @@ export function countElem(doc: vscode.TextDocument, token: string) {
 				found_at_line = lineIndex;
 				count += count_iter;
 			}
-			else if (result?.check === true || (result.index_end !== -1 || result.index_end !==-1)) { // Ci sono commenti
+			else if (result?.check === true || result.index_end !==-1 ) { // Ci sono commenti
 				if (result.index_end == -1) { // caso del single_comment % o aperture senza chiusura
 					
 
